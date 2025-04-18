@@ -1,15 +1,56 @@
 package devconnect.model.entity;
 
+import devconnect.model.dto.DeveloperDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.time.LocalDateTime;
 
 @Builder @Entity @Table( name = "developer" )
-public class DeveloperEntity {
+@Data @NoArgsConstructor @AllArgsConstructor
+public class DeveloperEntity extends BaseTime{
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private int dno;
+
     @Column( length = 30, nullable = false, unique = true )
     private String did;
+
+    @Column( length = 30, nullable = false )
     private String dpwd;
+
+    @Column( length = 30, nullable = false )
     private String dname;
+
+    @Column( length = 13, nullable = false, unique = true )
+    private String dphone;
+
+    @Column( length = 255, nullable = false )
+    private String daddress;
+
+    @Column( length = 255, nullable = false )
+    private String demail;
+
+    @Column( length = 255, nullable = false )
+    @ColumnDefault("default.jpg")
+    private String dprofile;
+
+    public DeveloperDto toDto(){
+        return DeveloperDto.builder()
+                .dno( this.dno )
+                .did( this.did )
+                .dpwd( this.dpwd )
+                .dphone( this.dphone )
+                .daddress( this.daddress )
+                .demail( this.demail )
+                .dprofile( this.dprofile )
+                .createAt( this.getCreateAt() )
+                .updateAt( this.getUpdateAt() )
+                .build();
+    } // f end
+
 }
