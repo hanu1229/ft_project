@@ -39,6 +39,16 @@ public class DeveloperEntity extends BaseTime{
     @ColumnDefault("default.jpg")
     private String dprofile;
 
+    @Column( length = 255, nullable = false )
+    @ColumnDefault("1")
+    private int dlevel;
+
+    @Column( length = 255, nullable = false )
+    private int dcurrentExp;
+
+    @Column( length = 255, nullable = false )
+    private int dtotalExp;
+
     public DeveloperDto toDto(){
         return DeveloperDto.builder()
                 .dno( this.dno )
@@ -48,6 +58,9 @@ public class DeveloperEntity extends BaseTime{
                 .daddress( this.daddress )
                 .demail( this.demail )
                 .dprofile( this.dprofile )
+                .dlevel( this.dlevel )
+                .dcurrentExp( this.dcurrentExp )
+                .dtotalExp( this.dtotalExp )
                 .createAt( this.getCreateAt() )
                 .updateAt( this.getUpdateAt() )
                 .build();

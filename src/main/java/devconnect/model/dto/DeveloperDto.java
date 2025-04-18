@@ -19,6 +19,9 @@ public class DeveloperDto {
     private String daddress;
     private String demail;
     private String dprofile;
+    private int dlevel;
+    private int dcurrentExp;
+    private int dtotalExp;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
@@ -30,6 +33,9 @@ public class DeveloperDto {
                 .daddress( this.daddress )
                 .demail( this.demail )
                 .dprofile( this.dprofile )
+                .dlevel( this.dlevel )
+                .dcurrentExp( this.dcurrentExp )
+                .dtotalExp( this.dtotalExp )
                 .build();
     } // f end
 
