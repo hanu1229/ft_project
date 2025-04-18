@@ -1,4 +1,4 @@
 package devconnect.model.entity;
 
-public class CompanyProjectEntity {
+public class CompanyProjcetEntity {
 }

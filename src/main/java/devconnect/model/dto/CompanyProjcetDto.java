@@ -1,4 +1,4 @@
 package devconnect.model.dto;
 
-public class CompanyProjectDto {
+public class CompanyProjcetDto {
 }
