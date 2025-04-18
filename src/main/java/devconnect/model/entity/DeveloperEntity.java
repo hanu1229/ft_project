@@ -36,17 +36,17 @@ public class DeveloperEntity extends BaseTime{
     private String demail;
 
     @Column( length = 255, nullable = false )
-    @ColumnDefault("default.jpg")
+    @ColumnDefault("'default.jpg'")
     private String dprofile;
 
-    @Column( length = 255, nullable = false )
+    @Column( nullable = false )
     @ColumnDefault("1")
     private int dlevel;
 
-    @Column( length = 255, nullable = false )
+    @Column( nullable = false, name = "dcurrentexp" )
     private int dcurrentExp;
 
-    @Column( length = 255, nullable = false )
+    @Column( nullable = false, name = "dtotalexp" )
     private int dtotalExp;
 
     public DeveloperDto toDto(){
