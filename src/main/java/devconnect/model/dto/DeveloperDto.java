@@ -12,5 +12,10 @@ public class DeveloperDto {
     private String did;
     private String dpwd;
     private String dname;
-    private
+    private String dphone;
+    private String dadress;
+    private String demail;
+    private String dprofile;
+
+
 }
