@@ -47,3 +47,18 @@ insert into drating( drscore , drdate , pno , dno )values
 ( 0 , "2025-04-18" , 8 , 8 ),
 ( 95 , "2025-04-18" , 9 , 9 ),
 ( 100 , "2025-04-18" , 10 , 10 );
+
+-- 관리자 샘플 데이터 등록 | rw 25-04-19 샘플생성
+-- 로그인 테스트 시 adpwd = qwe1234로 입력
+INSERT INTO admin (adid, adpwd, adname, adphone)
+VALUES 
+('admin01', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자1', '010-1234-1111'),
+  ('admin02', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자2', '010-1234-2222'),
+  ('admin03', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자3', '010-1234-3333'),
+  ('admin04', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자4', '010-1234-4444'),
+  ('admin05', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자5', '010-1234-5555'),
+  ('admin06', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자6', '010-1234-6666'),
+  ('admin07', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자7', '010-1234-7777'),
+  ('admin08', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자8', '010-1234-8888'),
+  ('admin09', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자9', '010-1234-9999'),
+  ('admin10', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자10', '010-1234-1010');
