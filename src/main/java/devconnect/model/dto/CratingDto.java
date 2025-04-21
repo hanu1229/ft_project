@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,9 +15,11 @@ import lombok.NoArgsConstructor;
 public class CratingDto {
     private int crno; // 평가 번호(기업)
     private int crscore; // 점수(기업)
-    private String crdate; // 평가일(기업)
+    private LocalDateTime crdate; // 평가일(기업)
     private int dno; // 개발자번호(FK)
-    private int cno; // 프로젝트번호(FK)
+    private int pno; // 프로젝트번호(FK)
+    private LocalDateTime createAt; // 등록날짜
+    private LocalDateTime updateAt; // 수정날짜
     
     // Dto -> Entity
     public CratingEntity toEntity(){
@@ -24,7 +28,7 @@ public class CratingDto {
                 .crscore( this.crscore )
                 .crdate( this.crdate )
                 .dno( this.dno )
-                .cno( this.cno )
+                .pno( this.pno )
                 .build();
     } // entity end
 } // c end
