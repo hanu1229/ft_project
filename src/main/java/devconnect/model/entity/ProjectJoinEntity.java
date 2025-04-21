@@ -6,12 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "project_join")
 @Builder
 @NoArgsConstructor @AllArgsConstructor
-@Getter
+@Getter @Setter @ToString
 public class ProjectJoinEntity extends BaseTime {
 
     // 신청 번호
@@ -25,9 +27,10 @@ public class ProjectJoinEntity extends BaseTime {
     @Column(nullable = false)
     private String pjtime;
     // 프로젝트 번호
-    @ManyToOne
+    @ManyToOne()
     // @Column(nullable = false)
-    private ProjectEntity projectEntity;
+    @JoinColumn(name = "pno")
+    private ProjectEntity pno;
     // 개발자 번호
     @Column(nullable = false)
     private int dno;
@@ -39,7 +42,7 @@ public class ProjectJoinEntity extends BaseTime {
     public ProjectJoinDto toDto() {
         return ProjectJoinDto.builder()
                 .pjno(this.pjno).pjtype(this.pjtype).pjtime(this.pjtime)
-                .pno(projectEntity.getPno()).dno(this.dno)
+                .pno(pno.getPno()).dno(this.dno)
                 .createAt(getCreateAt()).updateAt(getUpdateAt())
                 .build();
     }

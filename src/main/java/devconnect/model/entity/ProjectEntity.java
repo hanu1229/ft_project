@@ -57,7 +57,7 @@ public class ProjectEntity extends BaseTime {
     // 추후 cno를 위한 company 테이블 연결
 
     // 양방향 연결
-    @OneToMany(mappedBy = "projectEntity", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "pno", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProjectJoinEntity> projectJoinEntityList = new ArrayList<>();
 
     /// Entity --> Dto
