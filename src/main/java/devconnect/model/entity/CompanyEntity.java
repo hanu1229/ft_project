@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "company" )
@@ -33,6 +34,9 @@ public class CompanyEntity extends BaseTime {
     private String cbusiness; // 사업자 번호
     @Column
     private String cprofile; // jpg파일
+    @Column
+    @ColumnDefault("0")
+    private int state;
 
     public CompanyDto toDto(){
         return CompanyDto.builder()
@@ -45,6 +49,7 @@ public class CompanyEntity extends BaseTime {
                 .cemail(cemail)
                 .cbusiness(cbusiness)
                 .cprofile(cprofile)
+                .state(state)
                 .build();
     }
 
