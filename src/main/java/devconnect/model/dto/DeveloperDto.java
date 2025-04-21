@@ -22,6 +22,7 @@ public class DeveloperDto {
     private int dlevel;
     private int dcurrentExp;
     private int dtotalExp;
+    private boolean dstate;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
@@ -29,6 +30,7 @@ public class DeveloperDto {
         return DeveloperEntity.builder()
                 .dno( this.dno )
                 .did( this.did )
+                .dname( this.dname )
                 .dphone( this.dphone )
                 .daddress( this.daddress )
                 .demail( this.demail )
@@ -36,6 +38,7 @@ public class DeveloperDto {
                 .dlevel( this.dlevel )
                 .dcurrentExp( this.dcurrentExp )
                 .dtotalExp( this.dtotalExp )
+                .dstate( this.dstate )
                 .build();
     } // f end
 

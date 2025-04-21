@@ -2,16 +2,13 @@ package devconnect.model.entity;
 
 import devconnect.model.dto.ProjectJoinDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "project_join")
 @Builder
 @NoArgsConstructor @AllArgsConstructor
-@Getter
+@Getter @Setter @ToString
 public class ProjectJoinEntity extends BaseTime {
 
     // 신청 번호

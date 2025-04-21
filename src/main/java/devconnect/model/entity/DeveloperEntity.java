@@ -2,10 +2,7 @@ package devconnect.model.entity;
 
 import devconnect.model.dto.DeveloperDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 @Builder @Entity @Table( name = "developer" )
@@ -33,24 +30,31 @@ public class DeveloperEntity extends BaseTime{
     @Column( length = 255, nullable = false )
     private String demail;
 
-    @Column( length = 255, nullable = false )
+    @Column( length = 255 )
     @ColumnDefault("'default.jpg'")
     private String dprofile;
 
-    @Column( nullable = false )
+    @Column( nullable = true )
     @ColumnDefault("1")
     private int dlevel;
 
-    @Column( nullable = false, name = "dcurrentexp" )
+    @Column( name = "dcurrentexp", nullable = true )
+    @ColumnDefault("0")
     private int dcurrentExp;
 
-    @Column( nullable = false, name = "dtotalexp" )
+    @Column( name = "dtotalexp", nullable = true )
+    @ColumnDefault("0")
     private int dtotalExp;
+
+    @Column( nullable = true )
+    @ColumnDefault("1")
+    private boolean dstate;
 
     public DeveloperDto toDto(){
         return DeveloperDto.builder()
                 .dno( this.dno )
                 .did( this.did )
+                .dname( this.dname )
                 .dpwd( this.dpwd )
                 .dphone( this.dphone )
                 .daddress( this.daddress )
@@ -59,6 +63,7 @@ public class DeveloperEntity extends BaseTime{
                 .dlevel( this.dlevel )
                 .dcurrentExp( this.dcurrentExp )
                 .dtotalExp( this.dtotalExp )
+                .dstate( this.dstate )
                 .createAt( this.getCreateAt() )
                 .updateAt( this.getUpdateAt() )
                 .build();
