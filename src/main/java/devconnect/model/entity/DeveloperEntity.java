@@ -15,7 +15,7 @@ public class DeveloperEntity extends BaseTime{
     @Column( length = 30, nullable = false, unique = true )
     private String did;
 
-    @Column( length = 30, nullable = false )
+    @Column( length = 100, nullable = false )
     private String dpwd;
 
     @Column( length = 30, nullable = false )
@@ -34,19 +34,17 @@ public class DeveloperEntity extends BaseTime{
     @ColumnDefault("'default.jpg'")
     private String dprofile;
 
-    @Column( nullable = true )
     @ColumnDefault("1")
     private int dlevel;
 
-    @Column( name = "dcurrentexp", nullable = true )
+    @Column( name = "dcurrentexp" )
     @ColumnDefault("0")
     private int dcurrentExp;
 
-    @Column( name = "dtotalexp", nullable = true )
+    @Column( name = "dtotalexp" )
     @ColumnDefault("0")
     private int dtotalExp;
 
-    @Column( nullable = true )
     @ColumnDefault("1")
     private boolean dstate;
 
@@ -55,7 +53,6 @@ public class DeveloperEntity extends BaseTime{
                 .dno( this.dno )
                 .did( this.did )
                 .dname( this.dname )
-                .dpwd( this.dpwd )
                 .dphone( this.dphone )
                 .daddress( this.daddress )
                 .demail( this.demail )

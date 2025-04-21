@@ -30,6 +30,7 @@ public class DeveloperDto {
         return DeveloperEntity.builder()
                 .dno( this.dno )
                 .did( this.did )
+                .dpwd( this.dpwd )
                 .dname( this.dname )
                 .dphone( this.dphone )
                 .daddress( this.daddress )
