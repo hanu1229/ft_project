@@ -45,7 +45,10 @@ public class CompanyController {
 
 
     // 3. 기업정보 findall
-    public List<CompanyDto>
+    @GetMapping("findall")
+    public List<CompanyDto> findAll(){
+        return null;
+    }
 
 
 
