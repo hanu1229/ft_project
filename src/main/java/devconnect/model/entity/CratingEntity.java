@@ -29,7 +29,7 @@ public class CratingEntity {
     @Column(nullable = false)
     private int dno; // 개발자번호(FK)
     @Column(nullable = false)
-    private int cno; // 프로젝트번호(FK)
+    private int pno; // 프로젝트번호(FK)
 
     // Entity -> Dto
     public CratingDto toDto(){
@@ -37,8 +37,8 @@ public class CratingEntity {
                 .crno( this.crno )
                 .crscore( this.crscore )
                 .crdate( this.crdate )
-                .dno( this.cno )
-                .cno( this.cno )
+                .dno( this.dno )
+                .pno( this.pno )
                 .build();
     } // dto end
     

@@ -15,7 +15,7 @@ public class CratingDto {
     private int crscore; // 점수(기업)
     private String crdate; // 평가일(기업)
     private int dno; // 개발자번호(FK)
-    private int cno; // 프로젝트번호(FK)
+    private int pno; // 프로젝트번호(FK)
     
     // Dto -> Entity
     public CratingEntity toEntity(){
@@ -24,7 +24,7 @@ public class CratingDto {
                 .crscore( this.crscore )
                 .crdate( this.crdate )
                 .dno( this.dno )
-                .cno( this.cno )
+                .pno( this.pno )
                 .build();
     } // entity end
 } // c end
