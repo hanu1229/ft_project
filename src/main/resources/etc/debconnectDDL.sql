@@ -19,8 +19,13 @@ insert into company( cid, cpwd, cname, cphone, cadress, cemail, cbusiness, cprof
 values( 'cmd1' , 'a1234' , '크래프트(주)' , '02-2323-5343' , '서울 금천구 가산디지털1로 99' ,'craft@naver.com', '214-88-13306' , 'profil1.jpg')
 ,( 'cmd2' , 'b1234' , '이랑(주)' , '02-5345-2342' , '서울특별시 금천구 가산디지털2로 127-20' ,'irang@naver.com', '134-87-11626' , 'profil2.jpg')
 ,( 'cmd3' , 'c1234' , '파르티(주)' , '02-2344-2342' , '서울특별시 금천구 디지털로10길 9' ,'partia@naver.com', '312-33-14797' , 'profil3.jpg')
-,( 'cmd4' , 'd1234' , '나르티아엔터' , '02-3653-3544' , '가산동 60-8' ,'nartia@naver.com', '398-21-01288' , 'profil4.jpg');
-
+,( 'cmd4' , 'd1234' , '나르티아엔터' , '02-3653-3544' , '가산동 60-8' ,'nartia@naver.com', '398-21-01288' , 'profil4.jpg')
+,( 'cmd5' , 'k1234' , '(주)넥서스테크' , '070-1111-2222' , '경기 성남시 분당구 대왕판교로 712' ,'nexustech@example.com', '123-45-67890' , 'profil5.jpg')
+, ( 'cmd6' , 'l1234' , '데이터솔루션즈' , '070-3333-4444' , '서울 강남구 역삼로 165' ,'datasolutions@example.com', '987-65-43210' , 'profil6.jpg')
+, ( 'cmd7' , 'm1234' , '(주)클라우드허브' , '070-5555-6666' , '서울 금천구 가산디지털1로 171' ,'cloudhub@example.com', '112-23-34455' , 'profil7.jpg')
+, ( 'cmd8' , 'n1234' , 'AI랩스 코리아' , '070-7777-8888' , '서울 구로구 디지털로 26길 111' ,'ailabskr@example.com', '667-78-89900' , 'profil8.jpg')
+, ( 'cmd9' , 'o1234' , '(주)시스템게이트' , '070-9999-0000' , '경기 수원시 영통구 광교로 123' ,'systemgate@example.com', '334-45-56677' , 'profil9.jpg')
+, ( 'cmd10' , 'p1234' , '이노텍 솔루션' , '070-1212-3434' , '서울 송파구 중대로 234' ,'inotechsol@example.com', '889-90-01122' , 'profil10.jpg');
 
 -- 기업 평가 테이블 샘플 데이터 10개
 insert into crating( crscore , crdate , dno , cno )values
