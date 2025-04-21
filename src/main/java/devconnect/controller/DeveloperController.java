@@ -24,8 +24,13 @@ public class DeveloperController {
     } // f end
 
     // 2. 개발자 로그인
+    public ResponseEntity<String> logIn( @RequestBody DeveloperDto developerDto ){
+        String token = developerService.logIn( developerDto );
+        if( token != null ){ return ResponseEntity.status( 200 ).body( token ); }
+        else{ return ResponseEntity.status( 400 ).body( "로그인 실패" ); }
+    } // f end
 
-    // 2.
+    // 3.
 
 
 

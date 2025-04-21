@@ -33,6 +33,19 @@ public class DeveloperService {
 
     private final JwtUtil jwtUtil;
 
+    public String logIn( DeveloperDto developerDto ){
+        DeveloperEntity developerEntity = developerRepository.findByDid( developerDto.getDid() );
+
+        if( developerEntity != null ){ return null; }
+        BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
+        boolean inMatch = pwdEncoder.matches( developerDto.getDpwd(), developerEntity.getDpwd() );
+        if( inMatch == false ) { return null; }
+        String token = jwtUtil.createToken( developerEntity.getDid() );
+        System.out.println("token = " + token);
+
+        return "1";
+    } // f end
+
 
 
 }
