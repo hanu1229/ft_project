@@ -31,7 +31,7 @@ public class ProjectDto {
     // 모집 마감일
     private LocalDateTime recruit_pend;
     // 페이
-    private String ppay;
+    private int ppay;
     // 기업 번호(FK)
     private int cno;
     // 생성일
