@@ -19,7 +19,7 @@ public class DeveloperEntity extends BaseTime{
     @Column( length = 30, nullable = false, unique = true )
     private String did;
 
-    @Column( length = 30, nullable = false )
+    @Column( length = 100, nullable = false )
     private String dpwd;
 
     @Column( length = 30, nullable = false )
@@ -34,7 +34,7 @@ public class DeveloperEntity extends BaseTime{
     @Column( length = 255, nullable = false )
     private String demail;
 
-    @Column( length = 255, nullable = false )
+    @Column( length = 255 )
     @ColumnDefault("'default.jpg'")
     private String dprofile;
 
@@ -42,11 +42,16 @@ public class DeveloperEntity extends BaseTime{
     @ColumnDefault("1")
     private int dlevel;
 
-    @Column( nullable = false, name = "dcurrentexp" )
+    @Column( name = "dcurrentexp" )
+    @ColumnDefault("0")
     private int dcurrentExp;
 
-    @Column( nullable = false, name = "dtotalexp" )
+    @Column( name = "dtotalexp" )
+    @ColumnDefault("0")
     private int dtotalExp;
+
+    @ColumnDefault("1")
+    private boolean dstate;
 
     @OneToMany( mappedBy = "developerEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
     @Builder.Default
@@ -67,6 +72,7 @@ public class DeveloperEntity extends BaseTime{
         return DeveloperDto.builder()
                 .dno( this.dno )
                 .did( this.did )
+                .dname( this.dname )
                 .dpwd( this.dpwd )
                 .dphone( this.dphone )
                 .daddress( this.daddress )
@@ -75,6 +81,7 @@ public class DeveloperEntity extends BaseTime{
                 .dlevel( this.dlevel )
                 .dcurrentExp( this.dcurrentExp )
                 .dtotalExp( this.dtotalExp )
+                .dstate( this.dstate )
                 .createAt( this.getCreateAt() )
                 .updateAt( this.getUpdateAt() )
                 .build();
