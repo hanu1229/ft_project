@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -21,6 +22,8 @@ public class CratingEntity extends BaseTime { // "회사"를 개발자가 평가
     private int crno; // 평가 번호(기업)
     @Column(nullable = false)
     private int crscore; // 점수(기업)
+    @Column @ColumnDefault( "0" ) // 기본 0
+    private int crstate; // 상태
 //    @Column(nullable = false)
 //    private String crdate; // 평가일(기업)
 
