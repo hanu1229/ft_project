@@ -3,7 +3,7 @@
  * - 클라이언트 ⇄ 서버 간 관리자 정보 전달용 DTO
  * - AdminEntity ↔ AdminDto 간 변환 역할 수행
  * - createAt, updateAt 포함 (응답 시 시간 정보 포함용)
-*/
+ */
 
 package devconnect.model.dto;
 
@@ -15,11 +15,12 @@ import java.time.LocalDateTime;
 @Data @NoArgsConstructor @AllArgsConstructor @Builder // lombok+ 어노테이션
 public class AdminDto { // CS
 
-    private Integer adno;
-    private String adid;
-    private String adpwd;
-    private String adname;
-    private String adphone;
+    private Integer adno;         // 관리자 번호 (PK)
+    private String adid;          // 관리자 아이디
+    private String adpwd;         // 비밀번호 (암호화 저장)
+    private String adname;        // 관리자 이름
+    private String adphone;       // 관리자 연락처
+    private Integer adtype;       // 관리자 상태 코드 (0:신청, 1:승인, 2:반려, 3~9:기타)
 
     private LocalDateTime createAt;  // [*] 관리자 계정 생성일시
     private LocalDateTime updateAt;  // [*] 관리자 정보 최종 수정일시
@@ -32,6 +33,7 @@ public class AdminDto { // CS
                 .adpwd(this.adpwd)
                 .adname(this.adname)
                 .adphone(this.adphone)
+                .adtype(this.adtype) // 상태코드 포함
                 .build();
     } // fe
 
