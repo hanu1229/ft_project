@@ -12,18 +12,18 @@ VALUES
 ( 'leesunwoo', 'leelee22', '이선우', '010-3939-2929', '부산광역시 해운대구 우동', 'sunwoo.lee@gmail.com', 'default.jpg', 3, 130, 260, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
 ( 'qwe123', 'qwe123', '테스트', '010-7777-8888', '울산광역시 남구 무거동', 'jangminho@outlook.com', 'default.jpg', 5, 300, 600, '2024-04-01 10:00:00', '2024-04-01 10:00:00' );
 
--- 기업 테이블 샘플 데이터 10개
+-- 기업 테이블 샘플 데이터 10개 비번1234
 insert into company( cid, cpwd, cname, cphone, cadress, cemail, cbusiness, cprofile)
-values( 'cmd1' , 'a1234' , '크래프트(주)' , '02-2323-5343' , '서울 금천구 가산디지털1로 99' ,'craft@naver.com', '214-88-13306' , 'profil1.jpg')
-,( 'cmd2' , 'b1234' , '이랑(주)' , '02-5345-2342' , '서울특별시 금천구 가산디지털2로 127-20' ,'irang@naver.com', '134-87-11626' , 'profil2.jpg')
-,( 'cmd3' , 'c1234' , '파르티(주)' , '02-2344-2342' , '서울특별시 금천구 디지털로10길 9' ,'partia@naver.com', '312-33-14797' , 'profil3.jpg')
-,( 'cmd4' , 'd1234' , '나르티아엔터' , '02-3653-3544' , '가산동 60-8' ,'nartia@naver.com', '398-21-01288' , 'profil4.jpg')
-,( 'cmd5' , 'k1234' , '(주)넥서스테크' , '070-1111-2222' , '경기 성남시 분당구 대왕판교로 712' ,'nexustech@example.com', '123-45-67890' , 'profil5.jpg')
-, ( 'cmd6' , 'l1234' , '데이터솔루션즈' , '070-3333-4444' , '서울 강남구 역삼로 165' ,'datasolutions@example.com', '987-65-43210' , 'profil6.jpg')
-, ( 'cmd7' , 'm1234' , '(주)클라우드허브' , '070-5555-6666' , '서울 금천구 가산디지털1로 171' ,'cloudhub@example.com', '112-23-34455' , 'profil7.jpg')
-, ( 'cmd8' , 'n1234' , 'AI랩스 코리아' , '070-7777-8888' , '서울 구로구 디지털로 26길 111' ,'ailabskr@example.com', '667-78-89900' , 'profil8.jpg')
-, ( 'cmd9' , 'o1234' , '(주)시스템게이트' , '070-9999-0000' , '경기 수원시 영통구 광교로 123' ,'systemgate@example.com', '334-45-56677' , 'profil9.jpg')
-, ( 'cmd10' , 'p1234' , '이노텍 솔루션' , '070-1212-3434' , '서울 송파구 중대로 234' ,'inotechsol@example.com', '889-90-01122' , 'profil10.jpg');
+values( 'cmd1' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '크래프트(주)' , '02-2323-5343' , '서울 금천구 가산디지털1로 99' ,'craft@naver.com', '214-88-13306' , 'profil1.jpg')
+,( 'cmd2' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '이랑(주)' , '02-5345-2342' , '서울특별시 금천구 가산디지털2로 127-20' ,'irang@naver.com', '134-87-11626' , 'profil2.jpg')
+,( 'cmd3' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '파르티(주)' , '02-2344-2342' , '서울특별시 금천구 디지털로10길 9' ,'partia@naver.com', '312-33-14797' , 'profil3.jpg')
+,( 'cmd4' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '나르티아엔터' , '02-3653-3544' , '가산동 60-8' ,'nartia@naver.com', '398-21-01288' , 'profil4.jpg')
+,( 'cmd5' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '(주)넥서스테크' , '070-1111-2222' , '경기 성남시 분당구 대왕판교로 712' ,'nexustech@example.com', '123-45-67890' , 'profil5.jpg')
+, ( 'cmd6' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '데이터솔루션즈' , '070-3333-4444' , '서울 강남구 역삼로 165' ,'datasolutions@example.com', '987-65-43210' , 'profil6.jpg')
+, ( 'cmd7' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '(주)클라우드허브' , '070-5555-6666' , '서울 금천구 가산디지털1로 171' ,'cloudhub@example.com', '112-23-34455' , 'profil7.jpg')
+, ( 'cmd8' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , 'AI랩스 코리아' , '070-7777-8888' , '서울 구로구 디지털로 26길 111' ,'ailabskr@example.com', '667-78-89900' , 'profil8.jpg')
+, ( 'cmd9' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '(주)시스템게이트' , '070-9999-0000' , '경기 수원시 영통구 광교로 123' ,'systemgate@example.com', '334-45-56677' , 'profil9.jpg')
+, ( 'cmd10' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '이노텍 솔루션' , '070-1212-3434' , '서울 송파구 중대로 234' ,'inotechsol@example.com', '889-90-01122' , 'profil10.jpg');
 
 INSERT INTO project(pname, pintro, ptype, pcomment, pcount, pstart, pend, recruit_pstart, recruit_pend, ppay, cno, create_at, update_at)
 VALUES

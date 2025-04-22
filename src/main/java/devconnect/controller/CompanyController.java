@@ -28,7 +28,7 @@ public class CompanyController {
 
 
     // 2. post(login) http://localhost:8080/api/company/login
-    @PostMapping("/login") // {"cid" : "test1" , "cpwd" : "a1234"} // 토큰 잘나옴
+    @PostMapping("/login") // {"cid" : "cmd1" , "cpwd" : "a1234"} // 토큰 잘나옴
     public  String login(@RequestBody CompanyDto companyDto){
         System.out.println("companyDto = " + companyDto);
         System.out.println("CompanyController.login");
@@ -44,10 +44,11 @@ public class CompanyController {
     }
 
 
-    // 3. 기업정보 findall
+    // 3. 기업정보 findall http://localhost:8080/api/company/findall
     @GetMapping("findall")
     public List<CompanyDto> findAll(){
-        return null;
+
+      return  companyService.findAll();
     }
 
 
