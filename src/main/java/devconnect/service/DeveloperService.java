@@ -97,8 +97,7 @@ public class DeveloperService {
     } // f end
 
     // 6. 개발자 정보 삭제
-    public boolean onDelete( String token,
-                                                  DeveloperDto developerDto ){
+    public boolean onDelete( String token, DeveloperDto developerDto ){
         String did = jwtUtil.valnoateToken( token );
 
         if( did == null ){ return false; }
