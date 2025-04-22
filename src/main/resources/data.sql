@@ -55,7 +55,7 @@ VALUES
 (0, '2025-04-20 17:35', 10, 10, '2025-04-20 17:35', '2025-04-20 17:35');
 
 -- 기업 평가 테이블 샘플 데이터 10개
-insert into crating( crscore , crdate , dno , pno )values
+insert into crating( crscore , create_at , dno , pno )values
 ( 100 , "2025-04-18" , 1 , 1 ),
 ( 30 , "2025-04-18" , 2 , 2 ),
 ( 50 , "2025-04-18" , 3 , 3 ),
@@ -68,7 +68,7 @@ insert into crating( crscore , crdate , dno , pno )values
 ( 100 , "2025-04-18" , 10 , 10 );
 
 -- 개발자 평가 테이블 샘플 데이터 10개
-insert into drating( drscore , drdate , pno , dno )values
+insert into drating( drscore , create_at , pno , dno )values
 ( 70 , "2025-04-18" , 1 , 1 ),
 ( 75 , "2025-04-18" , 2 , 2 ),
 ( 45 , "2025-04-18" , 3 , 3 ),
