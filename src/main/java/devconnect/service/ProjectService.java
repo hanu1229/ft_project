@@ -1,7 +1,9 @@
 package devconnect.service;
 
 import devconnect.model.dto.ProjectDto;
+import devconnect.model.entity.CompanyEntity;
 import devconnect.model.entity.ProjectEntity;
+import devconnect.model.repository.CompanyRepository;
 import devconnect.model.repository.ProjectRepository;
 import devconnect.util.JwtUtil;
 import jakarta.transaction.Transactional;
@@ -20,15 +22,26 @@ public class ProjectService {
     // 추후 토큰으로 변경
 
     private final ProjectRepository projectRepository;
+    private final CompanyRepository companyRepository;
     private final JwtUtil jwtUtil;
 
     /// ● 프로젝트 등록
-    public boolean writeProject(ProjectDto projectDto) {
+    public boolean writeProject(String token, ProjectDto projectDto) {
         System.out.println("ProjectService.writeProject");
-        System.out.println("projectDto = " + projectDto);
-        ProjectEntity projectEntity = projectRepository.save(projectDto.toEntity());
-        if(projectEntity.getPno() > 0) {
-            return true;
+        System.out.println("token = " + token + "\nprojectDto = " + projectDto);
+        String cid = jwtUtil.valnoateToken(token);
+        System.out.println("cid = " + cid);
+        CompanyEntity companyEntity = companyRepository.findByCid(cid);
+        System.out.println("companyEntity = " + companyEntity);
+        if(companyEntity != null) {
+            projectDto.setCno(companyEntity.getCno());
+            System.out.println("projectDto = " + projectDto);
+            ProjectEntity projectEntity = projectRepository.save(projectDto.toEntity());
+            if(projectEntity.getPno() > 0) {
+                // FK값을 넣을 때는 FK의 엔티티 자체를 넣으면 됨
+                projectEntity.setCompanyEntity( companyEntity );
+                return true;
+            }
         }
         return false;
     }
@@ -40,7 +53,10 @@ public class ProjectService {
         List<ProjectDto> projectDtoList = new ArrayList<>();
         if(!projectEntityList.isEmpty()) {
             for(int index = 0; index < projectEntityList.size(); index++) {
-                projectDtoList.add(projectEntityList.get(index).toDto());
+                ProjectEntity projectEntity = projectEntityList.get(index);
+                ProjectDto projectDto = projectEntity.toDto();
+                projectDto.setCno(projectEntity.getCompanyEntity().getCno());
+                projectDtoList.add(projectDto);
             }
         }
         return projectDtoList;

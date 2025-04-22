@@ -19,11 +19,12 @@ public class ProjectController {
     
     /// ● 프로젝트 등록
     // {"pname" : "테스트 [백엔드]", "pintro" : "테스트 소개", "ptype" : 1, "pcomment" : "테스트 상세 설명", "pcount" : 4, "pstart" : "2025-04-21T13:00:00", "pend" : "2025-05-20T13:00:00", "recruit_pstart" : "2025-06-15T13:00:00", "recruit_pend" : "2025-12-12T13:00:00", "ppay" : 2700, "cno" : 1}
+    // {"pname" : "테스트 [백엔드]", "pintro" : "테스트 소개", "ptype" : 1, "pcomment" : "테스트 상세 설명", "pcount" : 4, "pstart" : "2025-04-21T13:00:00", "pend" : "2025-05-20T13:00:00", "recruit_pstart" : "2025-06-15T13:00:00", "recruit_pend" : "2025-12-12T13:00:00", "ppay" : 2700}
     @PostMapping("")
-    public boolean writeProject(@RequestBody() ProjectDto projectDto) {
+    public boolean writeProject(@RequestHeader("Authorization") String token, @RequestBody() ProjectDto projectDto) {
         System.out.println("ProjectController.writeProject");
-        System.out.println("projectDto = " + projectDto);
-        return projectService.writeProject(projectDto);
+        System.out.println("token = " + token + "\nprojectDto = " + projectDto);
+        return projectService.writeProject(token, projectDto);
     }
     
     /// ● 프로젝트 조회
