@@ -1,13 +1,7 @@
 package devconnect.model.entity;
 
 import devconnect.model.dto.CratingDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,35 +15,31 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CratingEntity extends BaseTime {
+public class CratingEntity extends BaseTime { // "회사"를 개발자가 평가
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int crno; // 평가 번호(기업)
     @Column(nullable = false)
     private int crscore; // 점수(기업)
-    @Column(nullable = false , updatable = false)
-    private LocalDateTime crdate; // 평가일(기업)
-    @Column(nullable = false)
-    private int dno; // 개발자번호(FK)
-    @Column(nullable = false)
-    private int pno; // 프로젝트번호(FK)
+//    @Column(nullable = false)
+//    private String crdate; // 평가일(기업)
 
-    // 현재 날짜,시간 자동 주입
-    @PrePersist
-    protected void onCreate(){
-        this.crdate = LocalDateTime.now();
-    } // f end
+
+    @ManyToOne
+    @JoinColumn (name = "pno")
+    private ProjectEntity projectEntity;
+
+    @ManyToOne
+    @JoinColumn (name = "dno")
+    private DeveloperEntity developerEntity;
 
     // Entity -> Dto
     public CratingDto toDto(){
         return CratingDto.builder()
                 .crno( this.crno )
                 .crscore( this.crscore )
-                .crdate( this.crdate )
-                .dno( this.dno )
-                .pno( this.pno )
-                .createAt( this.getCreateAt() )
-                .updateAt( this.getUpdateAt() )
+                .pno( projectEntity.getPno() )
+                .dno( developerEntity.getDno() )
                 .build();
     } // dto end
     

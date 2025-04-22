@@ -1,5 +1,3 @@
-USE devconnect;
-
 -- 개발자 테이블 샘플 데이터 10개
 INSERT INTO developer( did, dpwd, dname, dphone, daddress, demail, dprofile, dlevel, dcurrentexp, dtotalexp, create_at, update_at )
 VALUES
@@ -57,7 +55,7 @@ VALUES
 (0, '2025-04-20 17:35', 10, 10, '2025-04-20 17:35', '2025-04-20 17:35');
 
 -- 기업 평가 테이블 샘플 데이터 10개
-insert into crating( crscore , crdate , dno , cno )values
+insert into crating( crscore , create_at , dno , pno )values
 ( 100 , "2025-04-18" , 1 , 1 ),
 ( 30 , "2025-04-18" , 2 , 2 ),
 ( 50 , "2025-04-18" , 3 , 3 ),
@@ -70,7 +68,7 @@ insert into crating( crscore , crdate , dno , cno )values
 ( 100 , "2025-04-18" , 10 , 10 );
 
 -- 개발자 평가 테이블 샘플 데이터 10개
-insert into drating( drscore , drdate , pno , dno )values
+insert into drating( drscore , create_at , pno , dno )values
 ( 70 , "2025-04-18" , 1 , 1 ),
 ( 75 , "2025-04-18" , 2 , 2 ),
 ( 45 , "2025-04-18" , 3 , 3 ),
@@ -85,7 +83,7 @@ insert into drating( drscore , drdate , pno , dno )values
 -- 관리자 샘플 데이터 등록 | rw 25-04-19 샘플생성
 -- 로그인 테스트 시 adpwd = qwe1234로 입력
 INSERT INTO admin (adid, adpwd, adname, adphone)
-VALUES 
+VALUES
 ('admin01', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자1', '010-1234-1111'),
   ('admin02', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자2', '010-1234-2222'),
   ('admin03', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자3', '010-1234-3333'),

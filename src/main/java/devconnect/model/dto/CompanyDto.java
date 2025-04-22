@@ -20,6 +20,7 @@ public class CompanyDto {
     private String cemail;
     private String cbusiness; // 사업자 번호
     private String cprofile; // jpg파일
+    private int state;
 
     public CompanyEntity toEntity(){
         return CompanyEntity.builder()
@@ -32,6 +33,7 @@ public class CompanyDto {
                 .cemail(cemail)
                 .cbusiness(cbusiness)
                 .cprofile(cprofile)
+                .state(state)
                 .build();
     }
 
