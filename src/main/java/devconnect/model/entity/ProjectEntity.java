@@ -49,8 +49,7 @@ public class ProjectEntity extends BaseTime {
     private LocalDateTime recruit_pend;
     // 페이
     @Column(nullable = false)
-    private String ppay;
-
+    private int ppay;
     // 기업 번호(FK)
     @ManyToOne
     @JoinColumn(name = "cno")

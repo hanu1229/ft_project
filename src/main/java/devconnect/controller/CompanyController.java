@@ -18,7 +18,7 @@ public class CompanyController {
     private final CompanyService companyService;
 
     // 1. post(회원가입) http://localhost:8080/api/company/signup 확인 완
-    @PostMapping("/signup") // {"cid" : "test1" , "cpwd" : "a1234" , "cname" : "test1(주)" , "cphone" : "02-2113-5343" ,"cadress" : "test1" , "cemail" : "test1@naver.com", "cbusiness" :  "214-18-13306" , "cprofile" : "profil1.jpg"}
+    @PostMapping("/signup") // {"cid" : "test1" , "cpwd" : "$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a" , "cname" : "test1(주)" , "cphone" : "02-2113-5343" ,"cadress" : "test1" , "cemail" : "test1@naver.com", "cbusiness" :  "214-18-13306" , "cprofile" : "profil1.jpg"}
     public boolean signup(@RequestBody CompanyDto companyDto){
         System.out.println("companyDto = " + companyDto);
         System.out.println("CompanyController.signup");
