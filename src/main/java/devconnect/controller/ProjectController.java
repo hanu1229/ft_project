@@ -13,7 +13,7 @@ import java.util.List;
 @CrossOrigin("*")
 public class ProjectController {
 
-    // 추후 토큰으로 변경
+    // 모두 토큰으로 변경 완료
 
     private final ProjectService projectService;
     
