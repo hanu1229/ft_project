@@ -2,10 +2,10 @@ package devconnect.model.entity;
 
 import devconnect.model.dto.CompanyDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
@@ -37,6 +37,10 @@ public class CompanyEntity extends BaseTime {
     @Column
     @ColumnDefault("0")
     private int state;
+
+    @OneToMany(mappedBy = "companyEntity" , cascade = CascadeType.ALL , fetch = FetchType.LAZY)
+    @ToString.Exclude@Builder.Default
+    private List<ProjectEntity> projectEntityList = new ArrayList<>();
 
     public CompanyDto toDto(){
         return CompanyDto.builder()

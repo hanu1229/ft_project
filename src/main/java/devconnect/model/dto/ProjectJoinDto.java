@@ -28,7 +28,7 @@ public class ProjectJoinDto {
     /// Dto --> Entity
     public ProjectJoinEntity toEntity() {
         return ProjectJoinEntity.builder()
-                .pjno(this.pjno).pjtype(this.pjtype).pjtime(this.pjtime).dno(this.dno)
+                .pjno(this.pjno).pjtype(this.pjtype).pjtime(this.pjtime)
                 .build();
     }
 

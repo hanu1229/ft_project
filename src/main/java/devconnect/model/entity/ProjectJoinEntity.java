@@ -26,23 +26,22 @@ public class ProjectJoinEntity extends BaseTime {
     // 신청 시간
     @Column(nullable = false)
     private String pjtime;
-    // 프로젝트 번호
-    @ManyToOne()
-    // @Column(nullable = false)
+
+    // 프로젝트 번호 (FK)
+    @ManyToOne
     @JoinColumn(name = "pno")
-    private ProjectEntity pno;
-    // 개발자 번호
-    @Column(nullable = false)
-    private int dno;
-    
-    // 추후 dno를 위한 테이블 연결
+    private ProjectEntity projectEntity;
+    // 개발자 번호 (FK)
+    @ManyToOne
+    @JoinColumn(name = "dno")
+    private DeveloperEntity developerEntity;
 
 
     /// Entity --> Dto
     public ProjectJoinDto toDto() {
         return ProjectJoinDto.builder()
                 .pjno(this.pjno).pjtype(this.pjtype).pjtime(this.pjtime)
-                .pno(pno.getPno()).dno(this.dno)
+                .pno(projectEntity.getPno()).dno(developerEntity.getDno())
                 .createAt(getCreateAt()).updateAt(getUpdateAt())
                 .build();
     }
