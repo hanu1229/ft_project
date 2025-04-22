@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +72,6 @@ public class DeveloperEntity extends BaseTime{
                 .dno( this.dno )
                 .did( this.did )
                 .dname( this.dname )
-                .dpwd( this.dpwd )
                 .dphone( this.dphone )
                 .daddress( this.daddress )
                 .demail( this.demail )
