@@ -16,7 +16,8 @@ VALUES
 
 -- 기업 테이블 샘플 데이터 10개
 insert into company( cid, cpwd, cname, cphone, cadress, cemail, cbusiness, cprofile)
-values( 'cmd1' , 'a1234' , '크래프트(주)' , '02-2323-5343' , '서울 금천구 가산디지털1로 99' ,'craft@naver.com', '214-88-13306' , 'profil1.jpg')
+values
+ ( 'cmd1' , 'a1234' , '크래프트(주)' , '02-2323-5343' , '서울 금천구 가산디지털1로 99' ,'craft@naver.com', '214-88-13306' , 'profil1.jpg')
 ,( 'cmd2' , 'b1234' , '이랑(주)' , '02-5345-2342' , '서울특별시 금천구 가산디지털2로 127-20' ,'irang@naver.com', '134-87-11626' , 'profil2.jpg')
 ,( 'cmd3' , 'c1234' , '파르티(주)' , '02-2344-2342' , '서울특별시 금천구 디지털로10길 9' ,'partia@naver.com', '312-33-14797' , 'profil3.jpg')
 ,( 'cmd4' , 'd1234' , '나르티아엔터' , '02-3653-3544' , '가산동 60-8' ,'nartia@naver.com', '398-21-01288' , 'profil4.jpg');
@@ -48,17 +49,44 @@ insert into drating( drscore , drdate , pno , dno )values
 ( 95 , "2025-04-18" , 9 , 9 ),
 ( 100 , "2025-04-18" , 10 , 10 );
 
--- 관리자 샘플 데이터 등록 | rw 25-04-19 샘플생성
+-- 관리자 샘플 데이터 등록 | rw 25-04-19 샘플생성 rw 25-04-22 샘플 수정 adtype(상태)추가
 -- 로그인 테스트 시 adpwd = qwe1234로 입력
-INSERT INTO admin (adid, adpwd, adname, adphone)
-VALUES 
-('admin01', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자1', '010-1234-1111'),
-  ('admin02', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자2', '010-1234-2222'),
-  ('admin03', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자3', '010-1234-3333'),
-  ('admin04', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자4', '010-1234-4444'),
-  ('admin05', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자5', '010-1234-5555'),
-  ('admin06', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자6', '010-1234-6666'),
-  ('admin07', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자7', '010-1234-7777'),
-  ('admin08', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자8', '010-1234-8888'),
-  ('admin09', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자9', '010-1234-9999'),
-  ('admin10', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자10', '010-1234-1010');
+INSERT INTO admin (adid, adpwd, adname, adphone, adtype)
+VALUES
+('admin01', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자1', '010-1234-1111',0),
+('admin02', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자2', '010-1234-2222',1),
+('admin03', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자3', '010-1234-3333',2),
+('admin04', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자4', '010-1234-4444',1),
+('admin05', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자5', '010-1234-5555',0),
+('admin06', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자6', '010-1234-6666',3),
+('admin07', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자7', '010-1234-7777',5),
+('admin08', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자8', '010-1234-8888',6),
+('admin09', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자9', '010-1234-9999',1),
+('admin10', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자10', '010-1234-1010',9);
+
+
+-- 관리자 상태 코드 (code는 0~2 와 3~9분리 사용) | rw 25-04-22 샘플생성
+INSERT INTO admin_status_code (code, label, type) VALUES
+(0, '신청중', 'admin'),
+(1, '승인', 'admin'),
+(2, '반려', 'admin'),
+(3, '기타', 'admin'),
+(4, '예비관리자', 'admin'),
+(5, '중지요청', 'admin'),
+(6, '승인대기', 'admin'),
+(7, '검토중', 'admin'),
+(8, '보류', 'admin'),
+(9, '탈퇴관리자', 'admin');
+
+-- 평가 상태 코드 (code는 0~2 와 3~9분리 사용) | rw 25-04-22 샘플생성
+INSERT INTO admin_status_code (code, label, type) VALUES
+(0, '승인대기', 'rating'),
+(1, '승인완료', 'rating'),
+(2, '반려', 'rating'),
+(3, '기타', 'rating'),
+(4, '검토중', 'rating'),
+(5, '보류', 'rating'),
+(6, '심사중', 'rating'),
+(7, '임시저장', 'rating'),
+(8, '최종제출', 'rating'),
+(9, '폐기됨', 'rating');

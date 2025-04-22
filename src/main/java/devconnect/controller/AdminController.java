@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import devconnect.model.dto.AdminDto;
 import devconnect.service.AdminService;
 
-@RestController                           // JSON 응답 전용 컨트롤러
-@RequestMapping("/admin")                 // 모든 엔드포인트 앞에 "/admin" prefix
-@RequiredArgsConstructor                  // final 필드 생성자 자동 주입
-@CrossOrigin("*")                         // 모든 출처 허용 (CORS)
+import java.util.List;
+
+@RestController                                 // JSON 응답 전용 컨트롤러
+@RequestMapping("api/admin")                 // 모든 엔드포인트 앞에 "api/admin" prefix
+@RequiredArgsConstructor                       // final 필드 생성자 자동 주입
+@CrossOrigin("*")                              // 모든 출처 허용 (CORS)
 public class AdminController { // CS
 
     // [ * ] 서비스 의존성 주입
@@ -25,23 +27,30 @@ public class AdminController { // CS
 
     // [1]. C | rw 25-04-21 생성
     // [1] 관리자 회원가입
-    @PostMapping("/signup") // - POST /admin/signup
+    @PostMapping("/signup") // - POST api/admin/signup
     public boolean signUp(@RequestBody AdminDto adminDto) { // fs
         return adminService.signUp(adminDto); // 서비스에 회원가입 위임
     } // fe
 
     // [2]. C | rw 25-04-21 생성
     // [2] 로그인 요청 처리
-    @PostMapping("/login") // - POST /admin/login
+    @PostMapping("/login") // - POST api/admin/login
     public String login(@RequestBody AdminDto adminDto) { // fs
         return adminService.login(adminDto); // ID 반환 또는 실패 처리
     } // fe
 
     // [3]. R | rw 25-04-21 생성
     // [3] 관리자 단건 정보 조회
-    @GetMapping("/info") // - GET /admin/info?adid=admin123
-    public AdminDto getInfo(@RequestParam String adid) { // fs
-        return adminService.findByAdid(adid); // DTO 반환
+    @GetMapping("/findbyinfo") // - GET api/admin/info?adid=admin123
+    public AdminDto findByInfo(@RequestParam String adid) { // fs
+        return adminService.findByInfo(adid); // DTO 반환
+    } // fe
+
+    // [4]. R | rw 25-04-22 생성
+    // [4]. 관리자 전건 정보 조회
+    @GetMapping("/allinfo") // - GET api/admin/allinfo
+    public List<AdminDto> findAll() { // fs
+        return adminService.findAll(); // List 반환
     } // fe
 
 } // CE
