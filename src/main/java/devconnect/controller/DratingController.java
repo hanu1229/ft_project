@@ -53,23 +53,28 @@ public class DratingController {
     @GetMapping("/view")
     public ResponseEntity<DratingDto> dratingView( @RequestParam("drno") int drno ){
         System.out.println("DratingController.dratingView");
-        // return dratingService.dratingView( drno );
-        return null;
+        DratingDto dratingDto = dratingService.dratingView( drno );
+        if( dratingDto != null ) { return ResponseEntity.status(200).body( dratingDto ); }
+        else{ return ResponseEntity.status(401).build(); }
     } // f end
 
     
     // 개발자 평가 수정
     @PutMapping("")
-    public boolean dratingUpdate(@RequestBody DratingDto dratingDto ){
+    public ResponseEntity<Boolean> dratingUpdate(@RequestBody DratingDto dratingDto ){
         System.out.println("DratingController.dratingUpdate");
-        return dratingService.dratingUpdate( dratingDto );
+        boolean result = dratingService.dratingUpdate( dratingDto );
+        if( result ){ return ResponseEntity.status(201).body(true);}
+        else{ return ResponseEntity.status(400).body(false); }
     } // f end
     
     // 개발자 평가 삭제
     @DeleteMapping("")
-    public boolean dratingDelete(@RequestParam("drno") int drno ){
+    public ResponseEntity<Boolean> dratingDelete(@RequestParam("drno") int drno ){
         System.out.println("DratingController.dratingDelete");
-        return dratingService.dratingDelete( drno );
+        boolean result = dratingService.dratingDelete( drno );
+        if( result ){ return ResponseEntity.status(201).body(true); }
+        else{ return ResponseEntity.status(400).body(false); }
     } // f end
 
 } // c end

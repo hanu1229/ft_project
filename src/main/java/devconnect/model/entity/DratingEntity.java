@@ -3,6 +3,7 @@ package devconnect.model.entity;
 import devconnect.model.dto.DratingDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,8 @@ public class DratingEntity extends BaseTime { // "개발자"를 회사가 평가
     private int drno; // 평가 번호(개발자)
     @Column(nullable = false)
     private int drscore; // (개발자)점수
+    @Column @ColumnDefault( "0" ) // 기본 0
+    private int drstate; // 상태
 //    @Column(nullable = false)
 //    private String drdate; // 평가일(개발자)
 
@@ -32,8 +35,9 @@ public class DratingEntity extends BaseTime { // "개발자"를 회사가 평가
         return DratingDto.builder()
                 .drno( this.drno )
                 .drscore( this.drscore )
-                .pno( projectEntity.getPno() )
-                .dno( developerEntity.getDno() )
+                .pno( this.projectEntity.getPno() )
+                .dno( this.developerEntity.getDno() )
+                .drstate( this.drstate )
                 .createAt( this.getCreateAt() )
                 .updateAt( this.getUpdateAt() )
                 .build();
