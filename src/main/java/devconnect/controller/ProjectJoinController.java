@@ -16,8 +16,8 @@ public class ProjectJoinController {
     private final ProjectJoinService projectJoinService;
 
     /// 프로젝트 신청 등록
-//    @PostMapping("")
-//    public boolean
+    // @PostMapping("")
+    // public boolean
 
     /// 프로젝트 신청 조회
 
