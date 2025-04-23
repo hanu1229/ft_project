@@ -49,24 +49,40 @@ public class DratingService {
     // 개발자 평가 전체 조회
     public List<DratingDto> dratingList(){
         System.out.println("DratingService.dratingList");
+        // DratingEntity를 Repository를 이용하여 모든 정보 조회
         List<DratingEntity> dratingListAll = dratingRepository.findAll();
+        // System.out.println("dratingListAll = " + dratingListAll);
+        // 필요한 필요한 정보들만 담은 Dto를 반환할 리스트 객체 생성
         List<DratingDto> dratingList = new ArrayList<>();
+        // 조회한 정보의 수 만큼 반복문
         for( int i = 0; i <= dratingListAll.size() -1; i++ ){
+            // 정보를 담을 Dto객체를 만들고 필요한 정보만 담기
             DratingDto dratingDto = dratingListAll.get(i).toDto();
+            // System.out.println("[**} : " + dratingListAll.get(i));
+            // 반환할 리스트객체에 하나씩 저장
             dratingList.add( dratingDto );
         } // for end
+        // System.out.println("dratingList = " + dratingList);
+        // 리스트 객체 반환
         return dratingList;
     } // f end
 
     // 개발자 평가 개별 조회
     public DratingDto dratingView( int drno ){
         System.out.println("DratingService.dratingView");
+        // drno 를 기반으로 평가 조회
         Optional<DratingEntity> dOptional = dratingRepository.findById( drno );
+        System.out.println("dOptional = " + dOptional);
+        // 값이 있으면 true 없으면 false 로 조건문
         if ( dOptional.isPresent() ){
+            // 값을 Entity객체에 대입
             DratingEntity dratingEntity = dOptional.get();
+            // Dto로 변환
             DratingDto dratingDto = dratingEntity.toDto();
+            // dto 반환
             return dratingDto;
         } // if end
+        // 값이 없으면 null 반환
         return null;
     } // f end
     
@@ -86,6 +102,7 @@ public class DratingService {
             dratingEntity.setDrstate( dratingDto.getDrstate() );
             return true;
         } // if end
+        // 값이 없으면 false 반환
         return false;
     } // f end
     

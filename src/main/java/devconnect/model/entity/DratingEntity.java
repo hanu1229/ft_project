@@ -21,8 +21,6 @@ public class DratingEntity extends BaseTime { // "개발자"를 회사가 평가
     private int drscore; // (개발자)점수
     @Column @ColumnDefault( "0" ) // 기본 0
     private int drstate; // 상태
-//    @Column(nullable = false)
-//    private String drdate; // 평가일(개발자)
 
     @ManyToOne @JoinColumn( name = "pno" )
     private ProjectEntity projectEntity;

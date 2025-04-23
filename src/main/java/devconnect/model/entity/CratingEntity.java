@@ -24,9 +24,6 @@ public class CratingEntity extends BaseTime { // "회사"를 개발자가 평가
     private int crscore; // 점수(기업)
     @Column @ColumnDefault( "0" ) // 기본 0
     private int crstate; // 상태
-//    @Column(nullable = false)
-//    private String crdate; // 평가일(기업)
-
 
     @ManyToOne
     @JoinColumn (name = "pno")
@@ -41,8 +38,11 @@ public class CratingEntity extends BaseTime { // "회사"를 개발자가 평가
         return CratingDto.builder()
                 .crno( this.crno )
                 .crscore( this.crscore )
-                .pno( projectEntity.getPno() )
-                .dno( developerEntity.getDno() )
+                .pno( this.projectEntity.getPno() )
+                .dno( this.developerEntity.getDno() )
+                .crstate( this.crstate )
+                .createAt( this.getCreateAt() )
+                .updateAt( this.getUpdateAt() )
                 .build();
     } // dto end
     

@@ -26,6 +26,8 @@ public class DratingController {
     private final DratingService dratingService;
     
     // 개발자 평가 등록
+    // [POST] : http://localhost:8080/api/drating
+    // { "drscore" : # , "pno" : # , "dno" : # }
     @PostMapping("")
     public ResponseEntity<Boolean> dratingWrite( @RequestBody DratingDto dratingDto ){
         System.out.println("DratingController.dratingWrite");
@@ -38,6 +40,7 @@ public class DratingController {
     } // f end
     
     // 개발자 평가 전체 조회
+    // [GET] : http://localhost:8080/api/drating
     @GetMapping("")
     public ResponseEntity<List<DratingDto>> dratingList(){
         System.out.println("DratingController.dratingList");
@@ -50,6 +53,7 @@ public class DratingController {
     } // f end
 
     // 개발자 평가 개별 조회
+    // [GET] : http://localhost:8080/api/drating/view?drno=#
     @GetMapping("/view")
     public ResponseEntity<DratingDto> dratingView( @RequestParam("drno") int drno ){
         System.out.println("DratingController.dratingView");
@@ -60,6 +64,9 @@ public class DratingController {
 
     
     // 개발자 평가 수정
+    // [PUT] : http://localhost:8080/api/drating
+    // { "drno" : # , "drscore" : # }
+    // 평가할 개발자와 평가를 하게된 배경인 프로젝트를 수정할 필요는 없어서 pno,dno 제외
     @PutMapping("")
     public ResponseEntity<Boolean> dratingUpdate(@RequestBody DratingDto dratingDto ){
         System.out.println("DratingController.dratingUpdate");
@@ -69,6 +76,7 @@ public class DratingController {
     } // f end
     
     // 개발자 평가 삭제
+    // [DELETE] : http://localhost:8080/api/drating?drno=#
     @DeleteMapping("")
     public ResponseEntity<Boolean> dratingDelete(@RequestParam("drno") int drno ){
         System.out.println("DratingController.dratingDelete");

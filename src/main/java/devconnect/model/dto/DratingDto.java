@@ -1,5 +1,6 @@
 package devconnect.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import devconnect.model.entity.DeveloperEntity;
 import devconnect.model.entity.DratingEntity;
 import devconnect.model.entity.ProjectEntity;
@@ -17,7 +18,9 @@ import java.time.LocalDateTime;
 public class DratingDto {
     private int drno; // 평가 번호(개발자)
     private int drscore; // 점수(개발자)
+    @JsonFormat( shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createAt; // 평가일(개발자)
+    @JsonFormat( shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updateAt; // 수정일(개발자)
     private int drstate; // 평가
     private int pno; // 프로젝트 번호(FK)
