@@ -37,4 +37,18 @@ public class AdminDto { // CS
                 .build();
     } // fe
 
+    // [2] Entity → Dto 변환 메서드 | rw 25-04-23 생성
+    public static AdminDto toDto(AdminEntity entity) { // fs
+        return AdminDto.builder()
+                .adno(entity.getAdno())
+                .adid(entity.getAdid())
+                .adpwd(null) // 보안을 위해 패스워드 제외
+                .adname(entity.getAdname())
+                .adphone(entity.getAdphone())
+                .adtype(entity.getAdtype())
+                .createAt(entity.getCreateAt())
+                .updateAt(entity.getUpdateAt())
+                .build();
+    } // fe
+
 } // CE

@@ -1,6 +1,7 @@
-/*  AdminService 클래스 | rw 25-04-21 생성
-    - 관리자 회원가입, 로그인, 단건 조회, 전건 조회 로직 처리
-    - 비밀번호는 BCrypt로 암호화하여 저장
+/*
+// - AdminService 클래스 | rw 25-04-23 생성
+// - 관리자 회원가입, 로그인, 정보조회, 수정, 상태변경 삭제 처리
+// - 삭제는 실제 삭제가 아닌 상태 필드(adtype) 변경 방식 적용
 */
 
 package devconnect.service;
@@ -35,44 +36,39 @@ public class AdminService { // CS
     // [1]. C | rw 25-04-21 생성
     // [1] 관리자 회원가입
     public boolean signUp(AdminDto dto) { // fs
-        // (1) ID 중복 체크
         Optional<AdminEntity> optional = adminEntityRepository.findByAdid(dto.getAdid());
         if (optional.isPresent()) return false;
 
-        // (2) 비밀번호 암호화
         dto.setAdpwd(passwordEncoder.encode(dto.getAdpwd()));
-
-        // (3) Entity 변환 후 저장
         AdminEntity entity = dto.toEntity();
         adminEntityRepository.save(entity);
         return true;
 
-        // [&] Stream 방식 (불필요한 경우이나, 양식 통일 목적상 예시로 작성)
-        /* return adminEntityRepository.findAll()
+        // [&] Stream 방식
+        /*
+        return adminEntityRepository.findAll()
                 .stream()
                 .anyMatch(e -> e.getAdid().equals(dto.getAdid()))
-            ? false
-            : adminEntityRepository.save(dto.toEntity()) != null;
+                ? false
+                : adminEntityRepository.save(dto.toEntity()) != null;
         */
     } // fe
 
     // [2]. C | rw 25-04-21 생성
     // [2] 관리자 로그인
     public String login(AdminDto dto) { // fs
-        // (1) ID로 관리자 조회
         Optional<AdminEntity> optional = adminEntityRepository.findByAdid(dto.getAdid());
-
-        // (2) 비밀번호 일치 여부 확인
         if (optional.isPresent()) {
             AdminEntity admin = optional.get();
             if (passwordEncoder.matches(dto.getAdpwd(), admin.getAdpwd())) {
-                return admin.getAdid(); // 로그인 성공 시 ID 반환
+                return admin.getAdid();
             }
         }
-        return null; // 로그인 실패
+        return null;
 
         // [&] Stream 방식
-        /* return adminEntityRepository.findByAdid(dto.getAdid())
+        /*
+        return adminEntityRepository.findByAdid(dto.getAdid())
                 .filter(admin -> passwordEncoder.matches(dto.getAdpwd(), admin.getAdpwd()))
                 .map(AdminEntity::getAdid)
                 .orElse(null);
@@ -82,19 +78,15 @@ public class AdminService { // CS
     // [3]. R | rw 25-04-21 생성
     // [3] 관리자 단건 조회
     public AdminDto findByInfo(String adid) { // fs
-        // (1) ID 기반 Entity 조회
         Optional<AdminEntity> optional = adminEntityRepository.findByAdid(adid);
-
-        // (2) 결과 존재 시 DTO 변환 후 반환
         if (optional.isPresent()) {
-            AdminEntity admin = optional.get();
-            return admin.toDto();
+            return optional.get().toDto();
         }
-
-        return null; // 결과 없을 시 null 반환
+        return null;
 
         // [&] Stream 방식
-        /* return adminEntityRepository.findByAdid(adid)
+        /*
+        return adminEntityRepository.findByAdid(adid)
                 .map(AdminEntity::toDto)
                 .orElse(null);
         */
@@ -103,24 +95,69 @@ public class AdminService { // CS
     // [4]. R | rw 25-04-22 생성
     // [4] 관리자 전건 정보 조회
     public List<AdminDto> findAll() { // fs
-        // (1) 모든 Entity 조회
         List<AdminEntity> adminEntityList = adminEntityRepository.findAll();
-
-        // (2) Entity 리스트 → DTO 리스트 변환
         List<AdminDto> adminDtoList = new ArrayList<>();
-        for (int i = 0; i < adminEntityList.size(); i++) {
-            AdminDto adminDto = adminEntityList.get(i).toDto();
-            adminDtoList.add(adminDto);
+        for (AdminEntity entity : adminEntityList) {
+            adminDtoList.add(entity.toDto());
         }
-
-        // (3) 결과 반환
         return adminDtoList;
 
         // [&] Stream 방식
-        /* return adminEntityRepository.findAll()
+        /*
+        return adminEntityRepository.findAll()
                 .stream()
                 .map(AdminEntity::toDto)
                 .collect(Collectors.toList());
+        */
+    } // fe
+
+    // [5]. U | rw 25-04-23 생성
+    // [5] 관리자 정보 수정
+    public boolean update(AdminDto dto) { // fs
+        Optional<AdminEntity> optional = adminEntityRepository.findByAdid(dto.getAdid());
+        if (optional.isPresent()) {
+            AdminEntity entity = optional.get();
+            entity.setAdname(dto.getAdname());
+            entity.setAdphone(dto.getAdphone());
+            adminEntityRepository.save(entity);
+            return true;
+        }
+        return false;
+
+        // [&] Stream 방식
+        /*
+        return adminEntityRepository.findByAdid(dto.getAdid())
+                .map(entity -> {
+                    entity.setAdname(dto.getAdname());
+                    entity.setAdphone(dto.getAdphone());
+                    adminEntityRepository.save(entity);
+                    return true;
+                })
+                .orElse(false);
+        */
+    } // fe
+
+    // [6]. D | rw 25-04-23 생성
+    // [6] 관리자 삭제 (상태값 변경 방식)
+    public boolean delete(String adid) { // fs
+        Optional<AdminEntity> optional = adminEntityRepository.findByAdid(adid);
+        if (optional.isPresent()) {
+            AdminEntity entity = optional.get();
+            entity.setAdtype(9); // 예: 9 → 삭제 처리 상태
+            adminEntityRepository.save(entity);
+            return true;
+        }
+        return false;
+
+        // [&] Stream 방식
+        /*
+        return adminEntityRepository.findByAdid(adid)
+                .map(entity -> {
+                    entity.setAdtype(9);
+                    adminEntityRepository.save(entity);
+                    return true;
+                })
+                .orElse(false);
         */
     } // fe
 

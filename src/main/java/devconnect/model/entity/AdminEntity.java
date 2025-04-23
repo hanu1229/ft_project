@@ -51,7 +51,7 @@ public class AdminEntity extends BaseTime { // CS
         return AdminDto.builder()
                 .adno(this.adno)
                 .adid(this.adid)
-                .adpwd(this.adpwd)
+                .adpwd(null)
                 .adname(this.adname)
                 .adphone(this.adphone)
                 .adtype(this.adtype) // 상태코드 추가
