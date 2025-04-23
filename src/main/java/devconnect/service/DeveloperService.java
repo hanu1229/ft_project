@@ -106,7 +106,14 @@ public class DeveloperService {
         BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
         boolean result = pwdEncoder.matches( developerDto.getDpwd(), developerEntity.getDpwd() );
 
-        return result;
+        if( result == false ){ return false; }
+
+        return developerRepository.findById( developerEntity.getDno() )
+                .map( ( entity ) -> {
+                    developerRepository.deleteById( developerEntity.getDno() );
+                    return true;
+                })
+                .orElse( false );
     } // f end
 
 
