@@ -18,7 +18,7 @@ public class ProjectController {
 
     private final ProjectService projectService;
     
-    /// ● 프로젝트 등록
+    /// | 프로젝트 등록 | <br/>
     // {"pname" : "테스트 [백엔드]", "pintro" : "테스트 소개", "ptype" : 1, "pcomment" : "테스트 상세 설명", "pcount" : 4, "pstart" : "2025-04-21T13:00:00", "pend" : "2025-05-20T13:00:00", "recruit_pstart" : "2025-06-15T13:00:00", "recruit_pend" : "2025-12-12T13:00:00", "ppay" : 2700}
     @PostMapping("")
     public ResponseEntity<Boolean> writeProject(@RequestHeader("Authorization") String token, @RequestBody() ProjectDto projectDto) {
@@ -29,7 +29,7 @@ public class ProjectController {
         return ResponseEntity.status(201).body(true);
     }
     
-    /// ● 프로젝트 조회
+    /// | 프로젝트 조회 | <br/>
     @GetMapping("")
     public ResponseEntity<List<ProjectDto>> findAllProject() {
         System.out.println("ProjectController.findAllProject");
@@ -38,18 +38,19 @@ public class ProjectController {
         return ResponseEntity.status(200).body(result);
     }
 
-    /// ● 프로젝트 상세조회
+    /// | 프로젝트 상세조회 | <br/>
+    /// ● <b>개발자</b>가 공고를 선택 시 공고 상세보기
     // http://localhost:8080/api/project/detail?pno=1
     @GetMapping("/detail")
     public ResponseEntity<ProjectDto> findProject(@RequestHeader("Authorization") String token, @RequestParam(name = "pno") int pno) {
         System.out.println("ProjectController.findProject");
-        System.out.println("pno = " + pno + ", token = \n" + token);
+        System.out.println("token = \n" + token + "\npno = " + pno);
         ProjectDto result = projectService.findProject(token, pno);
         if(result == null) { return ResponseEntity.status(404).body(null); }
         return ResponseEntity.status(200).body(result);
     }
 
-    /// ● 프로젝트 수정
+    /// | 프로젝트 수정 | <br/>
     // {"pno" : 1, "pname" : "수정 테스트 [백엔드]", "pintro" : "수정 테스트 소개", "ptype" : 1, "pcomment" : "수정 테스트 상세 설명", "pcount" : 2, "pstart" : "2025-04-21T13:00:00", "pend" : "2025-05-20T13:00:00", "recruit_pstart" : "2025-06-15T13:00:00", "recruit_pend" : "2025-12-12T13:00:00", "ppay" : 3200}
     @PutMapping("")
     public ResponseEntity<Boolean> updateProject(@RequestHeader("Authorization") String token, @RequestBody() ProjectDto projectDto) {
@@ -60,7 +61,7 @@ public class ProjectController {
         return ResponseEntity.status(200).body(result);
     }
 
-    /// ● 프로젝트 삭제
+    /// | 프로젝트 삭제 | <br/>
     // http://localhost:8080/api/project?pno=1
     @DeleteMapping("")
     public ResponseEntity<Boolean> deleteProject(@RequestHeader("Authorization") String token, @RequestParam(name = "pno") int pno) {

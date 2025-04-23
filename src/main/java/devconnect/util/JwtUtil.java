@@ -71,7 +71,6 @@ public class JwtUtil {
             // claims 안에는 다양한 토큰 정보가 들어있음
             // 토큰에 저장된 (로그인된)회원 이메일 출력
             System.out.println(claims.getSubject());
-
             // 중복 로그인을 방지하고자 Redis에서 최근에 로그인된 토큰을 확인
             // 현재 전달받은 토큰에 저장된 회원정보(이메일)
             String no = claims.getSubject();

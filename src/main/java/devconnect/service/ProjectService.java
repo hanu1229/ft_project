@@ -40,7 +40,7 @@ public class ProjectService {
     }
     
 
-    /// ● 프로젝트 등록
+    /// | 프로젝트 등록 | <br/>
     public boolean writeProject(String token, ProjectDto projectDto) {
         System.out.println("ProjectService.writeProject");
         System.out.println("token = " + token + "\nprojectDto = " + projectDto);
@@ -59,7 +59,8 @@ public class ProjectService {
         return false;
     }
 
-    /// ● 프로젝트 조회
+    /// | 프로젝트 상세조회 | <br/>
+    /// ● <b>개발자</b>가 공고를 선택 시 공고 상세보기
     public List<ProjectDto> findAllProject() {
         System.out.println("ProjectService.findAllProject");
         List<ProjectEntity> projectEntityList = projectRepository.findAll();
@@ -75,12 +76,14 @@ public class ProjectService {
         return projectDtoList;
     }
 
-    /// ● 프로젝트 상세조회
+    /// | 프로젝트 상세조회 | <br/>
     public ProjectDto findProject(String token, int pno) {
         System.out.println("ProjectService.findProject");
         System.out.println("pno = " + pno + ", token = \n" + token);
         // 토큰의 데이터에 있는 회사가 있는지 확인하는 부분
         CompanyEntity companyEntity = tokenToCompanyEntity(token);
+        String id = jwtUtil.valnoateToken(token);
+        CompanyEntity companyEntity1 = companyRepository.findByCid(id);
         if(companyEntity == null) { return null; }
         Optional<ProjectEntity> optional = projectRepository.findById(pno);
         if(optional.isPresent()) {
@@ -91,7 +94,7 @@ public class ProjectService {
         return null;
     }
 
-    /// ● 프로젝트 수정
+    /// | 프로젝트 수정 | <br/>
     public boolean updateProject(String token, ProjectDto projectDto) {
         System.out.println("ProjectService.updateProject");
         System.out.println("token = \n" + token + "\nprojectDto = " + projectDto);
@@ -118,7 +121,7 @@ public class ProjectService {
         return false;
     }
 
-    /// ● 프로젝트 삭제
+    /// | 프로젝트 삭제 | <br/>
     public boolean deleteProject(String token, int pno) {
         System.out.println("ProjectService.deleteProject");
         System.out.println("token = \n" + token + "\npno = " + pno);
