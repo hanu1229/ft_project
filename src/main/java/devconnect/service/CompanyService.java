@@ -8,9 +8,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -62,6 +62,19 @@ public class CompanyService {
     // 3. 기업정보 findAll
     public List<CompanyDto> findAll(){
         return  companyRepository.findAll().stream().map(CompanyEntity :: toDto).collect(Collectors.toList());
+    }
+
+    // 4. 기업 개별정보
+    public CompanyDto viewCompany(long cno ){
+
+        Optional<CompanyEntity> companyEntityOptional = companyRepository.findById(cno);
+
+
+        if (companyEntityOptional.isEmpty())return null;
+        CompanyEntity companyEntity = companyEntityOptional.get();
+
+        return companyEntity.toDto();
+
     }
 
 
