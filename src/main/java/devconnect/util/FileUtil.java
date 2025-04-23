@@ -12,7 +12,7 @@ import java.net.URLEncoder;
 import java.util.UUID;
 
 @Service
-public class FileService {
+public class FileUtil {
 
     // 경로
     String baseDir = System.getProperty("user.dir");
