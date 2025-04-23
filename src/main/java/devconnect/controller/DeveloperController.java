@@ -29,7 +29,7 @@ public class DeveloperController {
         else{ return ResponseEntity.status( 201 ).body( true ); }
     } // f end
 
-
+//    { "did" : "qwe123", "dpwd" : "qwe123" }
 
     // 2. 개발자 로그인
     @PostMapping("/login")

@@ -1,4 +1,4 @@
-package devconnect.service.util;
+package devconnect.util;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;

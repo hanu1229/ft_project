@@ -1,6 +1,6 @@
 package devconnect.controller.util;
 
-import devconnect.service.util.FileService;
+import devconnect.util.FileService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,7 @@ public class FileController {
 
     private final FileService fileService;
 
-    // 1. 업로드\
+    // 1. 업로드
     @PostMapping("/upload")
     public String fileUpload( MultipartFile multipartFile ){
         System.out.println("FileController.fileUpload");
