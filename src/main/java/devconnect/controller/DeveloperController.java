@@ -57,13 +57,13 @@ public class DeveloperController {
     // 5. 개발자 정보 수정
     @PutMapping("/update")
     public ResponseEntity<Boolean> onUpdate( @RequestHeader("Authorization") String token,
-                                                  @RequestBody DeveloperDto developerDto ){
+                                             @RequestBody DeveloperDto developerDto ){
         DeveloperDto result = developerService.onUpdate( token, developerDto );
         if( result != null ){ return ResponseEntity.status( 200 ).body( true ); }
         else{ return ResponseEntity.status( 400 ).body( false ); }
     } // f end
 
-    // 6. 개발자 정보 삭제
+    // 6. 개발자 정보 삭제 // 상태 수정으로 변경
     @PutMapping("/delete")
     public boolean onDelete( @RequestHeader("Authorization") String token,
                              @RequestBody DeveloperDto developerDto ){

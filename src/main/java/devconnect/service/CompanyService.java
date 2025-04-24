@@ -49,6 +49,7 @@ public class CompanyService {
 
     if (inMath == false) return null;
 
+//    createToken( 아이디, 권한( Developer, Company, Admin ) )
     String token = jwtUtil.createToken(companyEntity.getCid(), "Company");
     return token;
     }

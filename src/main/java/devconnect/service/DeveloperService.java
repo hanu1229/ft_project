@@ -79,7 +79,7 @@ public class DeveloperService {
     } // f end
 
     // 5. 회원정보 수정
-    public DeveloperDto onUpdate( @RequestHeader("Authorization") String token,
+    public DeveloperDto onUpdate( String token,
                                   DeveloperDto developerDto ){
         String did = jwtUtil.valnoateToken( token );
 
