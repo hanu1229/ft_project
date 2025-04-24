@@ -45,6 +45,8 @@ public class CompanyEntity extends BaseTime {
     public CompanyDto toDto(){
         return CompanyDto.builder()
                 .cno(cno)
+                .cid(cid)
+                .cpwd(cpwd)
                 .cname(cname)
                 .cphone(cphone)
                 .cadress(cadress)

@@ -85,12 +85,12 @@ insert into drating( drscore , create_at , update_at , drstate , pno , dno )valu
 INSERT INTO admin (adid, adpwd, adname, adphone)
 VALUES
 ('admin01', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자1', '010-1234-1111'),
-  ('admin02', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자2', '010-1234-2222'),
-  ('admin03', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자3', '010-1234-3333'),
-  ('admin04', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자4', '010-1234-4444'),
-  ('admin05', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자5', '010-1234-5555'),
-  ('admin06', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자6', '010-1234-6666'),
-  ('admin07', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자7', '010-1234-7777'),
-  ('admin08', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자8', '010-1234-8888'),
-  ('admin09', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자9', '010-1234-9999'),
-  ('admin10', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자10', '010-1234-1010');
+('admin02', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자2', '010-1234-2222'),
+('admin03', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자3', '010-1234-3333'),
+('admin04', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자4', '010-1234-4444'),
+('admin05', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자5', '010-1234-5555'),
+('admin06', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자6', '010-1234-6666'),
+('admin07', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자7', '010-1234-7777'),
+('admin08', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자8', '010-1234-8888'),
+('admin09', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자9', '010-1234-9999'),
+('admin10', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자10', '010-1234-1010');
