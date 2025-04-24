@@ -52,7 +52,7 @@ public class CompanyService {
 
     if (inMath == false) return null;
 
-    String token = jwtUtil.createToken(companyEntity.getCid(), "C");
+    String token = jwtUtil.createToken(companyEntity.getCid(), "Company");
     return token;
     }
 

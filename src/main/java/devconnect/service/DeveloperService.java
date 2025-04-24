@@ -51,7 +51,7 @@ public class DeveloperService {
         boolean isMatch = pwdEncoder.matches( developerDto.getDpwd(), developerEntity.getDpwd() );
 
         if( isMatch == false ) { return null; }
-        String token = jwtUtil.createToken( developerEntity.getDid(), "D" );
+        String token = jwtUtil.createToken( developerEntity.getDid(), "Developer" );
         System.out.println("token = " + token);
 
         stringRedisTemplate.opsForValue().set(
