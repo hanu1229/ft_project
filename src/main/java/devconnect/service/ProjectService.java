@@ -1,9 +1,13 @@
 package devconnect.service;
 
 import devconnect.model.dto.ProjectDto;
+import devconnect.model.entity.AdminEntity;
 import devconnect.model.entity.CompanyEntity;
+import devconnect.model.entity.DeveloperEntity;
 import devconnect.model.entity.ProjectEntity;
+import devconnect.model.repository.AdminEntityRepository;
 import devconnect.model.repository.CompanyRepository;
+import devconnect.model.repository.DeveloperRepository;
 import devconnect.model.repository.ProjectRepository;
 import devconnect.util.JwtUtil;
 import jakarta.transaction.Transactional;
@@ -24,19 +28,41 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final CompanyRepository companyRepository;
     private final JwtUtil jwtUtil;
+
+    private final DeveloperRepository developerRepository;
+    private final AdminEntityRepository adminRepository;
     
     /// 토큰에 존재하는 데이터를 이용하여 엔티티를 반환하는 함수 <br/>
     /// 테이블에 값이 없을 경우 null을 리턴
-    public CompanyEntity tokenToCompanyEntity(String token) {
-        String cid = jwtUtil.valnoateToken(token);
-        System.out.println("cid = " + cid);
-        CompanyEntity companyEntity = companyRepository.findByCid(cid);
-        if(companyEntity == null) {
-            System.out.println("companyEntity = null");
-            return null;
+    public Object tokenToEntity(String token) {
+        String temp = jwtUtil.valnoateToken(token);
+        if (temp == null) { return null; }
+        String[] str = temp.split("_");
+        String code = str[0]; String id = str[1];
+        System.out.println("code = " + code + " ,id = " + id);
+        if(code.equals("C")) {
+            CompanyEntity companyEntity = companyRepository.findByCid(id);
+            if(companyEntity == null) { System.out.println("companyEntity = null"); }
+            else {
+                System.out.println("companyEntity = " + companyEntity);
+                return companyEntity;
+            }
+        } else if(code.equals("D")) {
+            DeveloperEntity developerEntity = developerRepository.findByDid(id);
+            if(developerEntity == null) { System.out.println("developerEntity = null"); }
+            else {
+                System.out.println("developerEntity = " + developerEntity);
+                return developerEntity;
+            }
+        } else if(code.equals("A")) {
+            AdminEntity adminEntity = adminRepository.findByAdid(id).orElse(null);
+            if(adminEntity == null) { System.out.println("adminEntity = null"); }
+            else {
+                System.out.println("adminEntity = " + adminEntity);
+                return adminEntity;
+            }
         }
-        System.out.println("companyEntity = " + companyEntity);
-        return companyEntity;
+        return null;
     }
     
 
@@ -45,7 +71,7 @@ public class ProjectService {
         System.out.println("ProjectService.writeProject");
         System.out.println("token = " + token + "\nprojectDto = " + projectDto);
         // 토큰의 데이터에 있는 회사가 있는지 확인하는 부분
-        CompanyEntity companyEntity = tokenToCompanyEntity(token);
+        CompanyEntity companyEntity = (CompanyEntity)tokenToEntity(token);
         if(companyEntity != null) {
             projectDto.setCno(companyEntity.getCno());
             System.out.println("projectDto = " + projectDto);
@@ -81,7 +107,7 @@ public class ProjectService {
         System.out.println("ProjectService.findProject");
         System.out.println("pno = " + pno + ", token = \n" + token);
         // 토큰의 데이터에 있는 회사가 있는지 확인하는 부분
-        CompanyEntity companyEntity = tokenToCompanyEntity(token);
+        CompanyEntity companyEntity = (CompanyEntity)tokenToEntity(token);
         String id = jwtUtil.valnoateToken(token);
         CompanyEntity companyEntity1 = companyRepository.findByCid(id);
         if(companyEntity == null) { return null; }
@@ -99,7 +125,7 @@ public class ProjectService {
         System.out.println("ProjectService.updateProject");
         System.out.println("token = \n" + token + "\nprojectDto = " + projectDto);
         // 토큰의 데이터에 있는 회사가 있는지 확인하는 부분
-        CompanyEntity companyEntity = tokenToCompanyEntity(token);
+        CompanyEntity companyEntity = (CompanyEntity)tokenToEntity(token);
         if(companyEntity == null) { return false; }
         Optional<ProjectEntity> optional = projectRepository.findById(projectDto.getPno());
         if(optional.isPresent()) {
@@ -126,7 +152,7 @@ public class ProjectService {
         System.out.println("ProjectService.deleteProject");
         System.out.println("token = \n" + token + "\npno = " + pno);
         // 토큰의 데이터에 있는 회사가 있는지 확인하는 부분
-        CompanyEntity companyEntity = tokenToCompanyEntity(token);
+        CompanyEntity companyEntity = (CompanyEntity)tokenToEntity(token);
         if(companyEntity == null) { return false; }
         Optional<ProjectEntity> optional = projectRepository.findById(pno);
         if(optional.isPresent()) {

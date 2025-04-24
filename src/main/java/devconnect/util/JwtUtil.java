@@ -32,10 +32,10 @@ public class JwtUtil {
 
     /// 01. JWT 토큰 발급 <br/>
     /// 사용자의 이메일을 받아서 토큰 만들기
-    public String createToken(String no) {
+    public String createToken(String id) {
         String token= Jwts.builder()
                 // 토큰에 넣을 내용물 | 로그인 성공한 회원의 이메일 추가
-                .setSubject(no)
+                .setSubject(id)
                 // 토큰이 발급된 날짜 | 현재 날짜 추가
                 .setIssuedAt(new Date())
                 // 토큰 만료 시간 | 밀리(1000/1)초 + new Date(System.currentTimeMillis()) : 현재 시간 밀리초
@@ -47,11 +47,11 @@ public class JwtUtil {
                 .compact();
         // 중복 로그인 방지를 하고자 웹서버가 아닌 Redis에 토큰 정보 저장(분산 처리, MSA 구축, AI 속도 등등)
         // Redis에 토큰 저장하기 | .opsForValue().set(key, value) --> .opsForValue().set(계정식별정보, 토큰)
-        stringRedisTemplate.opsForValue().set("JWT:"+no, token, 24, TimeUnit.HOURS);
+        stringRedisTemplate.opsForValue().set("JWT:"+id, token, 24, TimeUnit.HOURS);
         // 현재 Redis에 저장된 key들을 확인 | .keys("*") : 현재 Redis에 저장된 모든 key들을 반환
         System.out.println(stringRedisTemplate.keys("*"));
         // 현재 Redis에 저장된 특정한 Key의 값 확인 .opsForValue().get(key);
-        System.out.println(stringRedisTemplate.opsForValue().get("JWT:"+no));
+        System.out.println(stringRedisTemplate.opsForValue().get("JWT:"+id));
         return token;
     }
 
@@ -73,13 +73,17 @@ public class JwtUtil {
             System.out.println(claims.getSubject());
             // 중복 로그인을 방지하고자 Redis에서 최근에 로그인된 토큰을 확인
             // 현재 전달받은 토큰에 저장된 회원정보(이메일)
-            String no = claims.getSubject();
+            String id = claims.getSubject();
+
             // 레디스에서 최신 토큰 가져오기
-            String redisToken = stringRedisTemplate.opsForValue().get("JWT:"+no);
+            String redisToken = stringRedisTemplate.opsForValue().get("JWT:"+id);
             // 현재 전달받은 토큰과 레디스에 저장된 토큰을 비교
             if(token.equals(redisToken)) {
                 // 현재 로그인 상태 정상(중복 로그인이 아니다)
-                return no;
+                    String result = id.split("_", 2)[1];
+                    System.out.println( "JwtUtil result = " + result );
+                    return result;
+                // return id;
             }
         } catch(ExpiredJwtException e) {
             // 토큰이 만료 되었을 때 예외 클래스
@@ -93,8 +97,8 @@ public class JwtUtil {
     }
 
     ///  로그아웃 시 Redis에 저장된 토큰 삭제
-    public void deleteToken(String no) {
-        stringRedisTemplate.delete("JWT:"+no);
+    public void deleteToken(String id) {
+        stringRedisTemplate.delete("JWT:"+id);
     }
 
 
