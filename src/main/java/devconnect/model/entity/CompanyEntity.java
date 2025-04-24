@@ -2,10 +2,11 @@ package devconnect.model.entity;
 
 import devconnect.model.dto.CompanyDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "company" )
@@ -33,18 +34,24 @@ public class CompanyEntity extends BaseTime {
     private String cbusiness; // 사업자 번호
     @Column
     private String cprofile; // jpg파일
+    @Column
+    @ColumnDefault("0")
+    private int state;
+
+    @OneToMany(mappedBy = "companyEntity" , cascade = CascadeType.ALL , fetch = FetchType.LAZY)
+    @ToString.Exclude@Builder.Default
+    private List<ProjectEntity> projectEntityList = new ArrayList<>();
 
     public CompanyDto toDto(){
         return CompanyDto.builder()
                 .cno(cno)
-                .cid(cid)
-                .cpwd(cpwd)
                 .cname(cname)
                 .cphone(cphone)
                 .cadress(cadress)
                 .cemail(cemail)
                 .cbusiness(cbusiness)
                 .cprofile(cprofile)
+                .state(state)
                 .build();
     }
 

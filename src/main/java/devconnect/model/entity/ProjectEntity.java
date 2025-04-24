@@ -49,23 +49,28 @@ public class ProjectEntity extends BaseTime {
     private LocalDateTime recruit_pend;
     // 페이
     @Column(nullable = false)
-    private String ppay;
+    private int ppay;
     // 기업 번호(FK)
-    @Column(nullable = false)
-    private int cno;
-    
-    // 추후 cno를 위한 company 테이블 연결
-
-    // 양방향 연결
-    @OneToMany(mappedBy = "projectEntity", fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "cno")
+    private CompanyEntity companyEntity;
+    // 양방향 | 프로젝트 신청 테이블
+    @OneToMany(mappedBy = "projectEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default @ToString.Exclude
     private List<ProjectJoinEntity> projectJoinEntityList = new ArrayList<>();
+    @OneToMany( mappedBy = "projectEntity" , cascade = CascadeType.ALL , fetch = FetchType.LAZY )
+    @Builder.Default @ToString.Exclude
+    private List<DratingEntity> dratingEntityList = new ArrayList<>();
+    @OneToMany( mappedBy = "projectEntity" , cascade = CascadeType.ALL , fetch = FetchType.LAZY )
+    @Builder.Default @ToString.Exclude
+    private List<CratingEntity> cratingEntityList = new ArrayList<>();
 
     /// Entity --> Dto
     public ProjectDto toDto() {
         return ProjectDto.builder()
                 .pno(this.pno).pname(this.pname).pintro(this.pintro).ptype(this.ptype)
                 .pcomment(this.pcomment).pcount(this.pcount).pstart(this.pstart).pend(this.pend)
-                .recruit_pstart(this.recruit_pstart).recruit_pend(this.recruit_pend).ppay(this.ppay).cno(this.cno)
+                .recruit_pstart(this.recruit_pstart).recruit_pend(this.recruit_pend).ppay(this.ppay).cno(companyEntity.getCno())
                 .createAt(getCreateAt()).updateAt(getUpdateAt())
                 .build();
     }
