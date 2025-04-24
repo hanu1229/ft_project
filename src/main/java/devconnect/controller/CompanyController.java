@@ -80,16 +80,15 @@ public class CompanyController {
 
 
 
-    // 5. 기업 수정 update(상태) 012
-//    @PutMapping("/state")
-//    public ResponseEntity<Boolean> stateCompany(@RequestHeader("Authorization") String token , @RequestParam int cno){
-//
-//        //권한 확인 부분
-//        int loginCno;
-//
-//        return false;
-//    }
-//
+     //5. 기업 수정 update(상태) 012
+    @PutMapping("/state")
+    public ResponseEntity<Boolean> stateCompany(@RequestHeader("Authorization") String token , @RequestParam int cno, @RequestParam int state ){
+
+        boolean result = companyService.stateCompany(token, cno, state);
+        if (result == false) ResponseEntity.status(400).body(false);
+        return ResponseEntity.status(200).body(true);
+    }
+
 
 
 
