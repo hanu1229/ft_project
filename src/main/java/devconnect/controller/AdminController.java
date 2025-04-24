@@ -25,32 +25,46 @@ public class AdminController { // CS
     // [ * ] 서비스 의존성 주입
     private final AdminService adminService;
 
-    // [1]. C | rw 25-04-21 생성
+    // [1]. C | rw 25-04-23 생성
     // [1] 관리자 회원가입
     @PostMapping("/signup") // - POST api/admin/signup
     public boolean signUp(@RequestBody AdminDto adminDto) { // fs
-        return adminService.signUp(adminDto); // 서비스에 회원가입 위임
+        return adminService.signUp(adminDto); // 회원가입 처리
     } // fe
 
-    // [2]. C | rw 25-04-21 생성
-    // [2] 로그인 요청 처리
+    // [2]. C | rw 25-04-23 생성
+    // [2] 관리자 로그인
     @PostMapping("/login") // - POST api/admin/login
     public String login(@RequestBody AdminDto adminDto) { // fs
-        return adminService.login(adminDto); // ID 반환 또는 실패 처리
+        return adminService.login(adminDto); // 로그인 처리
     } // fe
 
-    // [3]. R | rw 25-04-21 생성
+    // [3]. R | rw 25-04-23 생성
     // [3] 관리자 단건 정보 조회
-    @GetMapping("/findbyinfo") // - GET api/admin/info?adid=admin123
-    public AdminDto findByInfo(@RequestParam String adid) { // fs
-        return adminService.findByInfo(adid); // DTO 반환
+    @GetMapping("/info") // - GET api/admin/info?adid=admin01
+    public AdminDto findById(@RequestParam String adid) { // fs
+        return adminService.findByInfo(adid); // ID로 조회
     } // fe
 
-    // [4]. R | rw 25-04-22 생성
-    // [4]. 관리자 전건 정보 조회
+    // [4]. R | rw 25-04-23 생성
+    // [4] 관리자 전체 조회
     @GetMapping("/allinfo") // - GET api/admin/allinfo
     public List<AdminDto> findAll() { // fs
-        return adminService.findAll(); // List 반환
+        return adminService.findAll(); // 전체 목록 반환
+    } // fe
+
+    // [5]. U | rw 25-04-23 생성
+    // [5] 관리자 정보 수정
+    @PutMapping("/update") // - PUT api/admin/update
+    public boolean update(@RequestBody AdminDto adminDto) { // fs
+        return adminService.update(adminDto); // 수정 처리
+    } // fe
+
+    // [6]. D | rw 25-04-23 생성
+    // [6] 관리자 삭제 요청 (실제 삭제 아님 - 상태 업데이트)
+    @PutMapping("/delete") // - PUT api/admin/delete?adid=admin01
+    public boolean delete(@RequestParam String adid) { // fs
+        return adminService.delete(adid); // 삭제(상태값 변경) 처리
     } // fe
 
 } // CE
