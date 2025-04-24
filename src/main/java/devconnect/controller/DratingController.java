@@ -1,6 +1,9 @@
 package devconnect.controller;
 
 import devconnect.model.dto.DratingDto;
+import devconnect.model.repository.CompanyRepository;
+import devconnect.model.repository.DeveloperRepository;
+import devconnect.service.CompanyService;
 import devconnect.service.DratingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,21 +27,31 @@ import java.util.List;
 public class DratingController {
 
     private final DratingService dratingService;
-    
+    private final CompanyService companyService;
+
     // 개발자 평가 등록
     // [POST] : http://localhost:8080/api/drating
     // { "drscore" : # , "pno" : # , "dno" : # }
     @PostMapping("")
-    public ResponseEntity<Boolean> dratingWrite( @RequestBody DratingDto dratingDto ){
+    public ResponseEntity<Boolean> dratingWrite(
+            @RequestHeader("Authorization")  String token ,
+            @RequestBody DratingDto dratingDto ) {
         System.out.println("DratingController.dratingWrite");
-        boolean result = dratingService.dratingWrite( dratingDto );
-        if( result ){
-            return ResponseEntity.status(201).body( true );
-        }else{
-            return ResponseEntity.status(400).body( false );
+        int loginCno = 5;
+//        // 토큰의 cno 추출
+//        try {
+//            loginCno = companyService.(token).getCno();
+//            System.out.println("loginCno = " + loginCno);
+//        } catch (Exception e) { return ResponseEntity.status(201).body(false); }
+        // 등록 실행
+        boolean result = dratingService.dratingWrite(dratingDto, loginCno);
+        if (result) {
+            return ResponseEntity.status(201).body(true);
+        } else {
+            return ResponseEntity.status(400).body(false);
         }
     } // f end
-    
+
     // 개발자 평가 전체 조회
     // [GET] : http://localhost:8080/api/drating
     @GetMapping("")
@@ -62,7 +75,7 @@ public class DratingController {
         else{ return ResponseEntity.status(401).build(); }
     } // f end
 
-    
+
     // 개발자 평가 수정
     // [PUT] : http://localhost:8080/api/drating
     // { "drno" : # , "drscore" : # }
@@ -74,7 +87,7 @@ public class DratingController {
         if( result ){ return ResponseEntity.status(201).body(true);}
         else{ return ResponseEntity.status(400).body(false); }
     } // f end
-    
+
     // 개발자 평가 삭제
     // [DELETE] : http://localhost:8080/api/drating?drno=#
     @DeleteMapping("")
@@ -86,3 +99,4 @@ public class DratingController {
     } // f end
 
 } // c end
+

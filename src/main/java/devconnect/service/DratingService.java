@@ -25,17 +25,17 @@ public class DratingService {
     private final DeveloperRepository developerRepository;
     
     // 개발자 평가 등록
-    public boolean dratingWrite(DratingDto dratingDto ){
+    public boolean dratingWrite(DratingDto dratingDto , int loginCno ){
         System.out.println("DratingService.dratingWrite");
         // 입력받은 pno와 dno로 각각 엔티티 조회
-        ProjectEntity pno = projectRepository.findById( dratingDto.getPno())
+        ProjectEntity byPno = projectRepository.findById( dratingDto.getPno())
                 .orElseThrow( () -> new RuntimeException("프로젝트 번호가 존재하지 않습니다."));
-        DeveloperEntity dno = developerRepository.findById( dratingDto.getDno() )
+        DeveloperEntity byDno = developerRepository.findById( dratingDto.getDno() )
                 .orElseThrow( () -> new RuntimeException("개발자 번호가 존재하지 않습니다."));
         // pno와 dno에 값이 있을경우 true 없을시 false 반환
-        if( pno != null && dno != null ) {
+        if( byPno != null && byDno != null && byPno.getCompanyEntity().getCno() == loginCno ) {
             // Entity로 변환할때 조회한 엔티티를 포함하여 변환
-            DratingEntity dratingEntity = dratingDto.toEntity(pno, dno);
+            DratingEntity dratingEntity = dratingDto.toEntity(byPno, byDno);
             // Entity에 저장
             DratingEntity saveEntity = dratingRepository.save(dratingEntity);
             // 결과 반환
