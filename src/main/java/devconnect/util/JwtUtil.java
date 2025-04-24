@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 // ↓ Spring 컨테이너에 빈 등록
@@ -32,12 +34,16 @@ public class JwtUtil {
 
     /// 01. JWT 토큰 발급 <br/>
     /// 사용자의 아이디를 받아서 토큰 만들기
-    public String createToken(String id,String code) {
-        id = code + "_" + id;
+    public String createToken(String id, String role) {
+        // 권한부여
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", id);
+        claims.put("role", role);
+
         String token= Jwts.builder()
                 // 토큰에 넣을 내용물 | 로그인 성공한 회원의 아이디 추가
                 // 개발자 = D, 기업 = C, 관리자 = A
-                .setSubject(id)
+                .setClaims( claims )
                 // 토큰이 발급된 날짜 | 현재 날짜 추가
                 .setIssuedAt(new Date())
                 // 토큰 만료 시간 | 밀리(1000/1)초 + new Date(System.currentTimeMillis()) : 현재 시간 밀리초
@@ -70,21 +76,30 @@ public class JwtUtil {
                     .parseClaimsJws(token)
                     // 검증된 claims 객체 생성
                     .getBody();
-            // claims 안에는 다양한 토큰 정보가 들어있음
-            // 토큰에 저장된 (로그인된)회원 아이디 출력
-            System.out.println(claims.getSubject());
 
             // 중복 로그인을 방지하고자 Redis에서 최근에 로그인된 토큰을 확인
             // 현재 전달받은 토큰에 저장된 회원정보(아이디)
-            String id = claims.getSubject();
+            String id = (String)claims.get("id");
+            String role = (String)claims.get("role");
             // 레디스에서 최신 토큰 가져오기
             String redisToken = stringRedisTemplate.opsForValue().get("JWT:"+id);
             // 현재 전달받은 토큰과 레디스에 저장된 토큰을 비교
-            if(token.equals(redisToken)) {
-                // 현재 로그인 상태 정상(중복 로그인이 아니다)
-                String result = id.split("_", 2)[1];
-                System.out.println( result );
-                return result;
+            if( token.equals(redisToken) ) {
+                // 3. Redis에 저장된 토큰도 파싱해서 role 확인
+                Claims redisClaims = Jwts.parser()
+                        .setSigningKey(secretKey)
+                        .build()
+                        .parseClaimsJws(redisToken)
+                        .getBody();
+
+                String redisRole = (String) redisClaims.get("role");
+
+                // 4. 역할까지 일치할 때만 유효한 로그인 상태로 간주
+                if (role.equals(redisRole)) {
+                    return id;
+                } else {
+                    System.out.println(">> 권한 불일치");
+                }
             }
         } catch(ExpiredJwtException e) {
             // 토큰이 만료 되었을 때 예외 클래스
