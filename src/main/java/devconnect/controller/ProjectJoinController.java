@@ -4,14 +4,7 @@ import devconnect.model.dto.ProjectJoinDto;
 import devconnect.service.ProjectJoinService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,7 +16,8 @@ public class ProjectJoinController {
 
     private final ProjectJoinService projectJoinService;
 
-    /// 프로젝트 신청 등록
+    /// | 프로젝트 신청 등록 | <br/>
+    /// ● <b>개발자</b>가 프로젝트에 참가를 신청
      @PostMapping("")
      public ResponseEntity<Boolean> writeProjectJoin(@RequestHeader("Authorization") String token, @RequestBody() ProjectJoinDto projectJoinDto) {
          System.out.println("ProjectJoinController.writeProjectJoin");
@@ -44,10 +38,28 @@ public class ProjectJoinController {
         return ResponseEntity.status(200).body(result);
     }
 
-    /// 프로젝트 신청 수정
+    /// | 프로젝트 신청 수정 | <br/>
+    /// ● <b>회사</b>가 개발자의 신청을 수락 또는 거절
+    @PutMapping("")
+    public ResponseEntity<Boolean> updateProjectJoin(@RequestHeader("Authorization") String token, @RequestBody() ProjectJoinDto projectJoinDto) {
+        System.out.println("ProjectJoinController.updateProjectJoin");
+        System.out.println("projectJoinDto = " + projectJoinDto + "\ntoken = " + token);
+        boolean result = projectJoinService.updateProjectJoin(token, projectJoinDto);
+        if(!result) { return ResponseEntity.status(400).body(false); }
+        return ResponseEntity.status(200).body(true);
+    }
 
 
-    /// 프로젝트 신청 삭제
+    /// | 프로젝트 신청 삭제 | <br/>
+    /// ● <b>관리자</b>가 개발자의 신청을 삭제
+    @DeleteMapping("")
+    public ResponseEntity<Boolean> deleteProjectJoin(@RequestHeader("Authorization") String token, @RequestParam(name = "pjno") int pjno) {
+        System.out.println("ProjectJoinController.deleteProjectJoin");
+        System.out.println("pjno = " + pjno + "\ntoken = " + token);
+        boolean result = projectJoinService.deleteProjectJoin(token, pjno);
+        if(!result) { return ResponseEntity.status(400).body(false); }
+        return ResponseEntity.status(200).body(true);
+    }
 
 
 }

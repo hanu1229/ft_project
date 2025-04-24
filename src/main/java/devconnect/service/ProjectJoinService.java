@@ -1,18 +1,14 @@
 package devconnect.service;
 
 import devconnect.model.dto.ProjectJoinDto;
-import devconnect.model.entity.CompanyEntity;
-import devconnect.model.entity.DeveloperEntity;
-import devconnect.model.entity.ProjectEntity;
-import devconnect.model.entity.ProjectJoinEntity;
-import devconnect.model.repository.CompanyRepository;
-import devconnect.model.repository.DeveloperRepository;
-import devconnect.model.repository.ProjectJoinRepository;
-import devconnect.model.repository.ProjectRepository;
+import devconnect.model.entity.*;
+import devconnect.model.repository.*;
 import devconnect.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -25,6 +21,7 @@ public class ProjectJoinService {
     private final ProjectRepository projectRepository;
     private final CompanyRepository companyRepository;
     private final DeveloperRepository developerRepository;
+    private final AdminEntityRepository adminRepository;
     private final JwtUtil jwtutil;
 
     /// 토큰에 존재하는 데이터를 이용하여 엔티티를 반환하는 함수 <br/>
@@ -55,7 +52,8 @@ public class ProjectJoinService {
         return developerEntity;
     }
 
-    /// 프로젝트 신청 등록
+    /// | 프로젝트 신청 등록 | <br/>
+    /// ● <b>개발자</b>가 프로젝트에 참가를 신청
     public boolean writeProjectJoin(String token, ProjectJoinDto projectJoinDto) {
         System.out.println("ProjectJoinService.writeProjectJoin");
         System.out.println("token = \n" + token + "\nprojectJoinDto = " + projectJoinDto);
@@ -75,19 +73,41 @@ public class ProjectJoinService {
     public List<ProjectJoinDto> findProjectJoin(String token, int pno) {
         System.out.println("ProjectJoinService.findProjectJoin");
         System.out.println("token = \n" + token + "\npno = " + pno);
-
         CompanyEntity companyEntity = tokenToCompanyEntity(token);
         if(companyEntity == null) { return null; }
         ProjectEntity projectEntity = projectRepository.findById(pno).orElse(null);
         if(projectEntity == null) { return null; }
         return null;
-
     }
 
-    /// 프로젝트 신청 수정
+    /// | 프로젝트 신청 수정 | <br/>
+    /// ● <b>회사</b>가 개발자의 신청을 수락 또는 거절
+    public boolean updateProjectJoin(String token, ProjectJoinDto projectJoinDto) {
+        System.out.println("ProjectJoinService.updateProjectJoin");
+        System.out.println("projectJoinDto = " + projectJoinDto + "\ntoken = " + token);
+        String id = jwtutil.valnoateToken(token);
+        CompanyEntity companyEntity = companyRepository.findByCid(id);
+        if(companyEntity == null) { return false; }
+        ProjectJoinEntity projectJoinEntity = projectJoinRepository.findById(projectJoinDto.getPjno()).orElse(null);
+        if(projectJoinEntity == null) { return false; }
+        // 0 : 대기 | 1 : 수락 | 2 : 거절
+        if(projectJoinEntity.getPjtype() > 0) { return false; }
+        projectJoinEntity.setPjtype(projectJoinDto.getPjtype());
+        return true;
+    }
 
-
-    /// 프로젝트 신청 삭제
-
+    /// | 프로젝트 신청 삭제 | <br/>
+    /// ● <b>관리자</b>가 개발자의 신청을 삭제
+    public boolean deleteProjectJoin( String token, int pjno) {
+        System.out.println("ProjectJoinService.deleteProjectJoin");
+        System.out.println("pjno = " + pjno + "\ntoken = " + token);
+        String id = jwtutil.valnoateToken(token);
+        AdminEntity adminEntity = adminRepository.findByAdid(id).orElse(null);
+        if(adminEntity == null) { return false; }
+        ProjectJoinEntity projectJoinEntity = projectJoinRepository.findById(pjno).orElse(null);
+        if(projectJoinEntity == null) { return false; }
+        projectJoinRepository.deleteById(pjno);
+        return true;
+    }
 
 }
