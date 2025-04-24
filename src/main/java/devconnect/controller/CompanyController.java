@@ -79,16 +79,16 @@ public class CompanyController {
 
 
 
-//     //6. 기업 수정 update(상태) 012
-//    @PutMapping("/state")
-//    public ResponseEntity<Boolean> stateCompany(@RequestHeader("Authorization") String token , @RequestParam int cno, @RequestParam int state ){
-//
-//        boolean result = companyService.stateCompany(token, cno, state);
-//        if (result == false) ResponseEntity.status(400).body(false);
-//        return ResponseEntity.status(200).body(true);
-//    }
-//
-//
+     //6. 기업 수정 update(상태) 012
+    @PutMapping("/state")
+    public ResponseEntity<Boolean> stateCompany(@RequestHeader("Authorization") String token , @RequestBody CompanyDto companyDto ){
+
+        boolean result = companyService.stateCompany(token, companyDto.getCno() , companyDto.getState() );
+        if (result == false) ResponseEntity.status(400).body(false);
+        return ResponseEntity.status(200).body(true);
+    }
+
+
 
 
 
