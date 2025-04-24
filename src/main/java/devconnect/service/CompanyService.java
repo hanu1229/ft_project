@@ -6,11 +6,14 @@ import devconnect.model.repository.CompanyRepository;
 import devconnect.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -60,9 +63,45 @@ public class CompanyService {
      jwtUtil.deleteToken(cid);
     }
 
-    // 3. 기업정보 findAll
+    // 3. 내정보(개별정보) 조회
+    public CompanyDto info(String token){
+       String cid = jwtUtil.valnoateToken(token);
+       if (cid == null) return null;
+       CompanyEntity companyEntity = companyRepository.findByCid(cid);
+       if (companyEntity == null)return  null;
+       return companyEntity.toDto();
+    }
+
+    // 4. 기업정보 findAll
     public List<CompanyDto> findAll(){
         return  companyRepository.findAll().stream().map(CompanyEntity :: toDto).collect(Collectors.toList());
+    }
+
+
+
+    //5. 기업 수정 update(상태) 012
+
+    public boolean stateCompany(String token , int cno , int state){
+
+        String loggedInCid = jwtUtil.valnoateToken(token);
+        if (loggedInCid == null) return false; // 토큰이 유효하지 않을경우
+
+        //2. 로그인한 기업 정보 조회 (권한 확인)
+        CompanyEntity loggedInCompany = companyRepository.findByCid(loggedInCid);
+        if (loggedInCompany == null) return false; // 요부분 오류시 수정
+
+        // 수정 기업 정보 조회
+        Optional<CompanyEntity> companyEntityOptional = companyRepository.findById(cno);
+        if (companyEntityOptional.isEmpty()) return false;
+
+        CompanyEntity companyEntity = companyEntityOptional.get();
+
+        if (state < 0 || state > 2) return  false;
+
+        //기업 상태 업데이트
+        companyEntity.setState(state);
+
+        return true;
     }
 
 
