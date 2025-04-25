@@ -123,56 +123,35 @@ public class ProjectService {
         return projectDtoList;
     }
 
-    /// | 프로젝트 상세조회 - 개발자 | <br/>
+    /// | 프로젝트 상세조회 | <br/>
     /// ● <b>개발자</b>가 공고를 선택 시 공고 상세보기
-    public ProjectDto findProjectDev(String token, int pno) {
+    public ProjectDto findProject(String token, int pno) {
         System.out.println("ProjectService.findProject");
         System.out.println("pno = " + pno + ", token = \n" + token);
         // 토큰의 데이터에 있는 회사가 있는지 확인하는 부분
         String id = jwtUtil.valnoateToken(token);
-        DeveloperEntity developerEntity = developerRepository.findByDid(id);
-        if(developerEntity == null) { return null; }
-        Optional<ProjectEntity> optional = projectRepository.findById(pno);
-        if(optional.isPresent()) {
-            ProjectDto projectDto = optional.get().toDto();
-            System.out.println("projectDto = " + projectDto);
-            return projectDto;
-        }
-        return null;
-    }
-
-    /// | 프로젝트 상세조회 - 회사 | <br/>
-    /// ● <b>회사</b>가 공고를 선택 시 공고 상세보기
-    public ProjectDto findProjectCompany(String token, int pno) {
-        System.out.println("ProjectService.findProjectCompany");
-        System.out.println("pno = " + pno + ", token = \n" + token);
-        // 토큰의 데이터에 있는 회사가 있는지 확인하는 부분
-        String id = jwtUtil.valnoateToken(token);
-        CompanyEntity companyEntity = companyRepository.findByCid(id);
-        if(companyEntity == null) { return null; }
-        Optional<ProjectEntity> optional = projectRepository.findById(pno);
-        if(optional.isPresent()) {
-            ProjectDto projectDto = optional.get().toDto();
-            System.out.println("projectDto = " + projectDto);
-            return projectDto;
-        }
-        return null;
-    }
-
-    /// | 프로젝트 상세조회 - 관리자 | <br/>
-    /// ● <b>관리자</b>가 공고를 선택 시 공고 상세보기
-    public ProjectDto findProjectAdmin(String token, int pno) {
-        System.out.println("ProjectService.findProjectAdmin");
-        System.out.println("pno = " + pno + ", token = \n" + token);
-        // 토큰의 데이터에 있는 회사가 있는지 확인하는 부분
-        String id = jwtUtil.valnoateToken(token);
-        AdminEntity adminEntity = adminRepository.findByAdid(id).orElse(null);
-        if(adminEntity == null) { return null; }
-        Optional<ProjectEntity> optional = projectRepository.findById(pno);
-        if(optional.isPresent()) {
-            ProjectDto projectDto = optional.get().toDto();
-            System.out.println("projectDto = " + projectDto);
-            return projectDto;
+        String code = jwtUtil.temp(id);
+        if(code.equals("Company")) {
+            Optional<ProjectEntity> optional = projectRepository.findById(pno);
+            if(optional.isPresent()) {
+                ProjectDto projectDto = optional.get().toDto();
+                System.out.println("projectDto = " + projectDto);
+                return projectDto;
+            }
+        } else if(code.equals("Developer")) {
+            Optional<ProjectEntity> optional = projectRepository.findById(pno);
+            if(optional.isPresent()) {
+                ProjectDto projectDto = optional.get().toDto();
+                System.out.println("projectDto = " + projectDto);
+                return projectDto;
+            }
+        } else if(code.equals("Admin")) {
+            Optional<ProjectEntity> optional = projectRepository.findById(pno);
+            if(optional.isPresent()) {
+                ProjectDto projectDto = optional.get().toDto();
+                System.out.println("projectDto = " + projectDto);
+                return projectDto;
+            }
         }
         return null;
     }
