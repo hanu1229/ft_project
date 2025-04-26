@@ -1,7 +1,7 @@
-/*  AdminService 클래스 | rw 25-04-24 리팩토링
-    - 관리자 회원가입, 로그인(JWT 발급), 로그아웃, 전체 조회, 단건 조회, 수정, 삭제 기능을 담당합니다.
-    - 비밀번호는 BCrypt 암호화를 적용합니다.
-    - 삭제는 실제 삭제가 아닌 'adtype' 상태 변경 방식으로 처리합니다.
+/*  AdminService 클래스 | rw 25-04-27 리팩토링
+    - 관리자 회원가입, 로그인(JWT 발급), 로그아웃, 전체 조회, 개별 조회, 수정, 삭제 기능 담당
+    - 비밀번호는 BCrypt 암호화 적용
+    - 삭제는 adtype 상태값 변경 방식으로 처리
 */
 
 package devconnect.service;
@@ -78,7 +78,9 @@ public class AdminService { // CS
     // [3] 관리자 로그아웃 기능 (Redis 토큰 삭제)
     public void adminLogout(String token) { // fs
         String adid = jwtUtil.valnoateToken(token); // (1) 토큰에서 ID 추출
-        jwtUtil.deleteToken(adid);                  // (2) Redis에서 토큰 삭제
+        if (adid != null) {
+            jwtUtil.deleteToken(adid); // (2) Redis에서 토큰 삭제
+        }
     } // fe
 
     // =======================================================================================
@@ -103,11 +105,15 @@ public class AdminService { // CS
     } // fe
 
     // =======================================================================================
-    // [6] 관리자 단건 조회 기능
-    public AdminDto adminFindById(String adid) { // fs
-        return adminEntityRepository.findByAdid(adid)
-                .map(AdminEntity::toDto) // (1) Entity → DTO 변환
-                .orElse(null); // (2) 존재하지 않으면 null
+    // [6] 관리자 개별 조회 기능 (by 토큰)
+    public AdminDto adminFindById(String token) { // fs
+        String adid = jwtUtil.valnoateToken(token); // (1) 토큰 검증 후 아이디 추출
+        if (adid == null) return null; // (2) 토큰이 유효하지 않으면 null
+
+        AdminEntity adminEntity = adminEntityRepository.findByAdid(adid);
+        if (adminEntity == null) return null; // (3) 조회 실패 시 null
+
+        return adminEntity.toDto(); // (4) 조회 성공 시 DTO 변환 반환
     } // fe
 
     // =======================================================================================
@@ -117,9 +123,9 @@ public class AdminService { // CS
         if (optional.isEmpty()) return false; // (1) 로그인 관리자 존재 여부 확인
 
         AdminEntity entity = optional.get();
-        entity.setAdname(dto.getAdname());   // (2) 이름 수정
+        entity.setAdname(dto.getAdname()); // (2) 이름 수정
         entity.setAdphone(dto.getAdphone()); // (3) 전화번호 수정
-        adminEntityRepository.save(entity);  // (4) 저장
+        adminEntityRepository.save(entity); // (4) 저장
         return true;
     } // fe
 
