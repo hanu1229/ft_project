@@ -105,15 +105,16 @@ public class AdminService { // CS
     } // fe
 
     // =======================================================================================
-    // [6] 관리자 개별 조회 기능 (by 토큰)
+// [6] 관리자 개별 조회 기능 (by 토큰)
     public AdminDto adminFindById(String token) { // fs
         String adid = jwtUtil.valnoateToken(token); // (1) 토큰 검증 후 아이디 추출
         if (adid == null) return null; // (2) 토큰이 유효하지 않으면 null
 
-        AdminEntity adminEntity = adminEntityRepository.findByAdid(adid);
-        if (adminEntity == null) return null; // (3) 조회 실패 시 null
+        Optional<AdminEntity> optional = adminEntityRepository.findByAdid(adid); // (3) Optional로 조회
+        if (optional.isEmpty()) return null; // (4) 조회 실패 시 null
 
-        return adminEntity.toDto(); // (4) 조회 성공 시 DTO 변환 반환
+        AdminEntity adminEntity = optional.get(); // (5) 조회 성공 시 Entity 꺼내기
+        return adminEntity.toDto(); // (6) Entity → DTO 변환 후 반환
     } // fe
 
     // =======================================================================================
