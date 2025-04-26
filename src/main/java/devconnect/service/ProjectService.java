@@ -12,6 +12,9 @@ import devconnect.model.repository.ProjectRepository;
 import devconnect.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -106,11 +109,16 @@ public class ProjectService {
         return projectDtoList;
     }
 
-    /// | 프로젝트 전체조회 | <br/>
+    /// | 프로젝트 전체조회 - 페이징 | <br/>
     /// ● 모든 프로젝트를 조회
-    public List<ProjectDto> findAllProjectCompany() {
-        System.out.println("ProjectService.findAllProjectCompany");
-        List<ProjectEntity> projectEntityList = projectRepository.findAll();
+    // http://localhost:8080/api/project/all
+    public List<ProjectDto> findPagingProject(Pageable pageable) {
+        System.out.println("ProjectService.findPagingProject");
+        Page<ProjectEntity> projectEntityPageList = projectRepository.findAll(pageable);
+        List<ProjectEntity> projectEntityList = projectEntityPageList.getContent();
+        int totalPages = projectEntityPageList.getTotalPages();
+        long totalData = projectEntityPageList.getTotalElements();
+        System.out.println("totalPage = " + totalPages + "totalData = " + totalData);
         List<ProjectDto> projectDtoList = new ArrayList<>();
         if(!projectEntityList.isEmpty()) {
             for(int index = 0; index < projectEntityList.size(); index++) {

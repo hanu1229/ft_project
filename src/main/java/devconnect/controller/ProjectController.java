@@ -3,6 +3,8 @@ package devconnect.controller;
 import devconnect.model.dto.ProjectDto;
 import devconnect.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,11 +34,26 @@ public class ProjectController {
     
     /// | 프로젝트 전체조회 | <br/>
     /// ● 모든 프로젝트를 조회
-    // http://localhost:8080/api/project/all?pno=1
+    // http://localhost:8080/api/project/all
     @GetMapping("")
     public ResponseEntity<List<ProjectDto>> findAllProject() {
         System.out.println("ProjectController.findAllProject");
         List<ProjectDto> result = projectService.findAllProject();
+        if(result == null || result.isEmpty()) { return ResponseEntity.status(404).body(null); }
+        return ResponseEntity.status(200).body(result);
+    }
+
+    /// | 프로젝트 전체조회 - 페이징 | <br/>
+    /// ● 모든 프로젝트를 조회
+    // http://localhost:8080/api/project/all
+    @GetMapping("/paging")
+    public ResponseEntity<List<ProjectDto>> findPagingProject(
+            @RequestParam(name = "page", defaultValue = "0")int page,
+            @RequestParam(name = "size", defaultValue = "5") int size
+    ) {
+        System.out.println("ProjectController.findPagingProject");
+        Pageable pageable = PageRequest.of(page, size);
+        List<ProjectDto> result = projectService.findPagingProject(pageable);
         if(result == null || result.isEmpty()) { return ResponseEntity.status(404).body(null); }
         return ResponseEntity.status(200).body(result);
     }
