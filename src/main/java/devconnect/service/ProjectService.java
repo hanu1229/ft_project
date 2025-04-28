@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,13 +74,14 @@ public class ProjectService {
 
     /// | 프로젝트 등록 | <br/>
     /// <b>회사</b>가 프로젝트를 등록
-    public boolean writeProject(String token, ProjectDto projectDto) {
+    public boolean writeProject(String token, MultipartFile files) {
         System.out.println("ProjectService.writeProject");
-        System.out.println("token = " + token + "\nprojectDto = " + projectDto);
+        System.out.println("token = " + token + "\nfiles = " + files);
         // 토큰의 데이터에 있는 회사가 있는지 확인하는 부분
         String id = jwtUtil.valnoateToken(token);
         CompanyEntity companyEntity = companyRepository.findByCid(id);
         if(companyEntity != null) {
+            ProjectDto projectDto =
             projectDto.setCno(companyEntity.getCno());
             System.out.println("projectDto = " + projectDto);
             ProjectEntity projectEntity = projectRepository.save(projectDto.toEntity());
