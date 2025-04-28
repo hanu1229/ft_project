@@ -34,6 +34,9 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Validation (유효성 검사용) | Admin 25-04-26
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 test {
