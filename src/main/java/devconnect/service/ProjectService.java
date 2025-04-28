@@ -42,7 +42,7 @@ public class ProjectService {
     private final AdminEntityRepository adminRepository;
 
     /// | 프로젝트 등록 | <br/>
-    /// <b>회사</b>가 프로젝트를 등록
+    /// <b>회사</b>가 프로젝트를 등록<br/>
     public boolean writeProject(String token, ProjectDto projectDto) {
         System.out.println("ProjectService.writeProject");
         System.out.println("token = " + token + "\nprojectDto = " + projectDto);
