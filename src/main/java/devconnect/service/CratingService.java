@@ -53,7 +53,7 @@ public class CratingService {
         List<CratingEntity> cratingListAll = cratingRepository.findAll();
         // 필요한 필요한 정보들만 담은 Dto를 반환할 리스트 객체 생성
         List<CratingDto> cratingList = new ArrayList<>();
-        // 기업이 로그인 상태일 경우에만
+        // 개발자가 로그인 상태일 경우에만
         if( loginDno >= 1 ) {
             // 조회한 정보의 수 만큼 반복문
             for (int i = 0; i <= cratingListAll.size() - 1; i++) {
