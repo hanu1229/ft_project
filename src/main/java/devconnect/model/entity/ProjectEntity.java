@@ -7,7 +7,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "project")
@@ -58,12 +60,18 @@ public class ProjectEntity extends BaseTime {
     @OneToMany(mappedBy = "projectEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default @ToString.Exclude
     private List<ProjectJoinEntity> projectJoinEntityList = new ArrayList<>();
+
     @OneToMany( mappedBy = "projectEntity" , cascade = CascadeType.ALL , fetch = FetchType.LAZY )
     @Builder.Default @ToString.Exclude
     private List<DratingEntity> dratingEntityList = new ArrayList<>();
+
     @OneToMany( mappedBy = "projectEntity" , cascade = CascadeType.ALL , fetch = FetchType.LAZY )
     @Builder.Default @ToString.Exclude
     private List<CratingEntity> cratingEntityList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "projectEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default @ToString.Exclude
+    private List<ProjectImageEntity> projectImageEntityList = new ArrayList<>();
 
     /// Entity --> Dto
     public ProjectDto toDto() {

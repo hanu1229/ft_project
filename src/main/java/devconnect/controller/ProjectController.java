@@ -3,8 +3,11 @@ package devconnect.controller;
 import devconnect.model.dto.ProjectDto;
 import devconnect.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class ProjectController {
     /// <b>회사</b>가 프로젝트를 등록
     // {"pname" : "테스트 [백엔드]", "pintro" : "테스트 소개", "ptype" : 1, "pcomment" : "테스트 상세 설명", "pcount" : 4, "pstart" : "2025-04-21T13:00:00", "pend" : "2025-05-20T13:00:00", "recruit_pstart" : "2025-06-15T13:00:00", "recruit_pend" : "2025-12-12T13:00:00", "ppay" : 2700}
     @PostMapping("")
-    public ResponseEntity<Boolean> writeProject(@RequestHeader("Authorization") String token, @RequestBody() ProjectDto projectDto) {
+    public ResponseEntity<Boolean> writeProject(@RequestHeader("Authorization") String token, @ModelAttribute() ProjectDto projectDto) {
         System.out.println("ProjectController.writeProject");
         System.out.println("token = " + token + "\nprojectDto = " + projectDto);
         boolean result = projectService.writeProject(token, projectDto);
@@ -32,7 +35,7 @@ public class ProjectController {
     
     /// | 프로젝트 전체조회 | <br/>
     /// ● 모든 프로젝트를 조회
-    // http://localhost:8080/api/project/all?pno=1
+    // http://localhost:8080/api/project/all
     @GetMapping("")
     public ResponseEntity<List<ProjectDto>> findAllProject() {
         System.out.println("ProjectController.findAllProject");
@@ -41,49 +44,29 @@ public class ProjectController {
         return ResponseEntity.status(200).body(result);
     }
 
-    /// | 프로젝트 전체조회 - 회사 | <br/>
+    /// | 프로젝트 전체조회 - 페이징 | <br/>
     /// ● 모든 프로젝트를 조회
-    // http://localhost:8080/api/project/c-all?pno=1
-    @GetMapping("")
-    public ResponseEntity<List<ProjectDto>> findAllProjectCompany() {
-        System.out.println("ProjectController.findAllProjectCompany");
-        List<ProjectDto> result = projectService.findAllProject();
+    // http://localhost:8080/api/project/all
+    @GetMapping("/paging")
+    public ResponseEntity<List<ProjectDto>> findPagingProject(
+            @RequestParam(name = "page", defaultValue = "0")int page,
+            @RequestParam(name = "size", defaultValue = "5") int size
+    ) {
+        System.out.println("ProjectController.findPagingProject");
+        Pageable pageable = PageRequest.of(page, size);
+        List<ProjectDto> result = projectService.findPagingProject(pageable);
         if(result == null || result.isEmpty()) { return ResponseEntity.status(404).body(null); }
         return ResponseEntity.status(200).body(result);
     }
 
-    /// | 프로젝트 상세조회 - 개발자 | <br/>
+    /// | 프로젝트 상세조회 | <br/>
     /// ● <b>개발자</b>가 공고를 선택 시 공고 상세보기
     // http://localhost:8080/api/project/d-detail?pno=1
-    @GetMapping("/d_detail")
-    public ResponseEntity<ProjectDto> findProjectDev(@RequestHeader("Authorization") String token, @RequestParam(name = "pno") int pno) {
-        System.out.println("ProjectController.findProjectDev");
+    @GetMapping("/detail")
+    public ResponseEntity<ProjectDto> findProject(@RequestHeader("Authorization") String token, @RequestParam(name = "pno") int pno) {
+        System.out.println("ProjectController.findProject");
         System.out.println("token = \n" + token + "\npno = " + pno);
-        ProjectDto result = projectService.findProjectDev(token, pno);
-        if(result == null) { return ResponseEntity.status(404).body(null); }
-        return ResponseEntity.status(200).body(result);
-    }
-
-    /// | 프로젝트 상세조회 - 회사 | <br/>
-    /// ● <b>회사</b>가 공고를 선택 시 공고 상세보기
-    // http://localhost:8080/api/project/c-detail?pno=1
-    @GetMapping("/c_detail")
-    public ResponseEntity<ProjectDto> findProjectCompany(@RequestHeader("Authorization") String token, @RequestParam(name = "pno") int pno) {
-        System.out.println("ProjectController.findProjectCompany");
-        System.out.println("token = \n" + token + "\npno = " + pno);
-        ProjectDto result = projectService.findProjectCompany(token, pno);
-        if(result == null) { return ResponseEntity.status(404).body(null); }
-        return ResponseEntity.status(200).body(result);
-    }
-
-    /// | 프로젝트 상세조회 - 관리자 | <br/>
-    /// ● <b>관리자</b>가 공고를 선택 시 공고 상세보기
-    // http://localhost:8080/api/project/a-detail?pno=1
-    @GetMapping("/c_detail")
-    public ResponseEntity<ProjectDto> findProjectAdmin(@RequestHeader("Authorization") String token, @RequestParam(name = "pno") int pno) {
-        System.out.println("ProjectController.findProjectAdmin");
-        System.out.println("token = \n" + token + "\npno = " + pno);
-        ProjectDto result = projectService.findProjectAdmin(token, pno);
+        ProjectDto result = projectService.findProject(token, pno);
         if(result == null) { return ResponseEntity.status(404).body(null); }
         return ResponseEntity.status(200).body(result);
     }
