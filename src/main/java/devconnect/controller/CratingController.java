@@ -4,6 +4,7 @@ import devconnect.model.dto.CratingDto;
 import devconnect.service.CratingService;
 import devconnect.service.DeveloperService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,14 +53,17 @@ public class CratingController {
     // 기업 평가 전체 조회
     // [GET] : http://localhost:8080/api/crating
     @GetMapping("")
-    public ResponseEntity<List<CratingDto>> cratingList(
+    public ResponseEntity<Page<CratingDto>> cratingList(
+            @RequestParam( defaultValue = "1" ) int page,
+            @RequestParam( defaultValue = "5" ) int size,
+            @RequestParam( required = false ) String keyword,
             @RequestHeader("Authorization") String token ){
         System.out.println("CratingController.cratingList");
         int loginDno;
         try{
             loginDno = developerService.info(token).getDno();
         }catch (Exception e ){ return ResponseEntity.noContent().build(); }
-        List<CratingDto> findAll = cratingService.cratingList( loginDno );
+        Page<CratingDto> findAll = cratingService.cratingList( loginDno , page , size , keyword );
         if( findAll != null ){
             return ResponseEntity.ok( findAll );
         }else{

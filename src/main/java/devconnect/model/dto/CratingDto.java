@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 @Builder
 public class CratingDto {
     private int crno; // 평가 번호(기업)
+    private String ctitle; // 평가 제목(기업)
+    private String ccontent; // 평가 내용(기업)
     private int crscore; // 점수(기업)
     // LocalDateTime는 밀리초까지 너무 상세하게 나와서 형식을 정해주는 어노테이션
     // 밀리초가 필요한지 논의 후 application.properties에 전체적용할지 정할예정
@@ -32,10 +34,14 @@ public class CratingDto {
     public CratingEntity toEntity(ProjectEntity projectEntity , DeveloperEntity developerEntity ){
         return CratingEntity.builder()
                 .crno( this.crno )
+                .ctitle( this.ctitle )
+                .ccontent( this.ccontent )
                 .crscore( this.crscore )
                 .crstate( this.crstate )
                 .projectEntity( projectEntity )
                 .developerEntity( developerEntity )
                 .build();
     } // entity end
+
+    // toDto : 제품 전체조회
 } // c end

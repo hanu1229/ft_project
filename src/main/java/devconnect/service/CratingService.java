@@ -10,10 +10,12 @@ import devconnect.model.repository.DeveloperRepository;
 import devconnect.model.repository.ProjectRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -47,24 +49,30 @@ public class CratingService {
     } // f end
     
     // 기업 평가 전체 조회
-    public List<CratingDto> cratingList( int loginDno ){
+    public Page<CratingDto> cratingList(int loginDno , int page , int size , String keyword ){
         System.out.println("CratingService.cratingList");
-        // CratingEntity를 Repository를 이용하여 모든 정보 조회
-        List<CratingEntity> cratingListAll = cratingRepository.findAll();
-        // 필요한 필요한 정보들만 담은 Dto를 반환할 리스트 객체 생성
-        List<CratingDto> cratingList = new ArrayList<>();
-        // 개발자가 로그인 상태일 경우에만
         if( loginDno >= 1 ) {
-            // 조회한 정보의 수 만큼 반복문
-            for (int i = 0; i <= cratingListAll.size() - 1; i++) {
-                // 정보를 담을 Dto객체를 만들고 필요한 정보만 담기
-                CratingDto cratingDto = cratingListAll.get(i).toDto();
-                // 반환할 리스트객체에 하나씩 저장
-                cratingList.add(cratingDto);
-            } // for end
+            // Pageable 객체 생성
+            Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "crno"));
+            // CratingEntity를 Repository를 이용하여 모든 정보 조회
+            Page<CratingEntity> cratingListAll = cratingRepository.findBySearch(keyword, pageable);
+            // 필요한 필요한 정보들만 담은 Dto를 반환할 리스트 객체 생성
+            // List<CratingDto> cratingList = new ArrayList<>();
+            Page<CratingDto> cratingDtoList = cratingListAll.map(CratingEntity::toDto);
+            // 개발자가 로그인 상태일 경우에만
+//        if( loginDno >= 1 ) {
+//            // 조회한 정보의 수 만큼 반복문
+//            for (int i = 0; i <= cratingListAll.size() - 1; i++) {
+//                // 정보를 담을 Dto객체를 만들고 필요한 정보만 담기
+//                CratingDto cratingDto = cratingListAll.get(i).toDto();
+//                // 반환할 리스트객체에 하나씩 저장
+//                cratingList.add(cratingDto);
+//            } // for end
+//        } // if end
+            return cratingDtoList;
         } // if end
         // 리스트 객체 반환
-        return cratingList;
+        return null;
     } // f end
 
     // 기업 평가 개별 조회
@@ -99,6 +107,8 @@ public class CratingService {
             // 기업을 수정 하는 dno와 기업을 등록했던 dno가 같은지 조건문
             if( cratingEntity.getDeveloperEntity().getDno() == loginDno ) {
                 // dto에 입력한 값으로 Entity 수정
+                cratingEntity.setCtitle(cratingDto.getCtitle());
+                cratingEntity.setCcontent(cratingDto.getCcontent());
                 cratingEntity.setCrscore(cratingDto.getCrscore());
                 cratingEntity.setCrstate(cratingDto.getCrstate());
                 // 값 수정후 true 반환
