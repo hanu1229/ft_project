@@ -5,10 +5,13 @@ import devconnect.model.entity.AdminEntity;
 import devconnect.model.entity.CompanyEntity;
 import devconnect.model.entity.DeveloperEntity;
 import devconnect.model.entity.ProjectEntity;
+import devconnect.model.entity.ProjectImageEntity;
 import devconnect.model.repository.AdminEntityRepository;
 import devconnect.model.repository.CompanyRepository;
 import devconnect.model.repository.DeveloperRepository;
+import devconnect.model.repository.ProjectImageRepository;
 import devconnect.model.repository.ProjectRepository;
+import devconnect.util.FileUtil;
 import devconnect.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,63 +34,43 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final CompanyRepository companyRepository;
+    private final ProjectImageRepository projectImageRepository;
     private final JwtUtil jwtUtil;
+    private final FileUtil fileUtil;
 
     private final DeveloperRepository developerRepository;
     private final AdminEntityRepository adminRepository;
-    
-    /// 토큰에 존재하는 데이터를 이용하여 엔티티를 반환하는 함수 <br/>
-    /// 테이블에 값이 없을 경우 null을 리턴
-
-    /*
-    public Object tokenToEntity(String token) {
-        String temp = jwtUtil.valnoateToken(token);
-        if (temp == null) { return null; }
-        String[] str = temp.split("_");
-        String code = str[0]; String id = str[1];
-        System.out.println("code = " + code + " ,id = " + id);
-        if(code.equals("C")) {
-            CompanyEntity companyEntity = companyRepository.findByCid(id);
-            if(companyEntity == null) { System.out.println("companyEntity = null"); }
-            else {
-                System.out.println("companyEntity = " + companyEntity);
-                return companyEntity;
-            }
-        } else if(code.equals("D")) {
-            DeveloperEntity developerEntity = developerRepository.findByDid(id);
-            if(developerEntity == null) { System.out.println("developerEntity = null"); }
-            else {
-                System.out.println("developerEntity = " + developerEntity);
-                return developerEntity;
-            }
-        } else if(code.equals("A")) {
-            AdminEntity adminEntity = adminRepository.findByAdid(id).orElse(null);
-            if(adminEntity == null) { System.out.println("adminEntity = null"); }
-            else {
-                System.out.println("adminEntity = " + adminEntity);
-                return adminEntity;
-            }
-        }
-        return null;
-    }
-    */
 
     /// | 프로젝트 등록 | <br/>
     /// <b>회사</b>가 프로젝트를 등록
-    public boolean writeProject(String token, MultipartFile files) {
+    public boolean writeProject(String token, ProjectDto projectDto) {
         System.out.println("ProjectService.writeProject");
-        System.out.println("token = " + token + "\nfiles = " + files);
+        System.out.println("token = " + token + "\nprojectDto = " + projectDto);
         // 토큰의 데이터에 있는 회사가 있는지 확인하는 부분
         String id = jwtUtil.valnoateToken(token);
         CompanyEntity companyEntity = companyRepository.findByCid(id);
         if(companyEntity != null) {
-            ProjectDto projectDto =
             projectDto.setCno(companyEntity.getCno());
             System.out.println("projectDto = " + projectDto);
             ProjectEntity projectEntity = projectRepository.save(projectDto.toEntity());
             if(projectEntity.getPno() > 0) {
                 // FK값을 넣을 때는 FK의 엔티티 자체를 넣으면 됨
                 projectEntity.setCompanyEntity( companyEntity );
+                 if(projectDto.getFiles() != null && !projectDto.getFiles().isEmpty()) {
+                     // 여러개의 첨부파일이므로 반복문 사용
+                     for(MultipartFile file : projectDto.getFiles()) {
+                         // FileUtil에서 업로드 메소드 호출
+                         String saveFileName = fileUtil.fileUpload(file);
+                         // 만약에 업로드를 실패하면 트랜잭션 롤백 | 강제 예외 발생
+                         if(saveFileName == null) { throw new RuntimeException("이미지 업로드 오류 발생"); }
+                         // 업로드 성공했으면 ProjectImageEntity 만들기
+                         ProjectImageEntity projectImageEntity = ProjectImageEntity.builder().iname(saveFileName).build();
+                         // 단방향 관계(FK) 주입 | pno가 아닌 projectEntity
+                         projectImageEntity.setProjectEntity(projectEntity);
+                         // ProjectImageEntity 영속화
+                         projectImageRepository.save(projectImageEntity);
+                     }
+                 }
                 return true;
             }
         }

@@ -25,10 +25,10 @@ public class ProjectController {
     /// <b>회사</b>가 프로젝트를 등록
     // {"pname" : "테스트 [백엔드]", "pintro" : "테스트 소개", "ptype" : 1, "pcomment" : "테스트 상세 설명", "pcount" : 4, "pstart" : "2025-04-21T13:00:00", "pend" : "2025-05-20T13:00:00", "recruit_pstart" : "2025-06-15T13:00:00", "recruit_pend" : "2025-12-12T13:00:00", "ppay" : 2700}
     @PostMapping("")
-    public ResponseEntity<Boolean> writeProject(@RequestHeader("Authorization") String token, @RequestParam(name = "files") MultipartFile files) {
+    public ResponseEntity<Boolean> writeProject(@RequestHeader("Authorization") String token, @ModelAttribute() ProjectDto projectDto) {
         System.out.println("ProjectController.writeProject");
-        System.out.println("token = " + token + "\nprojectDto = " + files);
-        boolean result = projectService.writeProject(token, files);
+        System.out.println("token = " + token + "\nprojectDto = " + projectDto);
+        boolean result = projectService.writeProject(token, projectDto);
         if(!result) { return ResponseEntity.status(404).body(false); }
         return ResponseEntity.status(201).body(true);
     }
