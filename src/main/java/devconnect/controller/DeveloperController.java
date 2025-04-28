@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/developer")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class DeveloperController {
     private final DeveloperService developerService;
 
