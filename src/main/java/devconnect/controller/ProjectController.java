@@ -33,7 +33,7 @@ public class ProjectController {
     /// | 프로젝트 전체조회 | <br/>
     /// ● 모든 프로젝트를 조회
     // http://localhost:8080/api/project/all?pno=1
-    @GetMapping("")
+    @GetMapping("/s")
     public ResponseEntity<List<ProjectDto>> findAllProject() {
         System.out.println("ProjectController.findAllProject");
         List<ProjectDto> result = projectService.findAllProject();
@@ -79,7 +79,7 @@ public class ProjectController {
     /// | 프로젝트 상세조회 - 관리자 | <br/>
     /// ● <b>관리자</b>가 공고를 선택 시 공고 상세보기
     // http://localhost:8080/api/project/a-detail?pno=1
-    @GetMapping("/c_detail")
+    @GetMapping("/y_detail")
     public ResponseEntity<ProjectDto> findProjectAdmin(@RequestHeader("Authorization") String token, @RequestParam(name = "pno") int pno) {
         System.out.println("ProjectController.findProjectAdmin");
         System.out.println("token = \n" + token + "\npno = " + pno);
