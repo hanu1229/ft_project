@@ -94,6 +94,27 @@ public class ProjectService {
         return projectDtoList;
     }
 
+    /// | 프로젝트 전체조회 - 기업 | <br/>
+    /// ● 기업의 모든 프로젝트를 조회
+    public List<ProjectDto> findAllProject(String token) {
+        System.out.println("ProjectService.findAllProject");
+        String id = jwtUtil.valnoateToken(token);
+        CompanyEntity companyEntity = companyRepository.findByCid(id);
+        if(companyEntity == null) { return null; }
+        int cno = companyEntity.getCno();
+        List<ProjectEntity> projectEntityList = projectRepository.findAllByCompanyEntity_cno(cno);
+        List<ProjectDto> projectDtoList = new ArrayList<>();
+        if(!projectEntityList.isEmpty()) {
+            for(int index = 0; index < projectEntityList.size(); index++) {
+                ProjectEntity projectEntity = projectEntityList.get(index);
+                ProjectDto projectDto = projectEntity.toDto();
+                projectDto.setCno(projectEntity.getCompanyEntity().getCno());
+                projectDtoList.add(projectDto);
+            }
+        }
+        return projectDtoList;
+    }
+
     /// | 프로젝트 전체조회 - 페이징 | <br/>
     /// ● 모든 프로젝트를 조회
     // http://localhost:8080/api/project/all

@@ -44,6 +44,18 @@ public class ProjectController {
         return ResponseEntity.status(200).body(result);
     }
 
+    /// | 프로젝트 전체조회 - 기업 | <br/>
+    /// ● 기업의 모든 프로젝트를 조회
+    // http://localhost:8080/api/project/company
+    @GetMapping("/company")
+    public ResponseEntity<List<ProjectDto>> findAllProject(@RequestHeader("Authorization") String token) {
+        System.out.println("ProjectController.findAllProject");
+        System.out.println("token = \n" + token);
+        List<ProjectDto> result = projectService.findAllProject(token);
+        if(result == null || result.isEmpty()) { return ResponseEntity.status(404).body(null); }
+        return ResponseEntity.status(200).body(result);
+    }
+
     /// | 프로젝트 전체조회 - 페이징 | <br/>
     /// ● 모든 프로젝트를 조회
     // http://localhost:8080/api/project/all
