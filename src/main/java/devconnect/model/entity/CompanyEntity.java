@@ -53,7 +53,7 @@ public class CompanyEntity extends BaseTime {
                 .cadress(cadress)
                 .cemail(cemail)
                 .cbusiness(cbusiness)
-                .cprofile(cprofile)
+                // .cprofile(cprofile)
                 .state(state)
                 .build();
     }

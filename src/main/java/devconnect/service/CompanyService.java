@@ -31,11 +31,11 @@ public class CompanyService {
         String hashedPwd = passwordEncoder.encode(companyDto.getCpwd());
         companyDto.setCpwd(hashedPwd);
 
-        CompanyEntity companyEntity = companyDto.toEntity();
+        // CompanyEntity companyEntity = companyDto.toEntity();
 
-        CompanyEntity saveEntity = companyRepository.save(companyEntity);
+        // CompanyEntity saveEntity = companyRepository.save(companyEntity);
 
-        if (saveEntity.getCno() >= 1){return true;}
+        // if (saveEntity.getCno() >= 1){return true;}
         return false;
     }
 
