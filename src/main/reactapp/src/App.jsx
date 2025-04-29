@@ -1,26 +1,55 @@
-// App.jsx
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import AdminSignup from './pages/AdminSignup';
-import AdminLogin from './pages/AdminLogin';
-import AdminInfo from './pages/AdminInfo';
+// [1] 라이브러리 import
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import AdminList from './pages/AdminList';
-import AdminUpdate from './pages/AdminUpdate';
+// [2] 페이지 import
+import AdminLogin from "./pages/AdminLogin";
+import AdminSignup from "./pages/AdminSignup";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminList from "./pages/AdminList";
+import AdminUpdate from "./pages/AdminUpdate";
 
-function App() {
+
+// [3] 라우트 보호용 컴포넌트 import
+import PrivateRoute from "./routes/PrivateRoute";
+
+import { getToken } from "./utils/tokenUtil";   // 추가!
+
+
+
+// [4] App 컴포넌트 정의
+export default function App() {
+    const token = getToken(); // 현재 로그인된 토큰 가져오기
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<AdminLogin />} />
-                <Route path="/admin/signup" element={<AdminSignup />} />
-                <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/admin/info" element={<AdminInfo />} />
 
-                <Route path="/admin/list" element={<AdminList />} />
-                <Route path="/admin/update" element={<AdminUpdate />} />
+                {/* [A] 루트 접속 시 처리 - 토큰 여부에 따라 리디렉션 */}
+                <Route path="/" element={token ? <Navigate to="/admin/dashboard" /> : <Navigate to="/admin/login" />} />
+
+                {/* [B] 로그인, 회원가입 페이지 */}
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/admin/signup" element={<AdminSignup />} />
+
+                {/* [C] 대시보드, 관리자 목록 (보호 라우트) */}
+                <Route path="/admin/dashboard" element={
+                    <PrivateRoute>
+                        <AdminDashboard />
+                    </PrivateRoute>
+                } />
+
+                <Route path="/admin/list" element={
+                    <PrivateRoute>
+                        <AdminList />
+                    </PrivateRoute>
+                } />
+
+                <Route path="/admin/update" element={
+                    <PrivateRoute>
+                        <AdminUpdate />
+                    </PrivateRoute>
+                } />
+
             </Routes>
         </BrowserRouter>
     );
 }
-
-export default App;

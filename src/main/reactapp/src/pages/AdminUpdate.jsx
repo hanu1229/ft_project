@@ -1,39 +1,62 @@
-// AdminUpdate.jsx | 관리자 정보 수정 화면 | rw 25-04-23 생성
-
-import { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { getAdminInfo, updateAdmin } from "../api/adminApi";
+import { getToken } from "../utils/tokenUtil";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminUpdate() {
-    const [form, setForm] = useState({
-        adid: '',        // 수정할 대상 관리자 ID
-        adname: '',      // 새로운 이름
-        adphone: ''      // 새로운 전화번호
-    });
+    const [adname, setAdname] = useState("");
+    const [adphone, setAdphone] = useState("");
+    const navigate = useNavigate();
+    const token = getToken();
 
-    // [1] 입력 필드 값 변경 핸들러
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm({ ...form, [name]: value });
-    };
+    // 기존 정보 불러오기
+    useEffect(() => {
+        const fetchAdminInfo = async () => {
+            try {
+                const res = await getAdminInfo(token);
+                setAdname(res.data.adname);
+                setAdphone(res.data.adphone);
+            } catch (err) {
+                alert("정보 조회 실패");
+                navigate("/admin/login");
+            }
+        };
+        fetchAdminInfo();
+    }, [token, navigate]);
 
-    // [2] 수정 요청 처리
+    // 수정 요청
     const handleUpdate = async () => {
         try {
-            const res = await axios.put('http://localhost:8080/admin/update', form);
-            alert(res.data ? '수정 성공' : '수정 실패 (존재하지 않는 ID)');
+            const formData = new FormData();
+            formData.append("adname", adname);
+            formData.append("adphone", adphone);
+
+            const res = await updateAdmin(token, formData);
+            if (res.data === true) {
+                alert("정보 수정 완료");
+                navigate("/admin/dashboard"); // 수정 완료 후 대시보드로 이동
+            } else {
+                alert("정보 수정 실패");
+            }
         } catch (err) {
-            console.error('수정 요청 오류', err);
-            alert('오류 발생');
+            alert("정보 수정 에러");
         }
     };
 
     return (
         <div>
             <h2>관리자 정보 수정</h2>
-            <input name="adid" placeholder="수정할 ID" onChange={handleChange} />
-            <input name="adname" placeholder="새 이름" onChange={handleChange} />
-            <input name="adphone" placeholder="새 전화번호" onChange={handleChange} />
-            <button onClick={handleUpdate}>정보 수정</button>
+            <input
+                value={adname}
+                onChange={(e) => setAdname(e.target.value)}
+                placeholder="이름 수정"
+            />
+            <input
+                value={adphone}
+                onChange={(e) => setAdphone(e.target.value)}
+                placeholder="전화번호 수정"
+            />
+            <button onClick={handleUpdate}>수정하기</button>
         </div>
     );
 }
