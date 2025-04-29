@@ -48,31 +48,32 @@ public class AdminService { // CS
         return saveEntity.getAdno() >= 1; // (4) 성공 여부 반환
     } // fe
 
-    // =======================================================================================
     // [2] 관리자 로그인 기능 (JWT 발급)
-    public String adminLogIn(AdminDto adminDto) { // fs
-        AdminEntity adminEntity = adminEntityRepository.findByAdid(adminDto.getAdid()).orElse(null);
+    public String adminLogIn(String adid, String adpwd) { // ✅ 파라미터 변경
 
+        AdminEntity adminEntity = adminEntityRepository.findByAdid(adid).orElse(null);
         if (adminEntity == null) {
-            return null; // (1) 존재하지 않으면 로그인 실패
+            return null; // (1) 아이디 존재하지 않음
         }
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        boolean isMatch = passwordEncoder.matches(adminDto.getAdpwd(), adminEntity.getAdpwd());
-
+        boolean isMatch = passwordEncoder.matches(adpwd, adminEntity.getAdpwd());
         if (!isMatch) {
-            return null; // (2) 비밀번호 불일치 시 로그인 실패
+            return null; // (2) 비밀번호 불일치
         }
 
         String token = jwtUtil.createToken(adminEntity.getAdid(), "Admin"); // (3) JWT 발급
         System.out.println(">> 발급된 관리자 토큰: " + token);
 
         stringRedisTemplate.opsForValue().set(
-                "RESENT_LOGIN:" + adminEntity.getAdid(), "true", 1, TimeUnit.DAYS
+                "RESENT_LOGIN:" + adminEntity.getAdid(),
+                "true",
+                1,
+                TimeUnit.DAYS
         ); // (4) Redis에 24시간 저장
 
         return token;
-    } // fe
+    }
 
     // =======================================================================================
     // [3] 관리자 로그아웃 기능 (Redis 토큰 삭제)

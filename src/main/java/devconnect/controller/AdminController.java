@@ -15,7 +15,7 @@ import jakarta.validation.Valid;
 // [*] DTO, Service import
 import devconnect.model.dto.AdminDto;
 import devconnect.service.AdminService;
-
+import devconnect.model.dto.AdminLoginDto;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,19 +58,19 @@ public class AdminController { // CS
     // =======================================================================================
     /*
         매핑 방식: POST, 요청 URL: /api/admin/login
-        매개변수: AdminDto (RequestBody)
+        매개변수: AdminLoginDto (RequestBody)
         응답 데이터 타입: String (JWT 토큰)
     */
     @PostMapping("/login")
-    public ResponseEntity<?> adminLogIn(@Valid @RequestBody AdminDto adminDto) { // fs
-        String token = adminService.adminLogIn(adminDto);
+    public ResponseEntity<?> adminLogIn(@Valid @RequestBody AdminLoginDto loginDto) {
+        String token = adminService.adminLogIn(loginDto.getAdid(), loginDto.getAdpwd());
 
         if (token != null) {
             return ResponseEntity.status(200).body(token); // 200 OK
         } else {
             return ResponseEntity.status(401).body(errorResponse(401, "로그인 실패: 아이디 또는 비밀번호를 확인하세요."));
         }
-    } // fe
+    }
 
     // =======================================================================================
     /*
