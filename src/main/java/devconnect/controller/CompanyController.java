@@ -18,9 +18,9 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-    // 1. post(회원가입) http://localhost:8080/api/company/signup 확인 완
+    // 1. post(회원가입) http://localhost:8080 확인 완
     @PostMapping("/signup") // {"cid" : "test1" , "cpwd" : "1234" , "cname" : "test1(주)" , "cphone" : "02-2113-5343" ,"cadress" : "test1" , "cemail" : "test1@naver.com", "cbusiness" :  "214-18-13306" , "cprofile" : "profil1.jpg"}
-    public ResponseEntity<Boolean> signup(@RequestBody CompanyDto companyDto){
+    public ResponseEntity<Boolean> signup(@ModelAttribute CompanyDto companyDto){
         System.out.println("companyDto = " + companyDto);
         System.out.println("CompanyController.signup");
         boolean result = companyService.signup(companyDto);
