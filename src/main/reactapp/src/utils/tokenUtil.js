@@ -1,3 +1,26 @@
-export const saveToken = (token) => localStorage.setItem("token", token);
-export const getToken = () => localStorage.getItem("token");
-export const removeToken = () => localStorage.removeItem("token");
+// tokenUtil.js | rw 25-04-30
+// [설명] JWT 토큰을 브라우저의 localStorage에 저장/조회/삭제하는 유틸리티 함수 모음입니다.
+//        - 로그인 시 토큰 저장
+//        - 인증 요청 시 토큰 조회
+//        - 로그아웃 시 토큰 제거
+
+// =======================================================================================
+// [1] 토큰 저장 함수
+// (사용 위치: 로그인 성공 시)
+export const saveToken = (token) => {
+    localStorage.setItem("token", token);      // "token"이라는 키로 토큰 저장
+};
+
+// =======================================================================================
+// [2] 토큰 조회 함수
+// (사용 위치: 인증이 필요한 API 호출 시)
+export const getToken = () => {
+    return localStorage.getItem("token");      // 저장된 토큰을 가져옴 (없으면 null)
+};
+
+// =======================================================================================
+// [3] 토큰 삭제 함수
+// (사용 위치: 로그아웃 또는 인증 실패 시)
+export const removeToken = () => {
+    localStorage.removeItem("token");          // 저장된 토큰을 삭제
+};

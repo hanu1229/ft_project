@@ -83,20 +83,25 @@ insert into drating( drscore , drdate , pno , dno )values
 ( 95 , "2025-04-18" , 9 , 9 ),
 ( 100 , "2025-04-18" , 10 , 10 );
 
--- 관리자 샘플 데이터 등록 | rw 25-04-19 샘플생성 rw 25-04-22 샘플 수정 adtype(상태)추가
--- 로그인 테스트 시 adpwd = qwe1234로 입력
-INSERT INTO admin (adid, adpwd, adname, adphone, adtype)
+-- =======================================================================================
+-- 관리자 샘플 데이터 등록 | rw 25-04-19 최초 생성
+-- - 1차 수정 | rw 25-04-22 : 관리자 상태코드(adtype) 필드 추가
+-- - 2차 수정 | rw 25-04-30 : 비밀번호 유효성 대응 (8자리 이상 → "qwe12345"로 통일)
+--   ※ 비밀번호 암호화값 (BCrypt): $2a$10$HXcA6z6lBNoavkE7yYcO4OfnN0O/7ibnMd.DDPXnqfZ/MVTxM8IuS
+-- =======================================================================================
+
+INSERT INTO admin (adid, adpwd, adname, adphone, adtype, create_at, update_at)
 VALUES
-('admin01', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자1', '010-1234-1111',0),
-('admin02', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자2', '010-1234-2222',1),
-('admin03', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자3', '010-1234-3333',2),
-('admin04', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자4', '010-1234-4444',1),
-('admin05', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자5', '010-1234-5555',0),
-('admin06', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자6', '010-1234-6666',3),
-('admin07', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자7', '010-1234-7777',5),
-('admin08', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자8', '010-1234-8888',6),
-('admin09', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자9', '010-1234-9999',1),
-('admin10', '$2a$10$KbQi5XQ5uAxJ1w6Qj8EDeuX7MZyrEtAOu0YaMpIoFthI4FFl3kWT6', '리원관리자10', '010-1234-1010',9);
+('admin01', '$2a$10$HXcA6z6lBNoavkE7yYcO4OfnN0O/7ibnMd.DDPXnqfZ/MVTxM8IuS', '리원관리자1', '010-1234-1111', 0, NOW(), NOW()),
+('admin02', '$2a$10$HXcA6z6lBNoavkE7yYcO4OfnN0O/7ibnMd.DDPXnqfZ/MVTxM8IuS', '리원관리자2', '010-1234-2222', 1, NOW(), NOW()),
+('admin03', '$2a$10$HXcA6z6lBNoavkE7yYcO4OfnN0O/7ibnMd.DDPXnqfZ/MVTxM8IuS', '리원관리자3', '010-1234-3333', 2, NOW(), NOW()),
+('admin04', '$2a$10$HXcA6z6lBNoavkE7yYcO4OfnN0O/7ibnMd.DDPXnqfZ/MVTxM8IuS', '리원관리자4', '010-1234-4444', 1, NOW(), NOW()),
+('admin05', '$2a$10$HXcA6z6lBNoavkE7yYcO4OfnN0O/7ibnMd.DDPXnqfZ/MVTxM8IuS', '리원관리자5', '010-1234-5555', 0, NOW(), NOW()),
+('admin06', '$2a$10$HXcA6z6lBNoavkE7yYcO4OfnN0O/7ibnMd.DDPXnqfZ/MVTxM8IuS', '리원관리자6', '010-1234-6666', 3, NOW(), NOW()),
+('admin07', '$2a$10$HXcA6z6lBNoavkE7yYcO4OfnN0O/7ibnMd.DDPXnqfZ/MVTxM8IuS', '리원관리자7', '010-1234-7777', 5, NOW(), NOW()),
+('admin08', '$2a$10$HXcA6z6lBNoavkE7yYcO4OfnN0O/7ibnMd.DDPXnqfZ/MVTxM8IuS', '리원관리자8', '010-1234-8888', 6, NOW(), NOW()),
+('admin09', '$2a$10$HXcA6z6lBNoavkE7yYcO4OfnN0O/7ibnMd.DDPXnqfZ/MVTxM8IuS', '리원관리자9', '010-1234-9999', 1, NOW(), NOW()),
+('admin10', '$2a$10$HXcA6z6lBNoavkE7yYcO4OfnN0O/7ibnMd.DDPXnqfZ/MVTxM8IuS', '리원관리자10','010-1234-1010', 9, NOW(), NOW());
 
 
 -- 관리자 상태 코드 (code는 0~2 와 3~9분리 사용) | rw 25-04-22 샘플생성

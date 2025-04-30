@@ -63,14 +63,23 @@ public class AdminController { // CS
     */
     @PostMapping("/login")
     public ResponseEntity<?> adminLogIn(@Valid @RequestBody AdminLoginDto loginDto) {
+
+
+        // (1) 로그: 전달된 ID/PW 확인
+        System.out.println("입력된 adid: " + loginDto.getAdid());
+        System.out.println("입력된 adpwd: " + loginDto.getAdpwd());
+
+        // (2) 실제 로그인 처리
         String token = adminService.adminLogIn(loginDto.getAdid(), loginDto.getAdpwd());
 
+        // (3) 응답 처리
         if (token != null) {
             return ResponseEntity.status(200).body(token); // 200 OK
         } else {
             return ResponseEntity.status(401).body(errorResponse(401, "로그인 실패: 아이디 또는 비밀번호를 확인하세요."));
         }
     }
+
 
     // =======================================================================================
     /*
