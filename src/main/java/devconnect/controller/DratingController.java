@@ -1,6 +1,9 @@
 package devconnect.controller;
 
 import devconnect.model.dto.DratingDto;
+import devconnect.model.repository.CompanyRepository;
+import devconnect.model.repository.DeveloperRepository;
+import devconnect.service.CompanyService;
 import devconnect.service.DratingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,24 +27,41 @@ import java.util.List;
 public class DratingController {
 
     private final DratingService dratingService;
-    
+    private final CompanyService companyService;
+
     // 개발자 평가 등록
+    // [POST] : http://localhost:8080/api/drating
+    // { "drscore" : # , "pno" : # , "dno" : # }
     @PostMapping("")
-    public ResponseEntity<Boolean> dratingWrite( @RequestBody DratingDto dratingDto ){
+    public ResponseEntity<Boolean> dratingWrite(
+            @RequestHeader("Authorization")  String token ,
+            @RequestBody DratingDto dratingDto ) {
         System.out.println("DratingController.dratingWrite");
-        boolean result = dratingService.dratingWrite( dratingDto );
-        if( result ){
-            return ResponseEntity.status(201).body( true );
-        }else{
-            return ResponseEntity.status(400).body( false );
+        int loginCno;
+        // 토큰의 cno 추출
+        try {
+            loginCno = companyService.info(token).getCno();
+        } catch (Exception e) { return ResponseEntity.status(201).body(false); }
+        // 입력한 값들과 추출한 cno를 서비스로 보내서 결과 반환 받기
+        boolean result = dratingService.dratingWrite(dratingDto, loginCno);
+        if (result) {
+            return ResponseEntity.status(201).body(true);
+        } else {
+            return ResponseEntity.status(400).body(false);
         }
     } // f end
-    
+
     // 개발자 평가 전체 조회
+    // [GET] : http://localhost:8080/api/drating
     @GetMapping("")
-    public ResponseEntity<List<DratingDto>> dratingList(){
+    public ResponseEntity<List<DratingDto>> dratingList(
+            @RequestHeader("Authorization") String token ){
         System.out.println("DratingController.dratingList");
-        List<DratingDto> findAll = dratingService.dratingList();
+        int loginCno;
+        try{
+            loginCno = companyService.info(token).getCno();
+        }catch (Exception e ) { return ResponseEntity.noContent().build(); }
+        List<DratingDto> findAll = dratingService.dratingList( loginCno );
         if( findAll != null ){
             return ResponseEntity.ok(findAll);
         }else{
@@ -50,31 +70,55 @@ public class DratingController {
     } // f end
 
     // 개발자 평가 개별 조회
+    // [GET] : http://localhost:8080/api/drating/view?drno=#
     @GetMapping("/view")
-    public ResponseEntity<DratingDto> dratingView( @RequestParam("drno") int drno ){
+    public ResponseEntity<DratingDto> dratingView(
+            @RequestHeader("Authorization") String token ,
+            @RequestParam("drno") int drno ){
         System.out.println("DratingController.dratingView");
-        DratingDto dratingDto = dratingService.dratingView( drno );
+        int loginCno;
+        try{
+            loginCno = companyService.info(token).getCno();
+        }catch (Exception e ) { return ResponseEntity.status(401).build(); }
+        DratingDto dratingDto = dratingService.dratingView( drno , loginCno );
         if( dratingDto != null ) { return ResponseEntity.status(200).body( dratingDto ); }
         else{ return ResponseEntity.status(401).build(); }
     } // f end
 
-    
+
     // 개발자 평가 수정
+    // [PUT] : http://localhost:8080/api/drating
+    // { "drno" : # , "drscore" : # }
+    // 평가할 개발자와 평가를 하게된 배경인 프로젝트를 수정할 필요는 없어서 pno,dno 제외
     @PutMapping("")
-    public ResponseEntity<Boolean> dratingUpdate(@RequestBody DratingDto dratingDto ){
+    public ResponseEntity<Boolean> dratingUpdate(
+            @RequestHeader("Authorization") String token ,
+            @RequestBody DratingDto dratingDto ){
         System.out.println("DratingController.dratingUpdate");
-        boolean result = dratingService.dratingUpdate( dratingDto );
+        int loginCno;
+        try{
+            loginCno = companyService.info(token).getCno();
+        }catch ( Exception e ) { return ResponseEntity.status(400).body(false); }
+        boolean result = dratingService.dratingUpdate( dratingDto , loginCno );
         if( result ){ return ResponseEntity.status(201).body(true);}
         else{ return ResponseEntity.status(400).body(false); }
     } // f end
-    
+
     // 개발자 평가 삭제
+    // [DELETE] : http://localhost:8080/api/drating?drno=#
     @DeleteMapping("")
-    public ResponseEntity<Boolean> dratingDelete(@RequestParam("drno") int drno ){
+    public ResponseEntity<Boolean> dratingDelete(
+            @RequestHeader("Authorization") String token ,
+            @RequestParam("drno") int drno ){
         System.out.println("DratingController.dratingDelete");
-        boolean result = dratingService.dratingDelete( drno );
+        int loginCno;
+        try{
+            loginCno = companyService.info(token).getCno();
+        }catch ( Exception e ) { return ResponseEntity.status(400).body(false); }
+        boolean result = dratingService.dratingDelete( drno , loginCno );
         if( result ){ return ResponseEntity.status(201).body(true); }
         else{ return ResponseEntity.status(400).body(false); }
     } // f end
 
 } // c end
+

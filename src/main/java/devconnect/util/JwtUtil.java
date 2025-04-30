@@ -1,11 +1,18 @@
 package devconnect.util;
 
+import devconnect.model.entity.AdminEntity;
+import devconnect.model.entity.CompanyEntity;
+import devconnect.model.entity.DeveloperEntity;
+import devconnect.model.repository.AdminEntityRepository;
+import devconnect.model.repository.CompanyRepository;
+import devconnect.model.repository.DeveloperRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -18,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 // ↓ Spring 컨테이너에 빈 등록
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
 
     // 비밀키 알고리즘 : HS256알고리즘, HS512알고리즘
@@ -30,6 +38,10 @@ public class JwtUtil {
     // Redis를 조작하기 위한 객체
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    private final CompanyRepository companyRepository;
+    private final DeveloperRepository developerRepository;
+    private final AdminEntityRepository adminEntityRepository;
 
 
     /// 01. JWT 토큰 발급 <br/>
@@ -115,6 +127,17 @@ public class JwtUtil {
     ///  로그아웃 시 Redis에 저장된 토큰 삭제
     public void deleteToken(String id) {
         stringRedisTemplate.delete("JWT:"+id);
+    }
+
+    /// 아이디에 따른 식별키 반환
+    public String temp(String id) {
+        CompanyEntity companyEntity = companyRepository.findByCid(id);
+        if(companyEntity != null) { return "Company"; }
+        DeveloperEntity developerEntity = developerRepository.findByDid(id);
+        if(developerEntity != null) { return "Developer"; }
+        AdminEntity adminEntity = adminEntityRepository.findByAdid(id).orElse(null);
+        if(adminEntity != null) { return "Admin"; }
+        return null;
     }
 
 

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "project_join")
@@ -22,10 +23,11 @@ public class ProjectJoinEntity extends BaseTime {
     private int pjno;
     // 상태
     @Column(nullable = false)
+    @ColumnDefault("0")
     private int pjtype;
     // 신청 시간
-    @Column(nullable = false)
-    private String pjtime;
+    // @Column(nullable = false)
+    // private String pjtime;
 
     // 프로젝트 번호 (FK)
     @ManyToOne
@@ -40,7 +42,7 @@ public class ProjectJoinEntity extends BaseTime {
     /// Entity --> Dto
     public ProjectJoinDto toDto() {
         return ProjectJoinDto.builder()
-                .pjno(this.pjno).pjtype(this.pjtype).pjtime(this.pjtime)
+                .pjno(this.pjno).pjtype(this.pjtype)
                 .pno(projectEntity.getPno()).dno(developerEntity.getDno())
                 .createAt(getCreateAt()).updateAt(getUpdateAt())
                 .build();

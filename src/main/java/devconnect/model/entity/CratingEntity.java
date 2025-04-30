@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
@@ -20,13 +21,14 @@ public class CratingEntity extends BaseTime { // "회사"를 개발자가 평가
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int crno; // 평가 번호(기업)
+    @Column( nullable = false )
+    private String ctitle; // 평가 제목
+    @Column( nullable = false )
+    private String ccontent; // 평가 내용
     @Column(nullable = false)
     private int crscore; // 점수(기업)
     @Column @ColumnDefault( "0" ) // 기본 0
     private int crstate; // 상태
-//    @Column(nullable = false)
-//    private String crdate; // 평가일(기업)
-
 
     @ManyToOne
     @JoinColumn (name = "pno")
@@ -40,9 +42,14 @@ public class CratingEntity extends BaseTime { // "회사"를 개발자가 평가
     public CratingDto toDto(){
         return CratingDto.builder()
                 .crno( this.crno )
+                .ctitle( this.ctitle )
+                .ccontent( this.ccontent )
                 .crscore( this.crscore )
-                .pno( projectEntity.getPno() )
-                .dno( developerEntity.getDno() )
+                .pno( this.projectEntity.getPno() )
+                .dno( this.developerEntity.getDno() )
+                .crstate( this.crstate )
+                .createAt( this.getCreateAt() )
+                .updateAt( this.getUpdateAt() )
                 .build();
     } // dto end
     

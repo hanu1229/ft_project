@@ -15,7 +15,7 @@ public class ProjectJoinDto {
     // 상태
     private int pjtype;
     // 신청 시간
-    private String pjtime;
+    // private String pjtime;
     // 프로젝트 번호
     private int pno;
     // 개발자 번호
@@ -28,7 +28,7 @@ public class ProjectJoinDto {
     /// Dto --> Entity
     public ProjectJoinEntity toEntity() {
         return ProjectJoinEntity.builder()
-                .pjno(this.pjno).pjtype(this.pjtype).pjtime(this.pjtime)
+                .pjno(this.pjno).pjtype(this.pjtype)
                 .build();
     }
 

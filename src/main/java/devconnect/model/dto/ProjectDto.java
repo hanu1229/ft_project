@@ -2,8 +2,11 @@ package devconnect.model.dto;
 
 import devconnect.model.entity.ProjectEntity;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @NoArgsConstructor @AllArgsConstructor
@@ -38,6 +41,10 @@ public class ProjectDto {
     private LocalDateTime createAt;
     // 수정일
     private LocalDateTime updateAt;
+    // 이미지 파일
+    private List<MultipartFile> files = new ArrayList<>();
+    // 이미지명
+    private List<String> images = new ArrayList<>();
 
     /// Dto --> Entity
     public ProjectEntity toEntity() {
