@@ -49,21 +49,34 @@ public class AdminService { // CS
     } // fe
 
     // [2] 관리자 로그인 기능 (JWT 발급)
-    public String adminLogIn(String adid, String adpwd) { // ✅ 파라미터 변경
+    public String adminLogIn(String adid, String adpwd) { // 파라미터 변경
+
+        System.out.println("[로그인 요청] 입력된 adid: " + adid);
+        System.out.println("[로그인 요청] 입력된 adpwd: " + adpwd);
 
         AdminEntity adminEntity = adminEntityRepository.findByAdid(adid).orElse(null);
         if (adminEntity == null) {
-            return null; // (1) 아이디 존재하지 않음
+            System.out.println("[실패] 해당 ID가 존재하지 않음: " + adid);
+            return null;
         }
+
+        System.out.println("[DB 조회 결과] 암호화된 비밀번호: " + adminEntity.getAdpwd());
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         boolean isMatch = passwordEncoder.matches(adpwd, adminEntity.getAdpwd());
+        System.out.println("[검증] 비밀번호 일치 여부: " + isMatch);
+        System.out.println(">> 입력된 비밀번호 길이: " + adpwd.length());
+        System.out.println(">> 입력된 비밀번호 HEX: " + adpwd.chars()
+                .mapToObj(c -> String.format("%02x", c))
+                .reduce("", (a, b) -> a + " " + b));
+
         if (!isMatch) {
+            System.out.println("[실패] 비밀번호 불일치");
             return null; // (2) 비밀번호 불일치
         }
 
         String token = jwtUtil.createToken(adminEntity.getAdid(), "Admin"); // (3) JWT 발급
-        System.out.println(">> 발급된 관리자 토큰: " + token);
+        System.out.println("[성공] 발급된 JWT 토큰: " + token);
 
         stringRedisTemplate.opsForValue().set(
                 "RESENT_LOGIN:" + adminEntity.getAdid(),
