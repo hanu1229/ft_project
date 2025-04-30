@@ -25,6 +25,8 @@ public class CompanyDto {
     private MultipartFile cprofile; // jpg파일
     private int state;
 
+
+        //Entity 전달때문에 service에서 build 만듬
 //    public CompanyEntity toEntity(){
 //        return CompanyEntity.builder()
 //                .cno(cno)
@@ -35,7 +37,7 @@ public class CompanyDto {
 //                .cadress(cadress)
 //                .cemail(cemail)
 //                .cbusiness(cbusiness)
-//                .cprofile(this.cprofile != null && this.cprofile instanceof String ? (String) this.cprofile : null)
+//                .cprofile(this.cprofile)
 //                .state(state)
 //                .build();
 //    }

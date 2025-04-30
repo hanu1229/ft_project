@@ -3,14 +3,14 @@ package devconnect.service;
 import devconnect.model.dto.CompanyDto;
 import devconnect.model.entity.CompanyEntity;
 import devconnect.model.repository.CompanyRepository;
+import devconnect.util.FileUtil;
 import devconnect.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,19 +24,56 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
 
+    @Autowired
+    private FileUtil fileUtil;
+
+
+    // 파일을 저장할 실제 서버 경로를 설정
+    // 이 경로는 프로젝트 빌드 경로(war/jar) 외부에 있어야 애플리케이션 업데이트 시 파일이 보존
     // 1. post(회원가입)
     public boolean signup(CompanyDto companyDto){
-        //1. 암호화
+        // 1. 파일 처리 로직
+        String saveFileName = null;
+
+        MultipartFile cprofileFile = companyDto.getCprofile();// dto에서 MultipartFile 가져옴
+
+         if (cprofileFile != null && !cprofileFile.isEmpty()){
+             //FileUtile의 fileUpload 메서드를 사용하여 파일 저장
+             saveFileName = fileUtil.fileUpload(cprofileFile);
+
+             // FileUtil.FileUpload 실패 시 (null 반환)오류 처리
+             if (saveFileName == null){
+                 System.err.println("FileUtile을 통한 파일 업로드 실패");
+                 throw new RuntimeException("프로필 이미지 파일 업로드 실패");
+                 // 파일 저장 실패해도 회원가입은 진행하려면 savedFileName은 null 상태로 계속 진행합니다.
+             }
+             System.out.println("FileTrile을 통한 파일 저장 성공 :" + saveFileName);
+         }
+
+        //2. 암호화
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String hashedPwd = passwordEncoder.encode(companyDto.getCpwd());
         companyDto.setCpwd(hashedPwd);
 
         // CompanyEntity companyEntity = companyDto.toEntity();
+        CompanyEntity companyEntity = CompanyEntity.builder()
+                .cid(companyDto.getCid())
+                .cpwd(companyDto.getCpwd())
+                .cname(companyDto.getCname())
+                .cphone(companyDto.getCphone())
+                .cadress(companyDto.getCadress())
+                .cemail(companyDto.getCemail())
+                .cbusiness(companyDto.getCbusiness())
+                .cprofile(saveFileName) //state 필드 처리
+                .build();
 
         // CompanyEntity saveEntity = companyRepository.save(companyEntity);
 
+       //4. Entity를 Repository를 통해 데이터베이스에 저장
+        CompanyEntity saveEntity = companyRepository.save(companyEntity);
+
         // if (saveEntity.getCno() >= 1){return true;}
-        return false;
+        return true;
     }
 
     // JWT 객체
