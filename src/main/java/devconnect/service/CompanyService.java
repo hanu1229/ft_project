@@ -46,6 +46,7 @@ public class CompanyService {
                  System.err.println("FileUtile을 통한 파일 업로드 실패");
                  throw new RuntimeException("프로필 이미지 파일 업로드 실패");
                  // 파일 저장 실패해도 회원가입은 진행하려면 savedFileName은 null 상태로 계속 진행합니다.
+
              }
              System.out.println("FileTrile을 통한 파일 저장 성공 :" + saveFileName);
          }
@@ -56,21 +57,19 @@ public class CompanyService {
         companyDto.setCpwd(hashedPwd);
 
         // CompanyEntity companyEntity = companyDto.toEntity();
-        CompanyEntity companyEntity = CompanyEntity.builder()
-                .cid(companyDto.getCid())
-                .cpwd(companyDto.getCpwd())
-                .cname(companyDto.getCname())
-                .cphone(companyDto.getCphone())
-                .cadress(companyDto.getCadress())
-                .cemail(companyDto.getCemail())
-                .cbusiness(companyDto.getCbusiness())
-                .cprofile(saveFileName) //state 필드 처리
-                .build();
+        CompanyEntity companyEntity = companyDto.toEntity();
+        companyEntity.setCprofile(saveFileName);
+
+
+
+
+
 
         // CompanyEntity saveEntity = companyRepository.save(companyEntity);
 
        //4. Entity를 Repository를 통해 데이터베이스에 저장
         CompanyEntity saveEntity = companyRepository.save(companyEntity);
+
 
         // if (saveEntity.getCno() >= 1){return true;}
         return true;
