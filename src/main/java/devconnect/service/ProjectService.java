@@ -149,6 +149,9 @@ public class ProjectService {
             Optional<ProjectEntity> optional = projectRepository.findById(pno);
             if(optional.isPresent()) {
                 ProjectDto projectDto = optional.get().toDto();
+                CompanyEntity companyEntity = companyRepository.findById(projectDto.getCno()).orElse(null);
+                if(companyEntity == null) { return null; }
+                projectDto.setCname(companyEntity.getCname());
                 System.out.println("projectDto = " + projectDto);
                 return projectDto;
             }
@@ -156,6 +159,9 @@ public class ProjectService {
             Optional<ProjectEntity> optional = projectRepository.findById(pno);
             if(optional.isPresent()) {
                 ProjectDto projectDto = optional.get().toDto();
+                CompanyEntity companyEntity = companyRepository.findById(projectDto.getCno()).orElse(null);
+                if(companyEntity == null) { return null; }
+                projectDto.setCname(companyEntity.getCname());
                 System.out.println("projectDto = " + projectDto);
                 return projectDto;
             }
