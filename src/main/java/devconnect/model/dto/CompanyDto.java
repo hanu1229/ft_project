@@ -24,9 +24,9 @@ public class CompanyDto {
     private String cbusiness; // 사업자 번호
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
+    private String cprofile;
 
-
-    private MultipartFile cprofile; // jpg파일
+    private MultipartFile file; // jpg파일
     private int state;
 
 

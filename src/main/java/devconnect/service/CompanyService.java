@@ -35,7 +35,7 @@ public class CompanyService {
         // 1. 파일 처리 로직
         String saveFileName = null;
 
-        MultipartFile cprofileFile = companyDto.getCprofile();// dto에서 MultipartFile 가져옴
+        MultipartFile cprofileFile = companyDto.getFile();// dto에서 MultipartFile 가져옴
 
          if (cprofileFile != null && !cprofileFile.isEmpty()){
              //FileUtile의 fileUpload 메서드를 사용하여 파일 저장
