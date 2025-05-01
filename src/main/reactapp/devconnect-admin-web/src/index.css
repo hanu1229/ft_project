@@ -1,0 +1,21 @@
+/* index.css | 기본 글로벌 스타일 정의 */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Pretendard', 'Roboto', sans-serif;
+  background-color: #000; /* 검정색 배경 */
+  color: #FF4081; /* 핑크 텍스트 */
+  height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: #FF4081;
+  text-decoration: none;
+}

@@ -184,4 +184,39 @@ public class AdminController { // CS
         return errorMap;
     } // fe
 
+    // =======================================================================================
+    /*
+        매핑 방식: GET, 요청 URL: /api/admin/stats
+        설명: 관리자용 전체 통계 카드 정보 반환
+        응답 데이터: Map<String, Object>
+     */
+    @GetMapping("/stats")
+    public ResponseEntity<?> getDashboardStats() { // fs
+        Map<String, Object> stats = adminService.getDashboardStats();
+        return ResponseEntity.ok(stats);
+    } // fe
+
+    // =======================================================================================
+    /*
+        매핑 방식: GET, 요청 URL: /api/admin/recent-approved
+        설명: 최근 승인된 기업, 개발자, 프로젝트 리스트 반환 (5개씩)
+        응답 데이터: Map<String, Object>
+     */
+    @GetMapping("/recent-approved")
+    public ResponseEntity<?> getRecentApprovedList() { // fs
+        Map<String, Object> result = adminService.getRecentApprovedList();
+        return ResponseEntity.ok(result);
+    } // fe
+
+    // =======================================================================================
+    /*
+        매핑 방식: GET, 요청 URL: /api/admin/monthly-join
+        설명: 월별 프로젝트 참여 수 통계 (LineChart용)
+        응답 데이터: List<Map<String, Object>>
+     */
+    @GetMapping("/monthly-join")
+    public ResponseEntity<?> getMonthlyJoinStats() { // fs
+        return ResponseEntity.ok(adminService.getMonthlyJoinStats());
+    } // fe
+
 } // CE
