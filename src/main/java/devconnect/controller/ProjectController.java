@@ -73,7 +73,7 @@ public class ProjectController {
 
     /// | 프로젝트 상세조회 | <br/>
     /// ● <b>개발자</b>가 공고를 선택 시 공고 상세보기
-    // http://localhost:8080/api/project/d-detail?pno=1
+    // http://localhost:8080/api/project/detail?pno=1
     @GetMapping("/detail")
     public ResponseEntity<ProjectDto> findProject(@RequestHeader("Authorization") String token, @RequestParam(name = "pno") int pno) {
         System.out.println("ProjectController.findProject");
