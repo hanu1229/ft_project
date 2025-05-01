@@ -12,7 +12,8 @@ public interface CratingRepository extends JpaRepository<CratingEntity, Integer 
 
     // 평가 키워드 검색
     @Query( value = "select * from crating " +
-            " where ( :keyword is null or ctitle like %:keyword% )" , nativeQuery = true )
-    Page<CratingEntity> findBySearch(String keyword , Pageable pageable );
+            " where ( :keyword is null or ctitle like %:keyword% ) " +
+            " and ( :dno = 0 or dno = :dno ) " , nativeQuery = true )
+    Page<CratingEntity> findBySearch(String keyword , Pageable pageable , int dno );
 
 } // interface end
