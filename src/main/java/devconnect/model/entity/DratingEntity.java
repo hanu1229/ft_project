@@ -18,6 +18,10 @@ public class DratingEntity extends BaseTime { // "개발자"를 회사가 평가
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int drno; // 평가 번호(개발자)
     @Column(nullable = false)
+    private String dtitle; // 평가 제목
+    @Column( nullable = false )
+    private String dcontent; // 평가 내용
+    @Column( nullable = false )
     private int drscore; // (개발자)점수
     @Column @ColumnDefault( "0" ) // 기본 0
     private int drstate; // 상태
@@ -32,6 +36,8 @@ public class DratingEntity extends BaseTime { // "개발자"를 회사가 평가
     public DratingDto toDto(){
         return DratingDto.builder()
                 .drno( this.drno )
+                .dtitle( this.dtitle )
+                .dcontent( this.dcontent )
                 .drscore( this.drscore )
                 .pno( this.projectEntity.getPno() )
                 .dno( this.developerEntity.getDno() )

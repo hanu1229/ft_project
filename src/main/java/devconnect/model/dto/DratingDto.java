@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 @Builder
 public class DratingDto {
     private int drno; // 평가 번호(개발자)
+    private String dtitle; // 평가 제목(개발자)
+    private String dcontent; // 평가 내용(개발자)
     private int drscore; // 점수(개발자)
     @JsonFormat( shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createAt; // 평가일(개발자)
@@ -30,6 +32,8 @@ public class DratingDto {
     public DratingEntity toEntity(ProjectEntity projectEntity , DeveloperEntity developerEntity){
         return DratingEntity.builder()
                 .drno( this.drno )
+                .dtitle( this.dtitle )
+                .dcontent( this.dcontent )
                 .drscore( this.drscore )
                 .drstate( this.drstate )
                 .projectEntity(projectEntity)

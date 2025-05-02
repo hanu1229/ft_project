@@ -6,6 +6,7 @@ import devconnect.model.repository.DeveloperRepository;
 import devconnect.service.CompanyService;
 import devconnect.service.DratingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,14 +55,18 @@ public class DratingController {
     // 개발자 평가 전체 조회
     // [GET] : http://localhost:8080/api/drating
     @GetMapping("")
-    public ResponseEntity<List<DratingDto>> dratingList(
+    public ResponseEntity<Page<DratingDto>> dratingList(
+            @RequestParam( defaultValue = "1" ) int page,
+            @RequestParam( defaultValue = "5" ) int size,
+            @RequestParam( required = false ) String keyword,
+            @RequestParam( defaultValue = "0" ) int dno,
             @RequestHeader("Authorization") String token ){
         System.out.println("DratingController.dratingList");
         int loginCno;
         try{
             loginCno = companyService.info(token).getCno();
         }catch (Exception e ) { return ResponseEntity.noContent().build(); }
-        List<DratingDto> findAll = dratingService.dratingList( loginCno );
+        Page<DratingDto> findAll = dratingService.dratingList( loginCno , page , size , keyword , dno );
         if( findAll != null ){
             return ResponseEntity.ok(findAll);
         }else{

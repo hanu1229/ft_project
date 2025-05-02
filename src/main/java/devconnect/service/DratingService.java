@@ -9,6 +9,10 @@ import devconnect.model.repository.DratingRepository;
 import devconnect.model.repository.ProjectRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -47,25 +51,19 @@ public class DratingService {
     } // f end
     
     // 개발자 평가 전체 조회
-    public List<DratingDto> dratingList( int loginCno ){
+    public Page<DratingDto> dratingList(int loginCno , int page , int size , String keyword , int cno ){
         System.out.println("DratingService.dratingList");
-        // DratingEntity를 Repository를 이용하여 모든 정보 조회
-        List<DratingEntity> dratingListAll = dratingRepository.findAll();
-        // 필요한 필요한 정보들만 담은 Dto를 반환할 리스트 객체 생성
-        List<DratingDto> dratingList = new ArrayList<>();
-        // 기업이 로그인 상태일 경우에만
         if( loginCno >= 1 ) {
-            // 조회한 정보의 수 만큼 반복문
-            for (int i = 0; i <= dratingListAll.size() - 1; i++) {
-                // 정보를 담을 Dto객체를 만들고 필요한 정보만 담기
-                DratingDto dratingDto = dratingListAll.get(i).toDto();
-                // System.out.println("[**} : " + dratingListAll.get(i));
-                // 반환할 리스트객체에 하나씩 저장
-                dratingList.add(dratingDto);
-            } // for end
+            // Pageable 객체 생성
+            Pageable pageable = PageRequest.of( page - 1, size, Sort.by(Sort.Direction.DESC , "drno"));
+            // DratingEntity를 Repository를 이용하여 모든 정보 조회
+            Page<DratingEntity> dratingListAll = dratingRepository.findBysearch( keyword , pageable , cno );
+            // 필요한 필요한 정보들만 담은 Dto를 반환할 리스트 객체 생성
+            Page<DratingDto> dratingList = dratingListAll.map(DratingEntity::toDto);
+            return dratingList;
         } // if end
         // 리스트 객체 반환
-        return dratingList;
+        return null;
     } // f end
 
     // 개발자 평가 개별 조회
@@ -99,6 +97,8 @@ public class DratingService {
             // 수정하는 cno와 등록했던 cno가 같은지 조건문
             if (dratingEntity.getProjectEntity().getCompanyEntity().getCno() == loginCno) {
                 // 수정
+                dratingEntity.setDtitle(dratingDto.getDtitle());
+                dratingEntity.setDcontent(dratingDto.getDcontent());
                 dratingEntity.setDrscore(dratingDto.getDrscore());
                 dratingEntity.setDrstate(dratingDto.getDrstate());
                 // 값 수정후 true 반환
