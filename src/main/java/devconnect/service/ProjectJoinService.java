@@ -6,6 +6,10 @@ import devconnect.model.repository.*;
 import devconnect.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -54,14 +58,18 @@ public class ProjectJoinService {
 
     /// | 프로젝트 신청 등록 | <br/>
     /// ● <b>개발자</b>가 프로젝트에 참가를 신청
-    public boolean writeProjectJoin(String token, ProjectJoinDto projectJoinDto) {
+    public boolean writeProjectJoin(String token, int pno) {
         System.out.println("ProjectJoinService.writeProjectJoin");
-        System.out.println("token = \n" + token + "\nprojectJoinDto = " + projectJoinDto);
-        DeveloperEntity developerEntity = tokenToDeveloperEntity(token);
+        System.out.println("token = \n" + token + "\npno = " + pno);
+        String id = jwtutil.valnoateToken(token);
+        String code = jwtutil.returnCode(id);
+        if(!code.equals("Developer")) { return false; }
+        DeveloperEntity developerEntity = developerRepository.findByDid(id);
+        // DeveloperEntity developerEntity = tokenToDeveloperEntity(token);
         if(developerEntity == null) { return false; }
-        ProjectEntity projectEntity = projectRepository.findById(projectJoinDto.getPno()).orElse(null);
+        ProjectEntity projectEntity = projectRepository.findById(pno).orElse(null);
         if(projectEntity == null) { return false; }
-        ProjectJoinEntity projectJoinEntity = projectJoinDto.toEntity();
+        ProjectJoinEntity projectJoinEntity = new ProjectJoinEntity();
         projectJoinEntity.setProjectEntity(projectEntity);
         projectJoinEntity.setDeveloperEntity(developerEntity);
         ProjectJoinEntity joinEntity = projectJoinRepository.save(projectJoinEntity);
@@ -108,6 +116,21 @@ public class ProjectJoinService {
         if(projectJoinEntity == null) { return false; }
         projectJoinRepository.deleteById(pjno);
         return true;
+    }
+
+    /* 희만 코드 추가 */
+    // 로그인한 회원 전체 조회
+    public Page<ProjectJoinDto> findByDno(
+            int logInDno, Integer pno, int page, int size, String keyword ){
+        System.out.println("ProjectJoinService.findByDno");
+        System.out.println("logInDno = " + logInDno + ", pno = " + pno + ", page = " + page + ", size = " + size + ", keyword = " + keyword );
+
+        Pageable pageable = PageRequest.of( page-1, size, Sort.by(Sort.Direction.DESC, "pjno") );
+
+        Page< ProjectJoinEntity > projectJoinEntities = projectJoinRepository.findBySearch( logInDno, keyword, pageable );
+
+        Page< ProjectJoinDto > projectJoinDtoList = projectJoinEntities.map( ProjectJoinEntity::toFindAllDto );
+        return projectJoinDtoList;
     }
 
 }

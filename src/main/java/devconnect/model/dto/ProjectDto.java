@@ -37,6 +37,8 @@ public class ProjectDto {
     private int ppay;
     // 기업 번호(FK)
     private int cno;
+    // 기업명
+    private String cname;
     // 생성일
     private LocalDateTime createAt;
     // 수정일

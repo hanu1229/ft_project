@@ -57,13 +57,14 @@ public class CratingController {
             @RequestParam( defaultValue = "1" ) int page,
             @RequestParam( defaultValue = "5" ) int size,
             @RequestParam( required = false ) String keyword,
+            @RequestParam( defaultValue = "0" ) int dno,
             @RequestHeader("Authorization") String token ){
         System.out.println("CratingController.cratingList");
         int loginDno;
         try{
             loginDno = developerService.info(token).getDno();
         }catch (Exception e ){ return ResponseEntity.noContent().build(); }
-        Page<CratingDto> findAll = cratingService.cratingList( loginDno , page , size , keyword );
+        Page<CratingDto> findAll = cratingService.cratingList( loginDno , page , size , keyword , dno );
         if( findAll != null ){
             return ResponseEntity.ok( findAll );
         }else{

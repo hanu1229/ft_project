@@ -2,9 +2,9 @@ package devconnect.controller;
 
 
 import devconnect.model.dto.CompanyDto;
+import devconnect.model.dto.DeveloperDto;
 import devconnect.service.CompanyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +16,15 @@ import java.util.List;
 @CrossOrigin("*")
 public class CompanyController {
 
+
     private final CompanyService companyService;
 
     // 1. post(회원가입) http://localhost:8080/api/company/signup 확인 완
-    @PostMapping("/signup") // {"cid" : "test1" , "cpwd" : "1234" , "cname" : "test1(주)" , "cphone" : "02-2113-5343" ,"cadress" : "test1" , "cemail" : "test1@naver.com", "cbusiness" :  "214-18-13306" , "cprofile" : "profil1.jpg"}
-    public ResponseEntity<Boolean> signup(@RequestBody CompanyDto companyDto){
+    @PostMapping("/signup") // {"cid" : "test1" , "cpwd" : "1234" , "cname" : "test1(주)" , "cphone" : "02-2113-5343" ,"cadress" : "test1" , "cemail" : "test1@naver.com", "cbusiness" :  "214-18-13306" , "file" : "profil1.jpg"}
+    public ResponseEntity<Boolean> signup(@ModelAttribute CompanyDto companyDto){
         System.out.println("companyDto = " + companyDto);
         System.out.println("CompanyController.signup");
+
         boolean result = companyService.signup(companyDto);
         if (result){
             return ResponseEntity.status(201).body(true);
@@ -89,7 +91,13 @@ public class CompanyController {
     }
 
 
-
-
+    // 5. 개발자 정보 수정
+    @PutMapping("/update")
+    public ResponseEntity<Boolean> onUpdate( @RequestHeader("Authorization") String token,
+                                             @ModelAttribute CompanyDto companyDto ){
+        CompanyDto result = companyService.onUpdate( token , companyDto);
+        if( result != null ){ return ResponseEntity.status( 200 ).body( true ); }
+        else{ return ResponseEntity.status( 400 ).body( false ); }
+    } // f end
 
 }

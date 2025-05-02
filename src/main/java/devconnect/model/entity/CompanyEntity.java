@@ -7,6 +7,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "company" )
@@ -52,8 +53,10 @@ public class CompanyEntity extends BaseTime {
                 .cadress(cadress)
                 .cemail(cemail)
                 .cbusiness(cbusiness)
-                .cprofile(cprofile)
                 .state(state)
+                .cprofile(this.cprofile)
+                .createAt(this.getCreateAt())
+                .updateAt(this.getUpdateAt())
                 .build();
     }
 

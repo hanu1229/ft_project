@@ -24,10 +24,10 @@ public class DeveloperController {
 
     // 1. 개발자 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<Boolean> signUp( @RequestBody DeveloperDto developerDto ){
+    public ResponseEntity<Boolean> signUp( @ModelAttribute DeveloperDto developerDto ){
         boolean result = developerService.signUp( developerDto );
-        if( result ){ return ResponseEntity.status( 201 ).body( true ); }
-        else{ return ResponseEntity.status( 201 ).body( true ); }
+        if( !result ){ return ResponseEntity.status( 400 ).body( false ); }
+        return ResponseEntity.status( 201 ).body( true );
     } // f end
 
 //    { "did" : "qwe123", "dpwd" : "qwe123" }
@@ -58,9 +58,13 @@ public class DeveloperController {
     // 5. 개발자 정보 수정
     @PutMapping("/update")
     public ResponseEntity<Boolean> onUpdate( @RequestHeader("Authorization") String token,
-                                             @RequestBody DeveloperDto developerDto ){
-        DeveloperDto result = developerService.onUpdate( token, developerDto );
-        if( result != null ){ return ResponseEntity.status( 200 ).body( true ); }
+                                             @ModelAttribute DeveloperDto developerDto ){
+        int logInDno;
+        try{ logInDno = developerService.info( token ).getDno();
+        }catch( Exception e ){ return ResponseEntity.status( 401 ).body( false ); }
+
+        boolean result = developerService.onUpdate( developerDto, logInDno );
+        if( result ){ return ResponseEntity.status( 200 ).body( true ); }
         else{ return ResponseEntity.status( 400 ).body( false ); }
     } // f end
 

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -18,13 +19,14 @@ public class DeveloperDto {
     private String dphone;
     private String daddress;
     private String demail;
-    private String dprofile;
+    private String dprofile; // 파일명
     private int dlevel;
     private int dcurrentExp;
     private int dtotalExp;
     private boolean dstate;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
+    private MultipartFile dfile; // .jpg / png /
 
     public DeveloperEntity toEntity(){
         return DeveloperEntity.builder()
