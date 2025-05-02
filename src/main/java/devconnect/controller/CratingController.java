@@ -1,6 +1,7 @@
 package devconnect.controller;
 
 import devconnect.model.dto.CratingDto;
+import devconnect.service.AdminService;
 import devconnect.service.CratingService;
 import devconnect.service.DeveloperService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class CratingController {
 
     private final CratingService cratingService;
     private final DeveloperService developerService;
+    private final AdminService adminService;
     
     // 기업 평가 등록
     // [POST] : http://localhost:8080/api/crating
@@ -60,11 +62,7 @@ public class CratingController {
             @RequestParam( defaultValue = "0" ) int dno,
             @RequestHeader("Authorization") String token ){
         System.out.println("CratingController.cratingList");
-        int loginDno;
-        try{
-            loginDno = developerService.info(token).getDno();
-        }catch (Exception e ){ return ResponseEntity.noContent().build(); }
-        Page<CratingDto> findAll = cratingService.cratingList( loginDno , page , size , keyword , dno );
+        Page<CratingDto> findAll = cratingService.cratingList( token , page , size , keyword , dno );
         if( findAll != null ){
             return ResponseEntity.ok( findAll );
         }else{
@@ -79,11 +77,7 @@ public class CratingController {
             @RequestHeader("Authorization") String token ,
             @RequestParam("crno") int crno ){
         System.out.println("CratingController.cratingView");
-        int loginDno;
-        try{
-            loginDno = developerService.info(token).getDno();
-        }catch (Exception e ) { return ResponseEntity.status(401).build(); }
-        CratingDto cratingDto = cratingService.cratingView( crno , loginDno );
+        CratingDto cratingDto = cratingService.cratingView( crno , token );
         if( cratingDto != null ){
             return ResponseEntity.status(200).body( cratingDto );
         }else{
@@ -100,11 +94,7 @@ public class CratingController {
             @RequestHeader("Authorization") String token ,
             @RequestBody CratingDto cratingDto ){
         System.out.println("CratingController.cratingUpdate");
-        int loginDno;
-        try{
-            loginDno = developerService.info(token).getDno();
-        }catch (Exception e ){ return ResponseEntity.status(400).body(false); }
-        boolean result = cratingService.cratingUpdate( cratingDto , loginDno );
+        boolean result = cratingService.cratingUpdate( cratingDto , token );
         if( result ){
             return ResponseEntity.status(201).body(true);
         }else{
@@ -119,17 +109,12 @@ public class CratingController {
             @RequestHeader("Authorization") String token ,
             @RequestParam("crno") int crno ){
         System.out.println("CratingController.cratingDelete");
-        int loginDno;
-        try{
-            loginDno = developerService.info(token).getDno();
-        }catch (Exception e ){ return ResponseEntity.status(400).body(false); }
-        boolean result = cratingService.cratingDelete( crno , loginDno );
+        boolean result = cratingService.cratingDelete( crno , token );
         if( result ){
             return ResponseEntity.status(201).body(true);
         }else{
             return ResponseEntity.status(400).body(false);
         } // if end
     } // f end
-    
-    
+
 } // c end
