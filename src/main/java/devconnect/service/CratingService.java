@@ -99,7 +99,7 @@ public class CratingService {
             CratingEntity cratingEntity = optional.get();
             // 기업을 수정 하는 dno와 기업을 등록했던 dno가 같은지 조건문
             String id = jwtUtil.valnoateToken(token);
-            String code = jwtUtil.temp(id);
+            String code = jwtUtil.returnCode(id);
             if( id == null || code == null ){ return false; }
             if( id.equals(cratingEntity.getDeveloperEntity().getDid() ) || code.equals("Admin") ) {
                 // dto에 입력한 값으로 Entity 수정
@@ -128,7 +128,7 @@ public class CratingService {
             CratingEntity cratingEntity = optional.get();
             // 평가를 등록했던 개발자와 삭제버튼을 누르는 개발자와 dno가 같은지 확인
             String id = jwtUtil.valnoateToken(token);
-            String code = jwtUtil.temp(id);
+            String code = jwtUtil.returnCode(id);
             if( id == null || code == null ){ return false; }
             if( id.equals(cratingEntity.getDeveloperEntity().getDid()) || code.equals("Admin") ) {
                 // Entity 객체에서 Drno를 찾아서 그걸 기반으로 데이터삭제

@@ -99,7 +99,7 @@ public class DratingService {
             DratingEntity dratingEntity = optional.get();
             // 수정하는 cno와 등록했던 cno가 같은지 조건문
             String id = jwtUtil.valnoateToken(token);
-            String code = jwtUtil.temp(id);
+            String code = jwtUtil.returnCode(id);
             if( id == null || code == null ){ return false; }
             if ( id.equals(dratingEntity.getProjectEntity().getCompanyEntity().getCid()) || code.equals("Admin") ) {
                 // 수정
@@ -128,7 +128,7 @@ public class DratingService {
             DratingEntity dratingEntity = optional.get();
             // 평가를 등록했던 기업과 삭제버튼을 누르는 기업의 cno가 같은지 확인 // 관리자 예외
             String id = jwtUtil.valnoateToken(token);
-            String code = jwtUtil.temp(id);
+            String code = jwtUtil.returnCode(id);
             if( id == null || code == null ){ return false; }
             if ( id.equals(dratingEntity.getProjectEntity().getCompanyEntity().getCid()) || code.equals("Admin") ) {
                 // 조회한 엔티티의 식별번호를 매개변수로 사용하여 삭제작업
