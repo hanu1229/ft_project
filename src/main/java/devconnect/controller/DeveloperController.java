@@ -27,7 +27,7 @@ public class DeveloperController {
     public ResponseEntity<Boolean> signUp( @RequestBody DeveloperDto developerDto ){
         boolean result = developerService.signUp( developerDto );
         if( result ){ return ResponseEntity.status( 201 ).body( true ); }
-        else{ return ResponseEntity.status( 201 ).body( true ); }
+        else{ return ResponseEntity.status( 400 ).body( false ); }
     } // f end
 
 //    { "did" : "qwe123", "dpwd" : "qwe123" }
