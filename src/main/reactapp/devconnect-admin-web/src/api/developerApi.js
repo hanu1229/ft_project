@@ -13,7 +13,7 @@ import axios from './axiosInstance'; // ✅ 공통 Axios 인스턴스 import
     응답 데이터: List<DeveloperDto>
 */
 export const getDeveloperList = () => {
-    return axios.get('/api/developer/findall');
+    return axios.get('/developer/findall');
 };
 
 // =======================================================================================
@@ -25,7 +25,7 @@ export const getDeveloperList = () => {
     응답 데이터: DeveloperDto
 */
 export const getDeveloperDetail = (dno) => {
-    return axios.get(`/api/developer/detail?dno=${dno}`);
+    return axios.get(`/developer/detail?dno=${dno}`);
 };
 
 // =======================================================================================
@@ -38,7 +38,7 @@ export const getDeveloperDetail = (dno) => {
     응답 데이터: Boolean
 */
 export const updateDeveloper = (token, developerDto) => {
-    return axios.put('/api/developer', developerDto, {
+    return axios.put('/developer', developerDto, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const updateDeveloper = (token, developerDto) => {
     응답 데이터: Boolean
 */
 export const updateDeveloperState = (token, dto) => {
-    return axios.put('/api/developer/state', dto, {
+    return axios.put('/developer/state', dto, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ export const updateDeveloperState = (token, dto) => {
     응답 데이터: Boolean
 */
 export const deleteDeveloper = (dno, token) => {
-    return axios.delete(`/api/developer?dno=${dno}`, {
+    return axios.delete(`/developer?dno=${dno}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },

@@ -26,7 +26,7 @@ export const getDratingList = () => {
     응답 데이터: DratingDto
 */
 export const getDratingDetail = (drno, token) => {
-    return axios.get(`/api/drating/detail?drno=${drno}`, {
+    return axios.get(`/drating/detail?drno=${drno}`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
@@ -41,7 +41,7 @@ export const getDratingDetail = (drno, token) => {
     응답 데이터: Boolean
 */
 export const approveDrating = (drno, token) => {
-    return axios.put(`/api/drating/approve?drno=${drno}`, null, {
+    return axios.put(`/drating/approve?drno=${drno}`, null, {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
@@ -56,7 +56,7 @@ export const approveDrating = (drno, token) => {
     응답 데이터: Boolean
 */
 export const updateDrating = (token, dratingDto) => {
-    return axios.put('/api/drating', dratingDto, {
+    return axios.put('/drating', dratingDto, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ export const updateDrating = (token, dratingDto) => {
     응답 데이터: Boolean
 */
 export const deleteDrating = (drno, token) => {
-    return axios.delete(`/api/drating?drno=${drno}`, {
+    return axios.delete(`/drating?drno=${drno}`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 };

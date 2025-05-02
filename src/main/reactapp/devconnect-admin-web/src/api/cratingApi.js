@@ -13,7 +13,7 @@ import axios from './axiosInstance'; // ✅ 공통 Axios 인스턴스 사용
     응답 데이터: List<CratingDto>
 */
 export const getCratingList = () => {
-    return axios.get('/api/crating');
+    return axios.get('/crating');
 };
 
 // =======================================================================================
@@ -26,7 +26,7 @@ export const getCratingList = () => {
     응답 데이터: CratingDto
 */
 export const getCratingDetail = (crno, token) => {
-    return axios.get(`/api/crating/detail?crno=${crno}`, {
+    return axios.get(`/crating/detail?crno=${crno}`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
@@ -41,7 +41,7 @@ export const getCratingDetail = (crno, token) => {
     응답 데이터: Boolean
 */
 export const approveCrating = (crno, token) => {
-    return axios.put(`/api/crating/approve?crno=${crno}`, null, {
+    return axios.put(`/crating/approve?crno=${crno}`, null, {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
@@ -56,7 +56,7 @@ export const approveCrating = (crno, token) => {
     응답 데이터: Boolean
 */
 export const updateCrating = (token, cratingDto) => {
-    return axios.put('/api/crating', cratingDto, {
+    return axios.put('/crating', cratingDto, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ export const updateCrating = (token, cratingDto) => {
     응답 데이터: Boolean
 */
 export const deleteCrating = (crno, token) => {
-    return axios.delete(`/api/crating?crno=${crno}`, {
+    return axios.delete(`/crating?crno=${crno}`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 };

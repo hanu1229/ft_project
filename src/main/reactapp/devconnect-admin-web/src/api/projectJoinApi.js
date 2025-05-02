@@ -9,25 +9,25 @@ import axios from './axiosInstance'; // ✅ 공통 Axios 인스턴스 사용
 // ✅ 1. 전체 신청 목록 조회
 /*
     매핑 방식: GET
-    요청 URL: /api/project-join
+    요청 URL: /project_join
     요청 파라미터: 없음
     응답 데이터: List<ProjectJoinDto>
 */
 export const getProjectJoinList = () => {
-    return axios.get('/api/project-join');
+    return axios.get('/project_join');
 };
 
 // =======================================================================================
 // ✅ 2. 신청 상세 조회
 /*
     매핑 방식: GET
-    요청 URL: /api/project-join/detail?pjno={pjno}
+    요청 URL: /project-join/detail?pjno={pjno}
     요청 파라미터: pjno (신청 고유 번호)
     요청 헤더: Authorization: Bearer {token}
     응답 데이터: ProjectJoinDto
 */
 export const getProjectJoinDetail = (pjno, token) => {
-    return axios.get(`/api/project-join/detail?pjno=${pjno}`, {
+    return axios.get(`/project_join/detail?pjno=${pjno}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -38,13 +38,13 @@ export const getProjectJoinDetail = (pjno, token) => {
 // ✅ 3. 신청 상태 수정
 /*
     매핑 방식: PUT
-    요청 URL: /api/project-join
+    요청 URL: /project-join
     요청 데이터: ProjectJoinDto (pjno, pjtype 등 포함)
     요청 헤더: Authorization: Bearer {token}, Content-Type: application/json
     응답 데이터: Boolean
 */
 export const updateProjectJoin = (token, projectJoinDto) => {
-    return axios.put('/api/project-join', projectJoinDto, {
+    return axios.put('/project-join', projectJoinDto, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export const updateProjectJoin = (token, projectJoinDto) => {
     응답 데이터: Boolean
 */
 export const deleteProjectJoin = (pjno, token) => {
-    return axios.delete(`/api/project-join?pjno=${pjno}`, {
+    return axios.delete(`/project-join?pjno=${pjno}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
