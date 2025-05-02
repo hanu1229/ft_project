@@ -32,7 +32,7 @@ export const createProject = (token, formData) => {
     응답 데이터: List<ProjectDto>
 */
 export const getProjectList = () => {
-    return axios.get('/api/project');
+    return axios.get('/project');
 };
 
 // =======================================================================================
@@ -44,7 +44,7 @@ export const getProjectList = () => {
     응답 데이터: List<ProjectDto>
 */
 export const getPagingProjects = (page = 0, size = 5) => {
-    return axios.get('/api/project/paging', {
+    return axios.get('/project/paging', {
         params: { page, size },
     });
 };
@@ -59,7 +59,7 @@ export const getPagingProjects = (page = 0, size = 5) => {
     응답 데이터: ProjectDto
 */
 export const getProjectDetail = (token, pno) => {
-    return axios.get('/api/project/detail', {
+    return axios.get('/project/detail', {
         headers: { Authorization: `Bearer ${token}` },
         params: { pno },
     });
@@ -75,7 +75,7 @@ export const getProjectDetail = (token, pno) => {
     응답 데이터: Boolean
 */
 export const updateProject = (token, projectDto) => {
-    return axios.put('/api/project', projectDto, {
+    return axios.put('/project', projectDto, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ export const updateProject = (token, projectDto) => {
     응답 데이터: Boolean
 */
 export const deleteProject = (token, pno) => {
-    return axios.delete('/api/project', {
+    return axios.delete('/project', {
         headers: { Authorization: `Bearer ${token}` },
         params: { pno },
     });

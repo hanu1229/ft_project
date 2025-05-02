@@ -14,7 +14,7 @@ import axios from './axiosInstance'; // ✅ 공통 Axios 인스턴스
     - 응답 데이터: Boolean
 */
 export const signupAdmin = (adminDto) => {
-    return axios.post('/api/admin/signup', adminDto, {
+    return axios.post('/admin/signup', adminDto, {
         headers: { 'Content-Type': 'application/json' },
     });
 };
@@ -28,7 +28,7 @@ export const signupAdmin = (adminDto) => {
     - 응답 데이터: String (JWT 토큰)
 */
 export const adminLogin = (adminLoginDto) => {
-    return axios.post('/api/admin/login', adminLoginDto, {
+    return axios.post('/admin/login', adminLoginDto, {
         headers: { 'Content-Type': 'application/json' },
     });
 };
@@ -42,7 +42,7 @@ export const adminLogin = (adminLoginDto) => {
     - 응답 데이터: AdminDto
 */
 export const getAdminInfo = (token) => {
-    return axios.get('/api/admin/info', {
+    return axios.get('/admin/info', {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
@@ -55,7 +55,7 @@ export const getAdminInfo = (token) => {
     - 응답 데이터: List<AdminDto>
 */
 export const getAdminList = () => {
-    return axios.get('/api/admin/allinfo');
+    return axios.get('/admin/allinfo');
 };
 
 // =======================================================================================
@@ -68,7 +68,7 @@ export const getAdminList = () => {
     - 응답 데이터: Boolean
 */
 export const updateAdmin = (token, formData) => {
-    return axios.put('/api/admin/update', formData, {
+    return axios.put('/admin/update', formData, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
@@ -85,7 +85,7 @@ export const updateAdmin = (token, formData) => {
     - 응답 데이터: Boolean
 */
 export const deleteAdmin = (adid) => {
-    return axios.put(`/api/admin/delete?adid=${adid}`);
+    return axios.put(`/admin/delete?adid=${adid}`);
 };
 
 // =======================================================================================
@@ -97,7 +97,7 @@ export const deleteAdmin = (adid) => {
     - 응답 데이터: 없음 (204 No Content)
 */
 export const logoutAdmin = (token) => {
-    return axios.get('/api/admin/logout', {
+    return axios.get('/admin/logout', {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
@@ -110,7 +110,7 @@ export const logoutAdmin = (token) => {
     - 응답 데이터: Map<String, Object>
 */
 export const getDashboardStats = () => {
-    return axios.get('/api/admin/stats');
+    return axios.get('/admin/stats');
 };
 
 // =======================================================================================
@@ -121,7 +121,7 @@ export const getDashboardStats = () => {
     - 응답 데이터: Map<String, Object> (companies, developers, projects)
 */
 export const getRecentApprovedList = () => {
-    return axios.get('/api/admin/recent-approved');
+    return axios.get('/admin/recent-approved');
 };
 
 // =======================================================================================
@@ -132,7 +132,7 @@ export const getRecentApprovedList = () => {
     - 응답 데이터: List<Map<String, Object>>
 */
 export const getMonthlyJoinStats = () => {
-    return axios.get('/api/admin/monthly-join');
+    return axios.get('/admin/monthly-join');
 };
 
 // =======================================================================================
@@ -144,7 +144,7 @@ export const getMonthlyJoinStats = () => {
     - 응답 데이터: Map<String, Integer>
 */
 export const getLoginCountAll = () => {
-    return axios.get('/api/admin/login/count/all');
+    return axios.get('/admin/login/count/all');
 };
 
 // =======================================================================================
@@ -156,7 +156,7 @@ export const getLoginCountAll = () => {
     - 응답 데이터: { status: String, timestamp: String }
 */
 export const getRedisStatus = (token) => {
-    return axios.get('/api/admin/redis-status', {
+    return axios.get('/admin/redis-status', {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
