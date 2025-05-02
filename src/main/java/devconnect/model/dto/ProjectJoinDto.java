@@ -25,10 +25,14 @@ public class ProjectJoinDto {
     // 수정일
     private LocalDateTime updateAt;
 
+    // join 정보 가져오기
+    private ProjectDto project;
+
     /// Dto --> Entity
     public ProjectJoinEntity toEntity() {
         return ProjectJoinEntity.builder()
-                .pjno(this.pjno).pjtype(this.pjtype)
+                .pjno(this.pjno)
+                .pjtype(this.pjtype)
                 .build();
     }
 

@@ -6,6 +6,10 @@ import devconnect.model.repository.*;
 import devconnect.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -108,6 +112,21 @@ public class ProjectJoinService {
         if(projectJoinEntity == null) { return false; }
         projectJoinRepository.deleteById(pjno);
         return true;
+    }
+
+    /* 희만 코드 추가 */
+    // 로그인한 회원 전체 조회
+    public Page<ProjectJoinDto> findByDno(
+            int logInDno, Integer pno, int page, int size, String keyword ){
+        System.out.println("ProjectJoinService.findByDno");
+        System.out.println("logInDno = " + logInDno + ", pno = " + pno + ", page = " + page + ", size = " + size + ", keyword = " + keyword );
+
+        Pageable pageable = PageRequest.of( page-1, size, Sort.by(Sort.Direction.DESC, "pjno") );
+
+        Page< ProjectJoinEntity > projectJoinEntities = projectJoinRepository.findBySearch( logInDno, keyword, pageable );
+
+        Page< ProjectJoinDto > projectJoinDtoList = projectJoinEntities.map( ProjectJoinEntity::toFindAllDto );
+        return projectJoinDtoList;
     }
 
 }
