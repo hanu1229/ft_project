@@ -19,20 +19,27 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Service // [A] 이 클래스가 서비스 컴포넌트임을 명시
 @Transactional // [B] 트랜잭션 처리 적용 (롤백 포함)
 @RequiredArgsConstructor // [C] 생성자 기반 의존성 주입
 public class AdminService { // CS
 
+    // =======================================================================================
     // [*] 의존성 주입 필드
-    private final AdminEntityRepository adminEntityRepository;
-    private final StringRedisTemplate stringRedisTemplate;
-    private final JwtUtil jwtUtil;
+
+    private final AdminEntityRepository adminEntityRepository; // [1] 관리자 레포지토리
+    private final StringRedisTemplate stringRedisTemplate;     // [2] Redis 템플릿
+    private final JwtUtil jwtUtil;                             // [3] JWT 유틸
+
+    @PersistenceContext // [4] JPA 쿼리용 EntityManager 수동 주입
+    private EntityManager em; // [5] 직접 JPQL 쿼리 수행용
 
     // =======================================================================================
     // [1] 관리자 회원가입 기능
@@ -142,6 +149,53 @@ public class AdminService { // CS
         entity.setAdphone(dto.getAdphone()); // (3) 전화번호 수정
         adminEntityRepository.save(entity); // (4) 저장
         return true;
+    } // fe
+
+    // =======================================================================================
+    // [*] 전체 통계 조회 (기업/개발자/프로젝트/참여/평가)
+    public Map<String, Object> getDashboardStats() { // fs
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("companyCount", em.createQuery("SELECT COUNT(c) FROM CompanyEntity c", Long.class).getSingleResult());
+        map.put("developerCount", em.createQuery("SELECT COUNT(d) FROM DeveloperEntity d", Long.class).getSingleResult());
+        map.put("projectCount", em.createQuery("SELECT COUNT(p) FROM ProjectEntity p", Long.class).getSingleResult());
+        map.put("projectJoinCount", em.createQuery("SELECT COUNT(pj) FROM ProjectJoinEntity pj", Long.class).getSingleResult());
+        map.put("cratingCount", em.createQuery("SELECT COUNT(c) FROM CratingEntity c", Long.class).getSingleResult());
+        map.put("dratingCount", em.createQuery("SELECT COUNT(d) FROM DratingEntity d", Long.class).getSingleResult());
+
+        return map;
+    } // fe
+
+    // =======================================================================================
+    // [*] 최근 승인된 항목 5개씩 추출 (기업/개발자/프로젝트)
+    public Map<String, Object> getRecentApprovedList() { // fs
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("companies", em.createQuery("SELECT c FROM CompanyEntity c WHERE c.cstate = 1 ORDER BY c.updateAt DESC", Object.class)
+                .setMaxResults(5).getResultList());
+        result.put("developers", em.createQuery("SELECT d FROM DeveloperEntity d WHERE d.dstate = 1 ORDER BY d.updateAt DESC", Object.class)
+                .setMaxResults(5).getResultList());
+        result.put("projects", em.createQuery("SELECT p FROM ProjectEntity p ORDER BY p.createAt DESC", Object.class)
+                .setMaxResults(5).getResultList());
+
+        return result;
+    } // fe
+
+    // =======================================================================================
+    // [*] 월별 프로젝트 참여 수 통계 (LineChart용)
+    public List<Map<String, Object>> getMonthlyJoinStats() { // fs
+        List<Object[]> rows = em.createQuery(
+                "SELECT FUNCTION('DATE_FORMAT', pj.pjtime, '%Y-%m') AS month, COUNT(pj) FROM ProjectJoinEntity pj GROUP BY month ORDER BY month",
+                Object[].class).getResultList();
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Object[] row : rows) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("month", row[0]);
+            map.put("joins", row[1]);
+            result.add(map);
+        }
+        return result;
     } // fe
 
 } // CE

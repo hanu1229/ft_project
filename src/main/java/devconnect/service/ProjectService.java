@@ -144,7 +144,7 @@ public class ProjectService {
         System.out.println("pno = " + pno + ", token = \n" + token);
         // 토큰의 데이터에 있는 회사가 있는지 확인하는 부분
         String id = jwtUtil.valnoateToken(token);
-        String code = jwtUtil.temp(id);
+        String code = jwtUtil.returnCode(id);
         if(code.equals("Company")) {
             Optional<ProjectEntity> optional = projectRepository.findById(pno);
             if(optional.isPresent()) {

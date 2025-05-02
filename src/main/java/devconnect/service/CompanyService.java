@@ -1,7 +1,9 @@
 package devconnect.service;
 
 import devconnect.model.dto.CompanyDto;
+import devconnect.model.dto.DeveloperDto;
 import devconnect.model.entity.CompanyEntity;
+import devconnect.model.entity.DeveloperEntity;
 import devconnect.model.repository.CompanyRepository;
 import devconnect.util.FileUtil;
 import devconnect.util.JwtUtil;
@@ -35,7 +37,7 @@ public class CompanyService {
         // 1. 파일 처리 로직
         String saveFileName = null;
 
-        MultipartFile cprofileFile = companyDto.getCprofile();// dto에서 MultipartFile 가져옴
+        MultipartFile cprofileFile = companyDto.getFile();// dto에서 MultipartFile 가져옴
 
          if (cprofileFile != null && !cprofileFile.isEmpty()){
              //FileUtile의 fileUpload 메서드를 사용하여 파일 저장
@@ -139,6 +141,27 @@ public class CompanyService {
 
         return true;
     }
+
+    // 6. 회원정보 수정
+    public CompanyDto onUpdate(String token,
+                                 CompanyDto companyDto ){
+        String cid = jwtUtil.valnoateToken( token );
+
+        if( cid == null ){ return null; }
+       CompanyEntity companyEntity = companyRepository.findByCid(cid);
+
+        BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
+        boolean result = pwdEncoder.matches( companyDto.getCpwd(), companyEntity.getCpwd() );
+
+        // 비밀번호 확인
+        if( !result ){ return null; }
+
+        companyEntity.setCphone( companyDto.getCphone() );
+        companyEntity.setCemail(companyDto.getCemail());
+        companyEntity.setCadress(companyDto.getCadress());
+
+        return companyEntity.toDto();
+    } // f end
 
 
 }
