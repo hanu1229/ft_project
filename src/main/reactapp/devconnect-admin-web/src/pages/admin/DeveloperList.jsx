@@ -1,12 +1,15 @@
+// =======================================================================================
 // DeveloperList.jsx | rw 25-05-02 최종 리팩토링
-// [설명] 관리자 전용 개발자 목록 조회 화면
-//        - Joy UI + 넷플릭스 블랙&핑크 테마 적용
-//        - 상세보기, 삭제(확인 모달 포함) 기능 제공
+// [설명]
+// - 관리자 전용 개발자 전체 목록 페이지
+// - Joy UI + ChatGPT 스타일: 흰 배경 + 절제된 민트/회색 UI
+// - 삭제 확인 모달, 상세보기 라우팅 포함
+// =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDeveloperList, deleteDeveloper } from '../../api/developerApi';
-import AdminLayout from '../../layouts/AdminLayout';
+
 import {
     Typography,
     Grid,
@@ -20,12 +23,14 @@ import {
 } from '@mui/joy';
 
 export default function DeveloperList() {
-    const [list, setList] = useState([]);              // 전체 개발자 목록
-    const [deleteTarget, setDeleteTarget] = useState(null); // 삭제 대상
-    const [open, setOpen] = useState(false);           // 삭제 확인 모달
+    const [list, setList] = useState([]);                  // ✅ 전체 개발자 목록
+    const [deleteTarget, setDeleteTarget] = useState(null); // ✅ 삭제 대상 dno
+    const [open, setOpen] = useState(false);               // ✅ 모달 열림 여부
     const navigate = useNavigate();
 
-    // ✅ 전체 개발자 목록 불러오기
+    // =======================================================================================
+    // ✅ 전체 개발자 목록 불러오기 (최초 마운트 시 1회)
+    // =======================================================================================
     useEffect(() => {
         const fetchList = async () => {
             try {
@@ -33,12 +38,15 @@ export default function DeveloperList() {
                 setList(res.data);
             } catch (err) {
                 alert('개발자 목록 조회 실패');
+                console.error(err);
             }
         };
         fetchList();
     }, []);
 
+    // =======================================================================================
     // ✅ 삭제 확정 처리
+    // =======================================================================================
     const handleDeleteConfirm = async () => {
         const token = localStorage.getItem('token');
         try {
@@ -55,30 +63,35 @@ export default function DeveloperList() {
         }
     };
 
+    // =======================================================================================
+    // ✅ 렌더링
+    // =======================================================================================
     return (
-        <div>
-            {/* 타이틀 */}
-            <Typography level="h3" sx={{ mb: 3, color: '#ff4081', fontWeight: 'bold' }}>
+        <Box sx={{ bgcolor: '#ffffff', color: '#212529', px: 3, py: 3 }}>
+            {/* ✅ 페이지 타이틀 */}
+            <Typography level="h3" sx={{ mb: 3, fontWeight: 'bold', color: '#12b886' }}>
                 👨‍💻 개발자 목록
             </Typography>
 
-            {/* 개발자 카드 목록 */}
+            {/* ✅ 카드 목록 */}
             <Grid container spacing={2}>
                 {list.map((dev) => (
                     <Grid key={dev.dno} xs={12} md={6} lg={4}>
                         <Card
                             variant="outlined"
                             sx={{
-                                bgcolor: '#1e1e1e',
-                                color: '#fff',
-                                borderColor: '#ff4081',
-                                boxShadow: '0 0 10px rgba(255,64,129,0.2)'
+                                bgcolor: '#f8f9fa',
+                                borderColor: '#dee2e6',
+                                color: '#212529',
+                                '&:hover': { boxShadow: 'lg' }
                             }}
                         >
-                            <Typography level="title-md" sx={{ color: '#ff4081' }}>
+                            <Typography level="title-md" sx={{ color: '#087f5b' }}>
                                 개발자번호: {dev.dno}
                             </Typography>
-                            <Divider sx={{ my: 1, borderColor: '#333' }} />
+
+                            <Divider sx={{ my: 1, borderColor: '#ced4da' }} />
+
                             <Box sx={{ fontSize: 14 }}>
                                 <p><strong>아이디:</strong> {dev.did}</p>
                                 <p><strong>이름:</strong> {dev.dname}</p>
@@ -90,9 +103,13 @@ export default function DeveloperList() {
                                     onClick={() => navigate(`/admin/developer/${dev.dno}`)}
                                     variant="outlined"
                                     sx={{
-                                        borderColor: '#ff4081',
-                                        color: '#ff4081',
-                                        '&:hover': { bgcolor: '#ff4081', color: '#000' }
+                                        borderColor: '#087f5b',
+                                        color: '#087f5b',
+                                        fontWeight: 'bold',
+                                        '&:hover': {
+                                            bgcolor: '#087f5b',
+                                            color: '#fff'
+                                        }
                                     }}
                                 >
                                     상세보기
@@ -112,26 +129,30 @@ export default function DeveloperList() {
                 ))}
             </Grid>
 
-            {/* 삭제 확인 모달 */}
+            {/* ✅ 삭제 확인 모달 */}
             <Modal open={open} onClose={() => setOpen(false)}>
                 <ModalDialog
                     variant="outlined"
                     role="alertdialog"
-                    sx={{ bgcolor: '#1e1e1e', color: '#fff' }}
+                    sx={{
+                        bgcolor: '#fff',
+                        color: '#212529',
+                        borderColor: '#ff6b6b'
+                    }}
                 >
                     <ModalClose />
-                    <Typography level="h4" sx={{ color: '#ff4081' }}>
+                    <Typography level="h4" sx={{ color: '#ff6b6b', fontWeight: 'bold' }}>
                         정말 삭제하시겠습니까?
                     </Typography>
                     <Typography level="body-sm" sx={{ my: 1 }}>
                         삭제된 개발자 정보는 복구할 수 없습니다.
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                        <Button variant="soft" onClick={() => setOpen(false)}>취소</Button>
+                        <Button variant="plain" onClick={() => setOpen(false)}>취소</Button>
                         <Button color="danger" onClick={handleDeleteConfirm}>삭제</Button>
                     </Box>
                 </ModalDialog>
             </Modal>
-        </div>
+        </Box>
     );
 }

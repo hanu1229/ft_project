@@ -7,29 +7,33 @@
 // =======================================================================================
 
 // ✅ [1] 필수 모듈 import
-import axios from 'axios';                     // Axios 라이브러리
-import { getToken } from '../utils/tokenUtil'; // JWT 토큰 유틸 함수
+import axios from 'axios';                      // Axios 기본 라이브러리
+import { getToken } from '../utils/tokenUtil';  // JWT 토큰 추출 유틸
 
 // =======================================================================================
 // ✅ [2] Axios 인스턴스 생성
-// - baseURL: 모든 API 요청의 공통 prefix 지정
-// - headers: 기본 Content-Type을 JSON으로 설정
-// =======================================================================================
+/*
+    baseURL: 모든 API 요청의 공통 접두 경로 설정
+    headers: 기본 요청 헤더 Content-Type 지정
+    주의사항: 실제 요청 URL에는 /api/ 까지만 포함하고,
+             각 api/*.js 파일에서 상대 경로만 덧붙이도록 구성
+*/
 const instance = axios.create({
-    baseURL: 'http://localhost:8080/api',        // [공통 prefix] 모든 API는 /api 하위에서 동작
+    baseURL: 'http://localhost:8080/api',  // 모든 요청은 /api 하위에서 전송됨
     headers: {
-        'Content-Type': 'application/json',     // [기본] JSON 요청 처리
+        'Content-Type': 'application/json',  // 기본 JSON 전송 형식
     },
 });
 
 // =======================================================================================
 // ✅ [3] 요청 인터셉터 설정
-// - 매 요청마다 로컬스토리지에 저장된 JWT 토큰을 Authorization 헤더에 자동 삽입
-// - 토큰이 없을 경우 Authorization 헤더를 생략하여 Spring Security 오류 방지
-// =======================================================================================
+/*
+    - 요청 시마다 로컬스토리지에 저장된 토큰을 자동으로 헤더에 삽입
+    - 토큰이 없을 경우 Authorization 생략 → Spring Security 예외 방지
+*/
 instance.interceptors.request.use(
     (config) => {
-        const token = getToken();
+        const token = getToken(); // JWT 토큰 로드
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -39,7 +43,9 @@ instance.interceptors.request.use(
 );
 
 // =======================================================================================
-// ✅ [4] 인스턴스 export
-// - 각 api/*.js 파일에서 import 하여 사용 가능
-// =======================================================================================
+// ✅ [4] Axios 인스턴스 export
+/*
+    - 각 API 모듈에서 import 하여 공통 인스턴스 사용
+    - ex) import axios from './axiosInstance';
+*/
 export default instance;

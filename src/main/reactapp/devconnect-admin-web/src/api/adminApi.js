@@ -1,12 +1,14 @@
+// =======================================================================================
 // adminApi.js | rw 25-05-02 최종 리팩토링
-// [설명] 관리자(Admin) 관련 API 요청 함수 모음
-//        - 공통 Axios 인스턴스를 통한 HTTP 요청 처리
-//        - 각 함수별 매핑 방식, 요청/응답 데이터 구조 명시
+// [설명]
+// - 관리자(Admin) 관련 API 요청 함수 모음
+// - 모든 요청 URL은 axiosInstance.js의 baseURL(`/api`) 기준 상대경로로 작성됨
+// =======================================================================================
 
 import axios from './axiosInstance'; // ✅ 공통 Axios 인스턴스
 
 // =======================================================================================
-// ✅ 1. 관리자 회원가입
+// ✅ 1. 관리자 회원가입 요청
 /*
     - 매핑 방식: POST
     - 요청 URL: /api/admin/signup
@@ -14,13 +16,11 @@ import axios from './axiosInstance'; // ✅ 공통 Axios 인스턴스
     - 응답 데이터: Boolean
 */
 export const signupAdmin = (adminDto) => {
-    return axios.post('/admin/signup', adminDto, {
-        headers: { 'Content-Type': 'application/json' },
-    });
+    return axios.post('/admin/signup', adminDto);
 };
 
 // =======================================================================================
-// ✅ 2. 관리자 로그인
+// ✅ 2. 관리자 로그인 요청
 /*
     - 매핑 방식: POST
     - 요청 URL: /api/admin/login
@@ -28,13 +28,11 @@ export const signupAdmin = (adminDto) => {
     - 응답 데이터: String (JWT 토큰)
 */
 export const adminLogin = (adminLoginDto) => {
-    return axios.post('/admin/login', adminLoginDto, {
-        headers: { 'Content-Type': 'application/json' },
-    });
+    return axios.post('/admin/login', adminLoginDto);
 };
 
 // =======================================================================================
-// ✅ 3. 관리자 본인 정보 조회
+// ✅ 3. 로그인 관리자 본인 정보 조회
 /*
     - 매핑 방식: GET
     - 요청 URL: /api/admin/info
@@ -64,7 +62,7 @@ export const getAdminList = () => {
     - 매핑 방식: PUT
     - 요청 URL: /api/admin/update
     - 요청 헤더: Authorization: Bearer {token}
-    - 요청 데이터: FormData (AdminDto 포함)
+    - 요청 데이터: FormData (adname, adphone 등)
     - 응답 데이터: Boolean
 */
 export const updateAdmin = (token, formData) => {
@@ -80,7 +78,7 @@ export const updateAdmin = (token, formData) => {
 // ✅ 6. 관리자 삭제 요청
 /*
     - 매핑 방식: PUT
-    - 요청 URL: /api/admin/delete?adid=xxx
+    - 요청 URL: /api/admin/delete?adid=admin01
     - 요청 파라미터: adid (String)
     - 응답 데이터: Boolean
 */
@@ -89,7 +87,7 @@ export const deleteAdmin = (adid) => {
 };
 
 // =======================================================================================
-// ✅ 7. 관리자 로그아웃
+// ✅ 7. 관리자 로그아웃 요청
 /*
     - 매핑 방식: GET
     - 요청 URL: /api/admin/logout
@@ -103,33 +101,35 @@ export const logoutAdmin = (token) => {
 };
 
 // =======================================================================================
-// ✅ 8. 대시보드 통계 카드 조회
+// ✅ 8. 관리자 대시보드 통계 조회
 /*
     - 매핑 방식: GET
     - 요청 URL: /api/admin/stats
     - 응답 데이터: Map<String, Object>
+      ex) { companyCount: 5, developerCount: 10, ... }
 */
 export const getDashboardStats = () => {
     return axios.get('/admin/stats');
 };
 
 // =======================================================================================
-// ✅ 9. 최근 승인 항목 조회
+// ✅ 9. 최근 승인 항목 리스트 조회
 /*
     - 매핑 방식: GET
     - 요청 URL: /api/admin/recent-approved
-    - 응답 데이터: Map<String, Object> (companies, developers, projects)
+    - 응답 데이터: Map<String, List<Object>>
+      ex) { companies: [...], developers: [...], projects: [...] }
 */
 export const getRecentApprovedList = () => {
     return axios.get('/admin/recent-approved');
 };
 
 // =======================================================================================
-// ✅ 10. 월별 프로젝트 참여 수 통계
+// ✅ 10. 월별 프로젝트 참여 수 통계 조회
 /*
     - 매핑 방식: GET
     - 요청 URL: /api/admin/monthly-join
-    - 응답 데이터: List<Map<String, Object>>
+    - 응답 데이터: List<{ month: String, joins: Number }>
 */
 export const getMonthlyJoinStats = () => {
     return axios.get('/admin/monthly-join');
@@ -140,20 +140,20 @@ export const getMonthlyJoinStats = () => {
 /*
     - 매핑 방식: GET
     - 요청 URL: /api/admin/login/count/all
-    - 설명: 관리자, 기업, 개발자 최근 24시간 로그인 수 통합 조회
     - 응답 데이터: Map<String, Integer>
+      ex) { admin: 3, company: 6, developer: 9 }
 */
 export const getLoginCountAll = () => {
     return axios.get('/admin/login/count/all');
 };
 
 // =======================================================================================
-// ⚠️ 12. Redis 상태 확인 (옵션)
+// ✅ 12. Redis 상태 확인 (선택 기능)
 /*
     - 매핑 방식: GET
     - 요청 URL: /api/admin/redis-status
     - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: { status: String, timestamp: String }
+    - 응답 데이터: { status: "CONNECTED", timestamp: ... }
 */
 export const getRedisStatus = (token) => {
     return axios.get('/admin/redis-status', {

@@ -1,59 +1,69 @@
+// =======================================================================================
 // cratingApi.js | rw 25-05-02 최종 리팩토링
-// [설명] 기업 평가(Crating) 관련 API 요청 함수 모음
-//        - 관리자 전용 기능 중심 (승인, 수정, 삭제 포함)
-//        - 모든 요청은 공통 axios 인스턴스를 통해 처리됨
+// [설명]
+// - 기업 평가(Crating) 관련 관리자/개발자 전용 API 요청 함수 모음
+// - 공통 Axios 인스턴스를 통해 모든 /api/crating 하위 요청 처리
+// =======================================================================================
 
-import axios from './axiosInstance'; // ✅ 공통 Axios 인스턴스 사용
+import axios from './axiosInstance'; // ✅ baseURL: /api 기준
 
 // =======================================================================================
-// ✅ 1. 전체 기업 평가 목록 조회
+// ✅ 1. 기업 평가 전체 목록 조회 (개발자 전용)
 /*
-    요청 방식: GET
-    요청 URL: /api/crating
-    응답 데이터: List<CratingDto>
+    - 매핑 방식: GET
+    - 요청 URL: /api/crating
+    - 요청 헤더: Authorization: Bearer {token}
+    - 요청 파라미터: page, size, keyword, dno (optional)
+    - 응답 데이터: Page<CratingDto>
 */
-export const getCratingList = () => {
-    return axios.get('/crating');
-};
-
-// =======================================================================================
-// ✅ 2. 기업 평가 상세 조회
-/*
-    요청 방식: GET
-    요청 URL: /api/crating/detail?crno={crno}
-    요청 파라미터: crno (기업 평가 고유 번호)
-    요청 헤더: Authorization: Bearer {token}
-    응답 데이터: CratingDto
-*/
-export const getCratingDetail = (crno, token) => {
-    return axios.get(`/crating/detail?crno=${crno}`, {
+export const getCratingList = (token, { page = 1, size = 5, keyword = '', dno = 0 }) => {
+    return axios.get('/crating', {
         headers: { Authorization: `Bearer ${token}` },
+        params: { page, size, keyword, dno },
     });
 };
 
 // =======================================================================================
-// ✅ 3. 기업 평가 승인 요청
+// ✅ 2. 기업 평가 개별 상세 조회
 /*
-    요청 방식: PUT
-    요청 URL: /api/crating/approve?crno={crno}
-    요청 파라미터: crno (기업 평가 고유 번호)
-    요청 헤더: Authorization: Bearer {token}
-    응답 데이터: Boolean
+    - 매핑 방식: GET
+    - 요청 URL: /api/crating/view?crno=123
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: CratingDto
 */
-export const approveCrating = (crno, token) => {
-    return axios.put(`/crating/approve?crno=${crno}`, null, {
+export const getCratingDetail = (token, crno) => {
+    return axios.get(`/crating/view`, {
         headers: { Authorization: `Bearer ${token}` },
+        params: { crno },
+    });
+};
+
+// =======================================================================================
+// ✅ 3. 기업 평가 등록 요청
+/*
+    - 매핑 방식: POST
+    - 요청 URL: /api/crating
+    - 요청 헤더: Authorization: Bearer {token}
+    - 요청 데이터: CratingDto (crscore, pno, dno 포함)
+    - 응답 데이터: Boolean
+*/
+export const createCrating = (token, cratingDto) => {
+    return axios.post('/crating', cratingDto, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
     });
 };
 
 // =======================================================================================
 // ✅ 4. 기업 평가 수정 요청
 /*
-    요청 방식: PUT
-    요청 URL: /api/crating
-    요청 데이터: CratingDto (RequestBody)
-    요청 헤더: Authorization: Bearer {token}, Content-Type: application/json
-    응답 데이터: Boolean
+    - 매핑 방식: PUT
+    - 요청 URL: /api/crating
+    - 요청 헤더: Authorization: Bearer {token}
+    - 요청 데이터: CratingDto (crno 필수)
+    - 응답 데이터: Boolean
 */
 export const updateCrating = (token, cratingDto) => {
     return axios.put('/crating', cratingDto, {
@@ -67,14 +77,14 @@ export const updateCrating = (token, cratingDto) => {
 // =======================================================================================
 // ✅ 5. 기업 평가 삭제 요청
 /*
-    요청 방식: DELETE
-    요청 URL: /api/crating?crno={crno}
-    요청 파라미터: crno (기업 평가 고유 번호)
-    요청 헤더: Authorization: Bearer {token}
-    응답 데이터: Boolean
+    - 매핑 방식: DELETE
+    - 요청 URL: /api/crating?crno=123
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: Boolean
 */
-export const deleteCrating = (crno, token) => {
-    return axios.delete(`/crating?crno=${crno}`, {
+export const deleteCrating = (token, crno) => {
+    return axios.delete('/crating', {
         headers: { Authorization: `Bearer ${token}` },
+        params: { crno },
     });
 };

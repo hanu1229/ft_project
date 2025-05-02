@@ -1,7 +1,10 @@
+// =======================================================================================
 // AdminDashboard.jsx | rw 25-05-02 최종 리팩토링 + 로그인 수 통합 조회 포함
-// [설명] 관리자 대시보드 화면
-//        - Joy UI + Recharts 조합 / 블랙 + 핑크 테마 적용
-//        - 관리자 정보, 통계 카드, 최근 승인 리스트, 월별 차트, 로그인 통계 포함
+// [설명]
+// - 관리자 대시보드 화면
+// - Joy UI + Recharts 조합 / ChatGPT 스타일 흰 배경 테마 적용
+// - 관리자 정보, 통계 카드, 최근 승인 리스트, 월별 차트, 로그인 통계 포함
+// =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { Box, Card, Typography, Grid, List, ListItem } from '@mui/joy';
@@ -23,9 +26,6 @@ export default function AdminDashboard() {
     const [loginCounts, setLoginCounts] = useState({ admin: 0, company: 0, developer: 0 });
     const navigate = useNavigate();
 
-    // =======================================================================================
-    // ✅ 관리자 정보 및 대시보드 데이터 로딩 (초기 마운트 시)
-    // =======================================================================================
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -48,9 +48,6 @@ export default function AdminDashboard() {
         getLoginCountAll().then(res => setLoginCounts(res.data));
     }, []);
 
-    // =======================================================================================
-    // ✅ 통계 카드 클릭 시 이동 경로 매핑
-    // =======================================================================================
     const cardRoutes = {
         '기업 수': '/admin/company',
         '개발자 수': '/admin/developer',
@@ -61,19 +58,19 @@ export default function AdminDashboard() {
     };
 
     return (
-        <Box sx={{ bgcolor: '#121212', color: '#ffffff', minHeight: '100vh', p: 4 }}>
-            <Typography level="h3" sx={{ mb: 4, color: '#ff4081' }}>관리자 대시보드</Typography>
+        <Box sx={{ bgcolor: '#ffffff', color: '#222', minHeight: '100vh', p: 4 }}>
+            <Typography level="h3" sx={{ mb: 4, color: '#12b886' }}>관리자 대시보드</Typography>
 
             {/* ✅ 관리자 정보 카드 */}
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 <Grid xs={12} sm={6} md={4}>
-                    <Card variant="soft" sx={{ bgcolor: '#1e1e1e', border: '1px solid #ff4081', borderRadius: '16px', color: '#f8bbd0' }}>
-                        <Typography level="title-md" sx={{ color: '#ff4081' }}>👤 관리자 정보</Typography>
+                    <Card variant="soft" sx={{ bgcolor: '#f8f9fa', border: '1px solid #12b886', borderRadius: '16px', color: '#333' }}>
+                        <Typography level="title-md" sx={{ color: '#12b886' }}>👤 관리자 정보</Typography>
                         <Typography level="body-sm">ID: {admin?.adid}</Typography>
                         <Typography level="body-sm">이름: {admin?.adname}</Typography>
                         <Typography level="body-sm">권한: {admin?.role}</Typography>
                         <Typography level="body-sm">로그인 시간: {admin?.iat}</Typography>
-                        <Typography level="body-sm" sx={{ mt: 1, color: '#81d4fa' }}>
+                        <Typography level="body-sm" sx={{ mt: 1, color: '#4dabf7' }}>
                             최근 24시간 접속자 수 - 관리자: {loginCounts.admin}명 / 기업: {loginCounts.company}명 / 개발자: {loginCounts.developer}명
                         </Typography>
                     </Card>
@@ -95,19 +92,19 @@ export default function AdminDashboard() {
                             variant="soft"
                             onClick={() => navigate(cardRoutes[label])}
                             sx={{
-                                bgcolor: '#1e1e1e',
-                                border: '1px solid #ff4081',
+                                bgcolor: '#f1f3f5',
+                                border: '1px solid #12b886',
                                 borderRadius: '16px',
-                                color: '#fce4ec',
+                                color: '#212529',
                                 cursor: 'pointer',
                                 '&:hover': {
-                                    boxShadow: '0 0 15px #ff4081',
+                                    boxShadow: '0 0 10px #b2f2bb',
                                     transform: 'scale(1.02)'
                                 }
                             }}
                         >
-                            <Typography level="title-md" sx={{ color: '#ff4081' }}>{label}</Typography>
-                            <Typography level="h2" sx={{ color: '#ffffff' }}>{count}</Typography>
+                            <Typography level="title-md" sx={{ color: '#12b886' }}>{label}</Typography>
+                            <Typography level="h2" sx={{ color: '#212529' }}>{count}</Typography>
                         </Card>
                     </Grid>
                 ))}
@@ -117,8 +114,8 @@ export default function AdminDashboard() {
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {recent && ['companies', 'developers', 'projects'].map((key, idx) => (
                     <Grid key={idx} xs={12} sm={4}>
-                        <Card variant="soft" sx={{ bgcolor: '#1e1e1e', border: '1px solid #ff4081', borderRadius: '16px', color: '#ffffff' }}>
-                            <Typography level="title-md" sx={{ color: '#ff4081' }}>최근 승인된 {key}</Typography>
+                        <Card variant="soft" sx={{ bgcolor: '#f8f9fa', border: '1px solid #dee2e6', borderRadius: '16px', color: '#222' }}>
+                            <Typography level="title-md" sx={{ color: '#12b886' }}>최근 승인된 {key}</Typography>
                             <List>
                                 {(recent[key] || []).map((item, i) => (
                                     <ListItem key={i} sx={{ cursor: 'pointer' }}
@@ -129,7 +126,7 @@ export default function AdminDashboard() {
                                               }}
                                     >
                                         <Box>
-                                            <Typography level="body-md" sx={{ color: '#f06292', textDecoration: 'underline' }}>{item.name}</Typography>
+                                            <Typography level="body-md" sx={{ color: '#087f5b', textDecoration: 'underline' }}>{item.name}</Typography>
                                             <Typography level="body-sm" textColor="neutral.400">{item.updateAt || item.approvedAt}</Typography>
                                         </Box>
                                     </ListItem>
@@ -141,15 +138,15 @@ export default function AdminDashboard() {
             </Grid>
 
             {/* ✅ 월별 프로젝트 참여 추이 차트 */}
-            <Card sx={{ bgcolor: '#1e1e1e', border: '1px solid #ff4081', borderRadius: '16px', p: 3, color: '#ffffff' }}>
-                <Typography level="title-md" sx={{ mb: 2, color: '#ff4081' }}>📈 월별 프로젝트 참여 추이</Typography>
+            <Card sx={{ bgcolor: '#ffffff', border: '1px solid #ced4da', borderRadius: '16px', p: 3, color: '#000' }}>
+                <Typography level="title-md" sx={{ mb: 2, color: '#12b886' }}>📈 월별 프로젝트 참여 추이</Typography>
                 <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={monthlyJoins}>
-                        <CartesianGrid stroke="#333" strokeDasharray="3 3" />
-                        <XAxis dataKey="month" stroke="#ffffff" />
-                        <YAxis stroke="#ffffff" />
+                        <CartesianGrid stroke="#dee2e6" strokeDasharray="3 3" />
+                        <XAxis dataKey="month" stroke="#333" />
+                        <YAxis stroke="#333" />
                         <Tooltip />
-                        <Line type="monotone" dataKey="joins" stroke="#ff4081" strokeWidth={2} />
+                        <Line type="monotone" dataKey="joins" stroke="#12b886" strokeWidth={2} />
                     </LineChart>
                 </ResponsiveContainer>
             </Card>

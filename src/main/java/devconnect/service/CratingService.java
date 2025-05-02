@@ -28,7 +28,7 @@ public class CratingService {
     private final DeveloperRepository developerRepository;
     private final ProjectRepository projectRepository;
     private final JwtUtil jwtUtil;
-    
+
     // 기업 평가 등록
     public boolean cratingWrite(CratingDto cratingDto , int loginDno ){
         System.out.println("CratingService.cratingWrite");
@@ -49,7 +49,7 @@ public class CratingService {
         } // if end
         return false;
     } // f end
-    
+
     // 기업 평가 전체 조회
     public Page<CratingDto> cratingList( String token , int page , int size , String keyword , int dno ){
         System.out.println("CratingService.cratingList");
@@ -85,7 +85,7 @@ public class CratingService {
         // 값이 없으면 null 반환
         return null;
     } // f end
-    
+
     // 기업 평가 수정
     public boolean cratingUpdate( CratingDto cratingDto , String token ){
         System.out.println("CratingService.cratingUpdate");
