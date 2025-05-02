@@ -1,9 +1,10 @@
+// =======================================================================================
 // Sidebar.jsx | rw 25-05-02 최종 리팩토링
-// [설명] 관리자 전용 사이드바 메뉴 컴포넌트
-//        - 좌측 고정형 사이드바 레이아웃
-//        - Joy UI + react-icons 기반 구성
-//        - 블랙 배경 + 핑크 포인트 테마 적용
-//        - 메뉴 클릭 시 useNavigate로 라우팅 처리
+// [설명]
+// - 관리자 전용 사이드바 메뉴
+// - ChatGPT.com 느낌의 흰 배경 + 절제된 포인트 컬러
+// - 메뉴 클릭 시 useNavigate로 페이지 이동
+// =======================================================================================
 
 import React from 'react';
 import {
@@ -12,30 +13,26 @@ import {
     ListItem,
     ListItemButton,
     ListItemDecorator,
-    Typography
+    Typography,
 } from '@mui/joy';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-// ✅ 메뉴 아이콘 (FontAwesome 기반)
+// ✅ 아이콘 구성 (FontAwesome 기반)
 import {
-    FaTachometerAlt,   // 대시보드
-    FaUsers,           // 관리자 목록
-    FaBuilding,        // 기업 관리
-    FaCode,            // 개발자 관리
-    FaStar,            // 평가 (공통 아이콘)
-    FaFolderOpen,      // 프로젝트
-    FaClipboardList    // 프로젝트 참여 신청
+    FaTachometerAlt,
+    FaUsers,
+    FaBuilding,
+    FaCode,
+    FaStar,
+    FaFolderOpen,
+    FaClipboardList,
 } from 'react-icons/fa';
 
 export default function Sidebar() {
-    const navigate = useNavigate(); // ✅ 페이지 이동 함수
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    // =======================================================================================
-    // ✅ 사이드바 메뉴 항목 정의
-    // - label: 메뉴 이름
-    // - icon: 메뉴 아이콘
-    // - path: 이동할 라우팅 경로
-    // =======================================================================================
+    // ✅ 메뉴 목록 정의
     const menu = [
         { label: '대시보드', icon: <FaTachometerAlt />, path: '/admin/dashboard' },
         { label: '관리자 목록', icon: <FaUsers />, path: '/admin/list' },
@@ -50,50 +47,57 @@ export default function Sidebar() {
     return (
         <Box
             sx={{
-                width: 220,                       // [고정 너비]
-                bgcolor: '#111',                  // [배경] 블랙
-                color: '#FF4081',                 // [텍스트] 핑크
-                p: 2,
+                width: 240,
+                bgcolor: '#ffffff', // ✅ 흰 배경
+                color: '#333',
+                py: 3,
+                px: 2,
                 minHeight: '100vh',
-                borderRight: '1px solid #ff4081'  // [테두리] 핑크 라인
+                borderRight: '1px solid #e0e0e0', // ✅ 연한 회색 테두리
             }}
         >
-            {/* ✅ 상단 브랜드 타이틀 */}
+            {/* ✅ 상단 로고/브랜드 */}
             <Typography
-                level="h5"
+                level="h4"
                 sx={{
-                    mb: 3,
+                    mb: 4,
                     textAlign: 'center',
-                    color: '#FF4081',
+                    color: '#12b886', // ✅ 녹색 포인트
                     fontWeight: 'bold',
-                    letterSpacing: 1
+                    fontSize: '20px',
                 }}
             >
                 DevConnect
             </Typography>
 
-            {/* ✅ 사이드 메뉴 리스트 */}
-            <List sx={{ gap: 1 }}>
-                {menu.map((item, idx) => (
-                    <ListItem key={idx} disablePadding>
-                        <ListItemButton
-                            onClick={() => navigate(item.path)}
-                            sx={{
-                                color: '#fff',
-                                borderRadius: '8px',
-                                '&:hover': {
-                                    bgcolor: '#ff4081',
-                                    color: '#000',
-                                },
-                            }}
-                        >
-                            <ListItemDecorator sx={{ color: '#ff4081' }}>
-                                {item.icon}
-                            </ListItemDecorator>
-                            {item.label}
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+            {/* ✅ 메뉴 목록 렌더링 */}
+            <List sx={{ gap: 0.5 }}>
+                {menu.map((item, idx) => {
+                    const isActive = location.pathname.startsWith(item.path);
+                    return (
+                        <ListItem key={idx} disablePadding>
+                            <ListItemButton
+                                onClick={() => navigate(item.path)}
+                                selected={isActive}
+                                sx={{
+                                    borderRadius: '8px',
+                                    px: 2,
+                                    py: 1.2,
+                                    bgcolor: isActive ? '#f1f3f5' : 'transparent', // ✅ 선택 시 배경
+                                    '&:hover': {
+                                        bgcolor: '#f8f9fa',
+                                    },
+                                    color: isActive ? '#12b886' : '#555',
+                                }}
+                            >
+                                <ListItemDecorator sx={{ color: isActive ? '#12b886' : '#aaa' }}>
+                                    {item.icon}
+                                </ListItemDecorator>
+                                {item.label}
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
             </List>
         </Box>
     );

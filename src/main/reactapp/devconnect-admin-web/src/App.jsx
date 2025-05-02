@@ -1,12 +1,3 @@
-// =======================================================================================
-// App.jsx | rw 25-05-02 최종 리팩토링
-// [설명]
-// - devconnect-admin-web 관리자 전용 SPA 라우팅 구성
-// - 로그인 상태 확인: PrivateRoute
-// - 관리자 권한 확인: RoleRoute
-// - /admin 하위는 AdminLayout 포함 전체 UI 일관성 유지
-// =======================================================================================
-
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 

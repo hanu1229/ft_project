@@ -62,11 +62,7 @@ public class DratingController {
             @RequestParam( defaultValue = "0" ) int dno,
             @RequestHeader("Authorization") String token ){
         System.out.println("DratingController.dratingList");
-        int loginCno;
-        try{
-            loginCno = companyService.info(token).getCno();
-        }catch (Exception e ) { return ResponseEntity.noContent().build(); }
-        Page<DratingDto> findAll = dratingService.dratingList( loginCno , page , size , keyword , dno );
+        Page<DratingDto> findAll = dratingService.dratingList( token , page , size , keyword , dno );
         if( findAll != null ){
             return ResponseEntity.ok(findAll);
         }else{
@@ -81,11 +77,7 @@ public class DratingController {
             @RequestHeader("Authorization") String token ,
             @RequestParam("drno") int drno ){
         System.out.println("DratingController.dratingView");
-        int loginCno;
-        try{
-            loginCno = companyService.info(token).getCno();
-        }catch (Exception e ) { return ResponseEntity.status(401).build(); }
-        DratingDto dratingDto = dratingService.dratingView( drno , loginCno );
+        DratingDto dratingDto = dratingService.dratingView( drno , token );
         if( dratingDto != null ) { return ResponseEntity.status(200).body( dratingDto ); }
         else{ return ResponseEntity.status(401).build(); }
     } // f end
@@ -100,11 +92,7 @@ public class DratingController {
             @RequestHeader("Authorization") String token ,
             @RequestBody DratingDto dratingDto ){
         System.out.println("DratingController.dratingUpdate");
-        int loginCno;
-        try{
-            loginCno = companyService.info(token).getCno();
-        }catch ( Exception e ) { return ResponseEntity.status(400).body(false); }
-        boolean result = dratingService.dratingUpdate( dratingDto , loginCno );
+        boolean result = dratingService.dratingUpdate( dratingDto , token );
         if( result ){ return ResponseEntity.status(201).body(true);}
         else{ return ResponseEntity.status(400).body(false); }
     } // f end
@@ -116,14 +104,9 @@ public class DratingController {
             @RequestHeader("Authorization") String token ,
             @RequestParam("drno") int drno ){
         System.out.println("DratingController.dratingDelete");
-        int loginCno;
-        try{
-            loginCno = companyService.info(token).getCno();
-        }catch ( Exception e ) { return ResponseEntity.status(400).body(false); }
-        boolean result = dratingService.dratingDelete( drno , loginCno );
+        boolean result = dratingService.dratingDelete( drno , token );
         if( result ){ return ResponseEntity.status(201).body(true); }
         else{ return ResponseEntity.status(400).body(false); }
     } // f end
 
 } // c end
-

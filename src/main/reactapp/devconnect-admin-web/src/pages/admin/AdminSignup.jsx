@@ -1,7 +1,9 @@
+// =======================================================================================
 // AdminSignup.jsx | rw 25-05-02 최종 리팩토링
-// [설명] Joy UI 기반 관리자 전용 회원가입 화면
-//        - 중앙 정렬 / 넷플릭스 다크 테마 UI 적용
-//        - 필수 필드 입력 및 서버 응답 처리
+// [설명]
+// - 관리자 전용 회원가입 화면
+// - Joy UI 기반 + ChatGPT 스타일 (화이트 배경, 민트 포인트)
+// =======================================================================================
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -9,10 +11,10 @@ import {
     Box, Sheet, Typography, Input, Button, FormControl,
     FormLabel, Link
 } from '@mui/joy';
-import { signupAdmin } from '../../api/adminApi';
+import { signupAdmin } from '../../api/adminApi'; // ✅ API 요청
 
 export default function AdminSignup() {
-    // ✅ 회원가입 폼 상태값
+    // ✅ 폼 입력 상태
     const [form, setForm] = useState({
         adid: '',
         adpwd: '',
@@ -23,28 +25,24 @@ export default function AdminSignup() {
 
     const navigate = useNavigate();
 
-    // =======================================================================================
     // ✅ 입력값 변경 핸들러
-    // =======================================================================================
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    // =======================================================================================
-    // ✅ 회원가입 처리 핸들러
-    // =======================================================================================
+    // ✅ 회원가입 요청
     const handleSubmit = async () => {
         try {
             const res = await signupAdmin(form);
             if (res.data === true) {
-                alert('🎉 회원가입 성공! 이제 로그인하세요.');
+                alert('🎉 회원가입 성공! 로그인 하세요.');
                 navigate('/admin/login');
             } else {
-                alert('❗ 실패: 중복된 ID 또는 필수 입력 누락');
+                alert('❗ 실패: 중복 ID 또는 입력 누락');
             }
         } catch (err) {
-            console.error('회원가입 오류:', err);
-            alert('🚫 서버 오류로 회원가입 실패');
+            console.error('회원가입 실패:', err);
+            alert('🚫 서버 오류');
         }
     };
 
@@ -55,92 +53,76 @@ export default function AdminSignup() {
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: '100vh',
-                bgcolor: '#121212'
+                bgcolor: '#f8f9fa', // ✅ ChatGPT 느낌 흰 배경
             }}
         >
             <Box
                 sx={{
-                    width: 450,
-                    bgcolor: '#1e1e1e',
+                    width: 460,
+                    bgcolor: '#ffffff',
                     p: 4,
                     borderRadius: '16px',
                     boxShadow: 'lg',
-                    color: '#fff'
+                    border: '1px solid #dee2e6',
+                    color: '#212529'
                 }}
             >
-                {/* ✅ 타이틀 */}
+                {/* ✅ 상단 타이틀 */}
                 <Typography
                     level="h4"
-                    sx={{ color: '#ff4081', mb: 3, fontWeight: 'bold', textAlign: 'center' }}
+                    sx={{
+                        color: '#12b886',
+                        mb: 3,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                        letterSpacing: '0.5px'
+                    }}
                 >
                     관리자 회원가입
                 </Typography>
 
-                {/* ✅ 아이디 입력 */}
-                <FormControl sx={{ mb: 2 }}>
-                    <FormLabel sx={{ color: '#ccc' }}>아이디</FormLabel>
-                    <Input
-                        name="adid"
-                        placeholder="아이디를 입력하세요"
-                        value={form.adid}
-                        onChange={handleChange}
-                        variant="soft"
-                    />
-                </FormControl>
+                {/* ✅ 입력 필드들 */}
+                {[
+                    { name: 'adid', label: '아이디', placeholder: '아이디를 입력하세요' },
+                    { name: 'adpwd', label: '비밀번호', placeholder: '비밀번호를 입력하세요', type: 'password' },
+                    { name: 'adname', label: '이름', placeholder: '이름을 입력하세요' },
+                    { name: 'adphone', label: '전화번호', placeholder: '010-xxxx-xxxx' },
+                ].map((field, idx) => (
+                    <FormControl key={idx} sx={{ mb: 2 }}>
+                        <FormLabel sx={{ color: '#495057' }}>{field.label}</FormLabel>
+                        <Input
+                            name={field.name}
+                            type={field.type || 'text'}
+                            placeholder={field.placeholder}
+                            value={form[field.name]}
+                            onChange={handleChange}
+                            variant="soft"
+                        />
+                    </FormControl>
+                ))}
 
-                {/* ✅ 비밀번호 입력 */}
-                <FormControl sx={{ mb: 2 }}>
-                    <FormLabel sx={{ color: '#ccc' }}>비밀번호</FormLabel>
-                    <Input
-                        type="password"
-                        name="adpwd"
-                        placeholder="비밀번호를 입력하세요"
-                        value={form.adpwd}
-                        onChange={handleChange}
-                        variant="soft"
-                    />
-                </FormControl>
-
-                {/* ✅ 이름 입력 */}
-                <FormControl sx={{ mb: 2 }}>
-                    <FormLabel sx={{ color: '#ccc' }}>이름</FormLabel>
-                    <Input
-                        name="adname"
-                        placeholder="이름을 입력하세요"
-                        value={form.adname}
-                        onChange={handleChange}
-                        variant="soft"
-                    />
-                </FormControl>
-
-                {/* ✅ 전화번호 입력 */}
-                <FormControl sx={{ mb: 3 }}>
-                    <FormLabel sx={{ color: '#ccc' }}>전화번호</FormLabel>
-                    <Input
-                        name="adphone"
-                        placeholder="010-xxxx-xxxx"
-                        value={form.adphone}
-                        onChange={handleChange}
-                        variant="soft"
-                    />
-                </FormControl>
-
-                {/* ✅ 가입 버튼 */}
+                {/* ✅ 회원가입 버튼 */}
                 <Button
                     fullWidth
                     variant="solid"
-                    color="danger"
+                    color="success"
                     onClick={handleSubmit}
-                    sx={{ fontWeight: 'bold' }}
+                    sx={{
+                        fontWeight: 'bold',
+                        bgcolor: '#12b886',
+                        '&:hover': {
+                            bgcolor: '#0ca678'
+                        }
+                    }}
                 >
                     회원가입
                 </Button>
 
                 {/* ✅ 로그인 링크 */}
                 <Box sx={{ mt: 2, textAlign: 'center' }}>
-                    <Typography level="body-sm" sx={{ color: '#ccc' }}>
+                    <Typography level="body-sm" sx={{ color: '#495057' }}>
                         이미 계정이 있으신가요?{' '}
-                        <Link href="/admin/login" sx={{ color: '#ff80ab', fontWeight: 'bold' }}>
+                        <Link href="/admin/login" sx={{ color: '#087f5b', fontWeight: 'bold' }}>
                             로그인 하러가기
                         </Link>
                     </Typography>

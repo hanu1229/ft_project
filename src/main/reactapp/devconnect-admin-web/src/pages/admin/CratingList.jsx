@@ -1,14 +1,14 @@
+// =======================================================================================
 // CratingList.jsx | rw 25-05-02 최종 리팩토링
-// [설명] 관리자 전용 기업 평가 전체 조회 화면
+// [설명]
+// - 관리자 전용 기업 평가 전체 목록 조회 화면
 // - Joy UI 기반 카드 리스트 구성
-// - 평가 상세 페이지로 이동 가능
-// - 최대 100건 단일 페이지 조회
-// - 블랙 & 핑크 테마 통일 적용
+// - 흰 배경 + 절제된 민트/핑크 컬러 기반의 ChatGPT.com 스타일 적용
+// =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCratingList } from '../../api/cratingApi';          // ✅ API 함수
-import AdminLayout from '../../layouts/AdminLayout';           // ✅ 공통 레이아웃
+import { getCratingList } from '../../api/cratingApi';
 import {
     Typography,
     Grid,
@@ -19,55 +19,66 @@ import {
 } from '@mui/joy';
 
 export default function CratingList() {
-    const [list, setList] = useState([]);             // ✅ 평가 목록 상태
-    const navigate = useNavigate();                   // ✅ 페이지 이동용 훅
+    const [list, setList] = useState([]);         // ✅ 기업 평가 목록 상태
+    const navigate = useNavigate();               // ✅ 페이지 이동
 
-    // ✅ 최초 마운트 시 전체 평가 목록 불러오기
+    // =======================================================================================
+    // ✅ 최초 마운트 시 전체 평가 데이터 조회 (최대 100건)
+    // =======================================================================================
     useEffect(() => {
-        const fetchList = async () => {
+        (async () => {
             try {
-                const res = await getCratingList(); // 최대 100건 조회
-                setList(res.data);
+                const token = localStorage.getItem('token');
+                const res = await getCratingList(token, { page: 1, size: 100 });
+                setList(res.data.content || []);
             } catch (err) {
+                console.error('기업 평가 목록 조회 실패', err);
                 alert('기업 평가 목록 조회 실패');
-                console.error(err);
             }
-        };
-        fetchList();
+        })();
     }, []);
 
+    // =======================================================================================
+    // ✅ 평가 카드 UI 렌더링
+    // =======================================================================================
     return (
-        <div>
-            {/* ✅ 상단 타이틀 */}
+        <Box sx={{ px: 3, py: 3, bgcolor: '#fff', color: '#212529' }}>
+            {/* ✅ 타이틀 */}
             <Typography
                 level="h3"
-                sx={{ mb: 3, color: '#ff4081', fontWeight: 'bold' }}
+                sx={{ mb: 3, color: '#12b886', fontWeight: 'bold' }}
             >
                 📝 기업 평가 목록
             </Typography>
 
-            {/* ✅ 카드 형식 리스트 */}
+            {/* ✅ 카드 리스트 */}
             <Grid container spacing={2}>
                 {list.map((cr) => (
-                    <Grid key={cr.crno} xs={12} md={6} lg={4}>
+                    <Grid key={cr.crno} xs={12} sm={6} md={4}>
                         <Card
                             variant="outlined"
                             sx={{
-                                bgcolor: '#1e1e1e',
-                                color: '#fff',
-                                borderColor: '#ff4081',
-                                boxShadow: '0 0 10px rgba(255,64,129,0.2)',
+                                bgcolor: '#f8f9fa',
+                                border: '1px solid #ced4da',
+                                color: '#212529',
+                                p: 2,
+                                borderRadius: 'md',
+                                boxShadow: 'sm',
+                                '&:hover': {
+                                    boxShadow: '0 0 0 2px #12b88633'
+                                }
                             }}
                         >
-                            <Typography level="title-md" sx={{ color: '#ff4081' }}>
-                                평가번호: {cr.crno}
+                            <Typography level="title-md" sx={{ color: '#12b886', fontWeight: 600 }}>
+                                📋 평가번호: {cr.crno}
                             </Typography>
 
-                            <Divider sx={{ my: 1, borderColor: '#333' }} />
+                            <Divider sx={{ my: 1, borderColor: '#dee2e6' }} />
 
                             <Box sx={{ fontSize: 14 }}>
                                 <p><strong>기업번호:</strong> {cr.cno}</p>
                                 <p><strong>상태코드:</strong> {cr.crstate}</p>
+                                <p><strong>점수:</strong> {cr.crscore}</p>
                             </Box>
 
                             <Button
@@ -75,11 +86,12 @@ export default function CratingList() {
                                 variant="outlined"
                                 sx={{
                                     mt: 2,
-                                    borderColor: '#ff4081',
-                                    color: '#ff4081',
+                                    borderColor: '#12b886',
+                                    color: '#12b886',
+                                    fontWeight: 'bold',
                                     '&:hover': {
-                                        bgcolor: '#ff4081',
-                                        color: '#000'
+                                        bgcolor: '#12b886',
+                                        color: '#fff'
                                     }
                                 }}
                             >
@@ -89,6 +101,6 @@ export default function CratingList() {
                     </Grid>
                 ))}
             </Grid>
-        </div>
+        </Box>
     );
 }
