@@ -19,10 +19,10 @@ public class ProjectJoinController {
     /// | 프로젝트 신청 등록 | <br/>
     /// ● <b>개발자</b>가 프로젝트에 참가를 신청
      @PostMapping("")
-     public ResponseEntity<Boolean> writeProjectJoin(@RequestHeader("Authorization") String token, @RequestBody() ProjectJoinDto projectJoinDto) {
+     public ResponseEntity<Boolean> writeProjectJoin(@RequestHeader("Authorization") String token, @RequestParam(name = "pno") int pno) {
          System.out.println("ProjectJoinController.writeProjectJoin");
-         System.out.println("token = \n" + token + "\nprojectJoinDto = " + projectJoinDto);
-         boolean result = projectJoinService.writeProjectJoin(token, projectJoinDto);
+         System.out.println("token = \n" + token + "\npno = " + pno);
+         boolean result = projectJoinService.writeProjectJoin(token, pno);
          if(!result) { return ResponseEntity.status(400).body(false); }
          return ResponseEntity.status(201).body(true);
      }

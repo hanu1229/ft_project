@@ -130,7 +130,7 @@ public class JwtUtil {
     }
 
     /// 아이디에 따른 식별키 반환
-    public String temp(String id) {
+    public String returnCode(String id) {
         CompanyEntity companyEntity = companyRepository.findByCid(id);
         if(companyEntity != null) { return "Company"; }
         DeveloperEntity developerEntity = developerRepository.findByDid(id);

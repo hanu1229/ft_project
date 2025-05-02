@@ -54,14 +54,18 @@ public class ProjectJoinService {
 
     /// | 프로젝트 신청 등록 | <br/>
     /// ● <b>개발자</b>가 프로젝트에 참가를 신청
-    public boolean writeProjectJoin(String token, ProjectJoinDto projectJoinDto) {
+    public boolean writeProjectJoin(String token, int pno) {
         System.out.println("ProjectJoinService.writeProjectJoin");
-        System.out.println("token = \n" + token + "\nprojectJoinDto = " + projectJoinDto);
-        DeveloperEntity developerEntity = tokenToDeveloperEntity(token);
+        System.out.println("token = \n" + token + "\npno = " + pno);
+        String id = jwtutil.valnoateToken(token);
+        String code = jwtutil.returnCode(id);
+        if(!code.equals("Developer")) { return false; }
+        DeveloperEntity developerEntity = developerRepository.findByDid(id);
+        // DeveloperEntity developerEntity = tokenToDeveloperEntity(token);
         if(developerEntity == null) { return false; }
-        ProjectEntity projectEntity = projectRepository.findById(projectJoinDto.getPno()).orElse(null);
+        ProjectEntity projectEntity = projectRepository.findById(pno).orElse(null);
         if(projectEntity == null) { return false; }
-        ProjectJoinEntity projectJoinEntity = projectJoinDto.toEntity();
+        ProjectJoinEntity projectJoinEntity = new ProjectJoinEntity();
         projectJoinEntity.setProjectEntity(projectEntity);
         projectJoinEntity.setDeveloperEntity(developerEntity);
         ProjectJoinEntity joinEntity = projectJoinRepository.save(projectJoinEntity);
