@@ -1,5 +1,6 @@
 package devconnect.model.entity;
 
+import devconnect.model.dto.ProjectDto;
 import devconnect.model.dto.ProjectJoinDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -38,13 +39,21 @@ public class ProjectJoinEntity extends BaseTime {
     @JoinColumn(name = "dno")
     private DeveloperEntity developerEntity;
 
-
     /// Entity --> Dto
     public ProjectJoinDto toDto() {
         return ProjectJoinDto.builder()
                 .pjno(this.pjno).pjtype(this.pjtype)
                 .pno(projectEntity.getPno()).dno(developerEntity.getDno())
                 .createAt(getCreateAt()).updateAt(getUpdateAt())
+                .build();
+    }
+
+    public ProjectJoinDto toFindAllDto() {
+        return ProjectJoinDto.builder()
+                .pjno(this.pjno).pjtype(this.pjtype)
+                .pno(projectEntity.getPno()).dno(developerEntity.getDno())
+                .createAt(getCreateAt()).updateAt(getUpdateAt())
+                .project(projectEntity.toDto())
                 .build();
     }
 

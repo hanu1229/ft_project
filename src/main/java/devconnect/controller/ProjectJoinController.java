@@ -1,8 +1,10 @@
 package devconnect.controller;
 
 import devconnect.model.dto.ProjectJoinDto;
+import devconnect.service.DeveloperService;
 import devconnect.service.ProjectJoinService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,7 @@ import java.util.List;
 public class ProjectJoinController {
 
     private final ProjectJoinService projectJoinService;
+    private final DeveloperService developerService;
 
     /// | 프로젝트 신청 등록 | <br/>
     /// ● <b>개발자</b>가 프로젝트에 참가를 신청
@@ -61,5 +64,25 @@ public class ProjectJoinController {
         return ResponseEntity.status(200).body(true);
     }
 
+    /* 희만 코드 추가 */
+    // 로그인한 회원 전체 조회
+    @GetMapping("/findall")
+    public ResponseEntity< Page<ProjectJoinDto> > findByDno(
+            @RequestHeader("Authorization") String token,
+            @RequestParam( required = false ) Integer pno,
+            @RequestParam( defaultValue = "1") int page,
+            @RequestParam( defaultValue = "5") int size,
+            @RequestParam( required = false ) String keyword ) {
+        System.out.println("ProjectJoinController.findProjectJoin");
+        System.out.println("token = \n" + token + "\npno = " + pno);
+
+        int logInDno;
+        try{
+            logInDno = developerService.info( token ).getDno();
+        }catch ( Exception e ){ return ResponseEntity.status(401).body(null); }
+
+        Page<ProjectJoinDto> result = projectJoinService.findByDno( logInDno, pno, page, size, keyword );
+        return ResponseEntity.status(200).body(result);
+    }
 
 }
