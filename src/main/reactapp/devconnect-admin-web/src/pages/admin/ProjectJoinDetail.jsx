@@ -1,106 +1,129 @@
-// ProjectJoinDetail.jsx | rw 25-05-01
-// [설명] 프로젝트 신청 상세조회 화면
-//        - 신청 정보 출력 + 상태코드 수정 + 삭제 기능
-//        - 삭제 시 확인용 MUI 모달 포함
+// ProjectJoinDetail.jsx | rw 25-05-02 (최종 리팩토링)
+// [설명] 관리자 전용 프로젝트 신청 상세 정보 페이지
+//        - 상세조회 + 상태코드 수정 + 삭제 기능 제공
+//        - Joy UI + 블랙&핑크 테마 반영
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // [1] URL 파라미터, 페이지 이동용
+import { useParams, useNavigate } from 'react-router-dom';
 import {
-    getProjectJoinDetail,           // [2-1] 프로젝트 신청 상세조회 API
-    updateProjectJoin,              // [2-2] 상태코드 수정 API
-    deleteProjectJoin               // [2-3] 신청 삭제 API
+    getProjectJoinDetail,
+    updateProjectJoin,
+    deleteProjectJoin
 } from '../../api/projectJoinApi';
-
-import AdminLayout from '../../layouts/AdminLayout'; // [3] 관리자 공통 레이아웃 (Sidebar + Header 포함)
-
+import AdminLayout from '../../layouts/AdminLayout';
 import {
-    Typography, Card, Box, Divider, Button, Select, Option,
-    Modal, ModalDialog, ModalClose                         // [4] Joy UI 컴포넌트 (삭제 확인용 모달 포함)
+    Typography,
+    Card,
+    Box,
+    Divider,
+    Button,
+    Select,
+    Option,
+    Modal,
+    ModalDialog,
+    ModalClose
 } from '@mui/joy';
 
 export default function ProjectJoinDetail() {
-    const { pjno } = useParams();                       // [5] URL로부터 신청번호 추출
-    const [pj, setPj] = useState(null);                 // [6] 상세 신청 객체 상태
-    const [newType, setNewType] = useState();           // [7] 상태코드 select 상태값
-    const [open, setOpen] = useState(false);            // [8] 삭제 확인 모달 열림 여부
-    const navigate = useNavigate();                     // [9] 페이지 이동 함수
-    const token = localStorage.getItem('token');        // [10] 로컬스토리지에서 JWT 토큰 추출
+    const { pjno } = useParams();                         // ✅ 신청 번호 추출
+    const navigate = useNavigate();                       // ✅ 페이지 이동 함수
+    const token = localStorage.getItem('token');          // ✅ 관리자 인증 토큰
 
-    // [11] 마운트 시 신청 상세 데이터 불러오기
+    const [pj, setPj] = useState(null);                   // ✅ 상세 정보 상태
+    const [newType, setNewType] = useState();             // ✅ 상태코드 변경용
+    const [open, setOpen] = useState(false);              // ✅ 삭제 확인 모달
+
+    // ✅ 신청 상세 조회 API 호출
     useEffect(() => {
         const fetchDetail = async () => {
             try {
-                const res = await getProjectJoinDetail(pjno, token); // (1) 신청 번호 기반 상세 조회
-                setPj(res.data);                                     // (2) 조회 결과 상태 저장
-                setNewType(res.data.pjtype);                         // (3) 초기 상태코드 설정
+                const res = await getProjectJoinDetail(pjno, token);
+                setPj(res.data);
+                setNewType(res.data.pjtype);
             } catch (err) {
-                alert('상세 조회 실패'); // 예외 처리
+                alert('신청 상세 조회 실패');
             }
         };
         fetchDetail();
     }, [pjno, token]);
 
-    // [12] 신청 상태코드 수정 요청
+    // ✅ 상태코드 수정 요청
     const handleUpdate = async () => {
         try {
-            const res = await updateProjectJoin(token, { ...pj, pjtype: newType });
-            if (res.data) alert('수정 성공');
+            const res = await updateProjectJoin(token, {
+                ...pj,
+                pjtype: newType
+            });
+            if (res.data) alert('상태코드 수정 완료');
         } catch (err) {
-            alert('수정 실패');
+            alert('상태 수정 실패');
         }
     };
 
-    // [13] 삭제 최종 확인 후 삭제 API 요청
+    // ✅ 삭제 확정 처리
     const handleDeleteConfirm = async () => {
         try {
             const res = await deleteProjectJoin(pjno, token);
             if (res.data) {
-                alert('삭제 성공');
-                navigate('/admin/project-join'); // 목록 페이지로 이동
+                alert('신청 삭제 완료');
+                navigate('/admin/project-join');
             }
         } catch (err) {
             alert('삭제 실패');
         } finally {
-            setOpen(false); // 모달 닫기
+            setOpen(false);
         }
     };
 
-    if (!pj) return null; // 로딩 전 렌더 차단
+    // ✅ 로딩 중 처리
+    if (!pj) return <p style={{ color: '#fff' }}>로딩 중...</p>;
 
     return (
-        <AdminLayout>
-            <Typography level="h3" sx={{ mb: 2 }}>프로젝트 신청 상세</Typography>
+        <div>
+            {/* ✅ 페이지 제목 */}
+            <Typography level="h3" sx={{ mb: 2, color: '#FF4081', fontWeight: 'bold' }}>
+                🤝 프로젝트 신청 상세
+            </Typography>
 
-            {/* [14] 신청 정보 카드 */}
-            <Card variant="outlined">
-                <Typography level="title-md">신청번호 #{pj.pjno}</Typography>
-                <Divider sx={{ my: 1 }} />
-                <Box>
-                    <p><strong>프로젝트번호:</strong> {pj.pno}</p>
-                    <p><strong>개발자번호:</strong> {pj.dno}</p>
+            {/* ✅ 신청 정보 카드 */}
+            <Card variant="outlined" sx={{ p: 3, bgcolor: '#1e1e1e', borderColor: '#ff4081', color: '#fff' }}>
+                <Typography level="title-md" sx={{ color: '#ff4081' }}>신청번호 #{pj.pjno}</Typography>
+                <Divider sx={{ my: 2, borderColor: '#333' }} />
+                <Box sx={{ mb: 2, fontSize: 14 }}>
+                    <p><strong>프로젝트 번호:</strong> {pj.pno}</p>
+                    <p><strong>개발자 번호:</strong> {pj.dno}</p>
                     <p><strong>현재 상태코드:</strong> {pj.pjtype}</p>
-                    <p><strong>변경 상태코드:</strong></p>
-
-                    {/* [15] 상태코드 선택 드롭다운 */}
-                    <Select value={newType} onChange={(e, val) => setNewType(val)}>
-                        <Option value={0}>대기(0)</Option>
-                        <Option value={1}>승인(1)</Option>
-                        <Option value={2}>거절(2)</Option>
-                    </Select>
                 </Box>
 
-                {/* [16] 버튼 영역 - 수정 및 삭제 */}
-                <Box sx={{ mt: 2 }}>
-                    <Button onClick={handleUpdate} sx={{ mr: 1 }}>수정</Button>
-                    <Button color="danger" onClick={() => setOpen(true)}>삭제</Button> {/* 삭제 전 모달 열기 */}
+                <Typography level="body-md" sx={{ mb: 1, color: '#ff80ab' }}>상태코드 변경</Typography>
+                <Select
+                    value={newType}
+                    onChange={(e, val) => setNewType(val)}
+                    sx={{ width: 200, bgcolor: '#000', color: '#fff' }}
+                >
+                    <Option value={0}>대기 (0)</Option>
+                    <Option value={1}>승인 (1)</Option>
+                    <Option value={2}>거절 (2)</Option>
+                </Select>
+
+                {/* ✅ 버튼 그룹 */}
+                <Box sx={{ mt: 3, display: 'flex', gap: 1 }}>
+                    <Button
+                        onClick={handleUpdate}
+                        variant="outlined"
+                        sx={{ borderColor: '#ff4081', color: '#ff4081', '&:hover': { bgcolor: '#ff4081', color: '#000' } }}
+                    >
+                        상태 수정
+                    </Button>
+                    <Button color="danger" onClick={() => setOpen(true)}>삭제</Button>
                 </Box>
             </Card>
 
-            {/* [17] 삭제 확인용 모달 */}
+            {/* ✅ 삭제 모달 */}
             <Modal open={open} onClose={() => setOpen(false)}>
-                <ModalDialog variant="outlined" role="alertdialog">
-                    <ModalClose /> {/* 닫기 버튼 (X) */}
-                    <Typography level="h4">정말 삭제하시겠습니까?</Typography>
+                <ModalDialog variant="outlined" role="alertdialog" sx={{ bgcolor: '#1e1e1e', color: '#fff' }}>
+                    <ModalClose />
+                    <Typography level="h4" sx={{ color: '#ff4081' }}>정말 삭제하시겠습니까?</Typography>
                     <Typography level="body-sm" sx={{ my: 1 }}>
                         삭제된 신청은 복구할 수 없습니다.
                     </Typography>
@@ -110,6 +133,6 @@ export default function ProjectJoinDetail() {
                     </Box>
                 </ModalDialog>
             </Modal>
-        </AdminLayout>
+        </div>
     );
 }

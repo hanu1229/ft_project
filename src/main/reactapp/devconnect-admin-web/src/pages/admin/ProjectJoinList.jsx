@@ -1,65 +1,99 @@
-// ProjectJoinList.jsx | rw 25-05-01
-// [설명] 전체 프로젝트 신청 목록 출력 화면
-//        - 관리자(Admin) 전용 화면
-//        - 신청번호, 프로젝트번호, 개발자번호, 신청상태 요약 표시
-//        - 상세보기 버튼 클릭 시 상세 페이지로 이동
+// ProjectJoinList.jsx | rw 25-05-02 최종 리팩토링
+// [설명] 관리자 전용 프로젝트 신청 전체 조회 화면
+//        - Joy UI 기반 카드 레이아웃
+//        - 넷플릭스 테마 적용 (블랙 배경 + 핫핑크 포인트)
+//        - 신청번호, 프로젝트번호, 개발자번호, 상태코드 표시
+//        - 상세 페이지로 이동 기능 포함
 
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';               // [1] 페이지 이동용 hook
-import { getProjectJoinList } from '../../api/projectJoinApi'; // [2] 신청 전체 목록 조회 API
-import AdminLayout from '../../layouts/AdminLayout';          // [3] 좌측 메뉴 포함한 관리자 레이아웃
-
+import { useNavigate } from 'react-router-dom';
+import { getProjectJoinList } from '../../api/projectJoinApi';
+import AdminLayout from '../../layouts/AdminLayout';
 import {
-    Typography, Grid, Card, Box, Divider, Button             // [4] Joy UI 컴포넌트
+    Typography,
+    Grid,
+    Card,
+    Box,
+    Divider,
+    Button
 } from '@mui/joy';
 
 export default function ProjectJoinList() {
-    const [list, setList] = useState([]); // [5] 신청 목록 배열 상태
-    const navigate = useNavigate();       // [6] 페이지 이동 함수
+    const [list, setList] = useState([]);              // ✅ 전체 신청 목록 상태
+    const navigate = useNavigate();                    // ✅ 페이지 이동용 함수
 
-    // [7] 마운트 시 신청 전체 목록 조회
+    // ✅ 최초 마운트 시 신청 목록 불러오기
     useEffect(() => {
-        const fetchList = async () => {
+        const fetchData = async () => {
             try {
-                const res = await getProjectJoinList(); // (1) 서버 요청
-                setList(res.data);                      // (2) 상태 저장
+                const res = await getProjectJoinList(); // API 요청
+                setList(res.data);                      // 응답 데이터 상태 반영
             } catch (err) {
-                alert('신청 목록 조회 실패');           // (3) 예외 처리
+                alert('프로젝트 신청 목록 조회 실패');
             }
         };
-        fetchList();
-    }, []); // 컴포넌트 최초 렌더링 시 실행
+        fetchData();
+    }, []);
 
     return (
-        <AdminLayout>
-            {/* [8] 페이지 제목 */}
-            <Typography level="h3" sx={{ mb: 3 }}>전체 프로젝트 신청 목록</Typography>
+        <div>
+            {/* ✅ 페이지 제목 */}
+            <Typography
+                level="h3"
+                sx={{ mb: 3, color: '#FF4081', fontWeight: 'bold' }}
+            >
+                🤝 프로젝트 신청 목록
+            </Typography>
 
-            {/* [9] 그리드 레이아웃으로 카드형 신청 리스트 출력 */}
+            {/* ✅ 신청 목록 카드 출력 */}
             <Grid container spacing={2}>
                 {list.map((pj) => (
-                    <Grid key={pj.pjno} xs={12} md={6} lg={4}> {/* 반응형 카드 배치 */}
-                        <Card variant="outlined">
-                            <Typography level="title-md">
+                    <Grid key={pj.pjno} xs={12} md={6} lg={4}>
+                        <Card
+                            variant="outlined"
+                            sx={{
+                                bgcolor: '#1a1a1a',
+                                color: '#fff',
+                                borderColor: '#FF4081',
+                                '&:hover': {
+                                    boxShadow: '0 0 10px #FF4081'
+                                }
+                            }}
+                        >
+                            {/* ✅ 신청번호 */}
+                            <Typography level="title-md" sx={{ color: '#FF4081' }}>
                                 신청번호: {pj.pjno}
                             </Typography>
-                            <Divider sx={{ my: 1 }} />
 
-                            {/* [10] 신청 요약 정보 출력 */}
-                            <Box>
+                            <Divider sx={{ my: 1, borderColor: '#333' }} />
+
+                            {/* ✅ 신청 정보 출력 */}
+                            <Box sx={{ fontSize: 14 }}>
                                 <p><strong>프로젝트번호:</strong> {pj.pno}</p>
                                 <p><strong>개발자번호:</strong> {pj.dno}</p>
-                                <p><strong>신청상태:</strong> {pj.pjtype}</p>
+                                <p><strong>상태코드:</strong> {pj.pjtype}</p>
                             </Box>
 
-                            {/* [11] 상세페이지 이동 버튼 */}
-                            <Button onClick={() => navigate(`/admin/project-join/${pj.pjno}`)}>
+                            {/* ✅ 상세보기 버튼 */}
+                            <Button
+                                variant="outlined"
+                                sx={{
+                                    mt: 2,
+                                    borderColor: '#FF4081',
+                                    color: '#FF4081',
+                                    '&:hover': {
+                                        bgcolor: '#FF4081',
+                                        color: '#000'
+                                    }
+                                }}
+                                onClick={() => navigate(`/admin/project-join/${pj.pjno}`)}
+                            >
                                 상세보기
                             </Button>
                         </Card>
                     </Grid>
                 ))}
             </Grid>
-        </AdminLayout>
+        </div>
     );
 }
