@@ -1,13 +1,14 @@
-// Forbidden.jsx | rw 25-05-01
-// [설명] 관리자 외 사용자 접근 차단 시 표시되는 403 Forbidden 화면
-//        - RoleRoute에서 관리자 권한이 아닐 경우 이동
+// Forbidden.jsx | rw 25-05-02 최종 리팩토링
+// [설명] 관리자 외 접근 시 표시되는 403 금지 화면
+//        - RoleRoute 보호 라우팅에서 권한 없는 경우 진입
+//        - Joy UI + 넷플릭스 감성 테마 반영
 
 import React from 'react';
-import { Box, Typography, Button } from '@mui/joy';
 import { useNavigate } from 'react-router-dom';
+import { Box, Typography, Button } from '@mui/joy';
 
 export default function Forbidden() {
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // ✅ 페이지 이동 핸들러
 
     return (
         <Box
@@ -17,22 +18,45 @@ export default function Forbidden() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 minHeight: '100vh',
-                backgroundColor: '#111',
+                bgcolor: '#121212',
                 color: '#FF4081',
                 textAlign: 'center',
                 px: 3,
             }}
         >
-            <Typography level="h1" sx={{ mb: 2, fontSize: 72 }}>
+            {/* ✅ 에러 코드 */}
+            <Typography
+                level="h1"
+                sx={{ mb: 2, fontSize: 96, fontWeight: 'bold', color: '#ff4081' }}
+            >
                 403
             </Typography>
-            <Typography level="h3" sx={{ mb: 3 }}>
-                접근이 거부되었습니다
+
+            {/* ✅ 메시지 */}
+            <Typography level="h3" sx={{ mb: 2 }}>
+                🚫 접근이 거부되었습니다
             </Typography>
-            <Typography level="body-md" sx={{ mb: 4 }}>
-                관리자만 접근 가능한 페이지입니다. 로그인 상태 또는 권한을 확인해주세요.
+
+            <Typography level="body-md" sx={{ mb: 4, maxWidth: 480, color: '#f8bbd0' }}>
+                이 페이지는 <strong>관리자(Admin)</strong> 권한을 가진 사용자만 접근할 수 있습니다. <br />
+                로그인된 계정의 권한을 확인해 주세요.
             </Typography>
-            <Button variant="solid" color="primary" onClick={() => navigate('/admin/dashboard')}>
+
+            {/* ✅ 복귀 버튼 */}
+            <Button
+                variant="solid"
+                color="danger"
+                size="lg"
+                sx={{
+                    px: 4,
+                    fontWeight: 'bold',
+                    bgcolor: '#ff4081',
+                    '&:hover': {
+                        bgcolor: '#e91e63',
+                    },
+                }}
+                onClick={() => navigate('/admin/dashboard')}
+            >
                 대시보드로 돌아가기
             </Button>
         </Box>
