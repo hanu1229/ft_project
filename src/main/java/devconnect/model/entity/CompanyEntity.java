@@ -54,6 +54,7 @@ public class CompanyEntity extends BaseTime {
                 .cemail(cemail)
                 .cbusiness(cbusiness)
                 .state(state)
+                .cprofile(this.cprofile)
                 .createAt(this.getCreateAt())
                 .updateAt(this.getUpdateAt())
                 .build();
