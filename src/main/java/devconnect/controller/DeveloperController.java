@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/developer")
 @RequiredArgsConstructor
@@ -74,6 +76,18 @@ public class DeveloperController {
                              @RequestBody DeveloperDto developerDto ){
         boolean result = developerService.onDelete( token, developerDto );
         return result;
+    } // f end
+
+    // 민진 추가
+    // 7. 개발자 전체 조회
+    @GetMapping("/findall")
+    public ResponseEntity<List<DeveloperDto>> findAll( @RequestHeader("Authorization") String token ){
+        List<DeveloperDto> List = developerService.findAll( token );
+        if( List != null ){
+            return ResponseEntity.ok(List);
+        }else{
+            return ResponseEntity.noContent().build();
+        } // if end
     } // f end
 
 

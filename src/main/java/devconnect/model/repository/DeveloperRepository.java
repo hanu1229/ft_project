@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface DeveloperRepository extends JpaRepository< DeveloperEntity, Integer > {
     // 1. 아이디 조회
     DeveloperEntity findByDid( String did );
+    DeveloperEntity findByDno( int dno );
 }

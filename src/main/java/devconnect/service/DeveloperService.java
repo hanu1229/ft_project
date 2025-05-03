@@ -19,8 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.text.html.Option;
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -149,5 +151,15 @@ public class DeveloperService {
                 .orElse( false );
     } // f end
 
+    // 7. 개발자 전체 조회
+    public List<DeveloperDto> findAll( String token ){
+        if( token != null ){
+            List<DeveloperEntity> developerListAll = developerRepository.findAll();
+            return developerListAll.stream()
+                    .map(DeveloperEntity::toDto)
+                    .collect(Collectors.toList());
+        } // if end
+        return null;
+    } // f end
 
 }
