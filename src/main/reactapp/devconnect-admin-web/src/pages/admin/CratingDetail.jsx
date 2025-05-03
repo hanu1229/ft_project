@@ -1,206 +1,97 @@
-// CratingDetail.jsx | rw 25-05-02 (최종 리팩토링)
+// =======================================================================================
+// CratingDetail.jsx | rw 25-05-03 수정 반영 (Update.jsx 제거)
 // [설명]
-// - 관리자 전용 기업 평가 상세 조회/수정/승인/삭제 기능
-// - ChatGPT.com 스타일 기반 흰 배경 + 절제된 컬러 구성
-// - Joy UI 기반 구성 및 토큰 인증 처리
+// - 기업 평가 상세 조회 + 수정 + 승인 화면 (하나로 통합)
+// - ✅ 제목/내용/점수/상태/등록일 표시 및 수정 가능
+// - ✅ 상태 승인 처리 버튼 포함 (crstate = 1)
+// =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-    getCratingDetail,
-    approveCrating,
-    updateCrating,
-    deleteCrating
-} from '../../api/cratingApi';
-import {
-    Typography,
-    Box,
-    Input,
-    Button,
-    Divider,
-    Modal,
-    ModalDialog,
-    ModalClose
+    Box, Typography, Card, Divider, Button, Input, Textarea, Select, Option
 } from '@mui/joy';
+import { getCratingDetail, updateCrating } from '../../api/cratingApi';
+import StatusBadge from '../../components/StatusBadge';
 
 export default function CratingDetail() {
     const { crno } = useParams();
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
+    const [form, setForm] = useState(null);
 
-    const [form, setForm] = useState(null);     // ✅ 평가 정보 (수정 포함)
-    const [open, setOpen] = useState(false);    // ✅ 삭제 모달
-
-    // =======================================================================================
-    // ✅ 평가 상세 조회
-    // =======================================================================================
     useEffect(() => {
-        (async () => {
+        const fetch = async () => {
             try {
+                const token = localStorage.getItem('token');
                 const res = await getCratingDetail(token, crno);
                 setForm(res.data);
             } catch {
-                alert('기업 평가 상세 조회 실패');
+                alert('상세 조회 실패');
             }
-        })();
-    }, [crno, token]);
+        };
+        fetch();
+    }, [crno]);
 
-    // =======================================================================================
-    // ✅ 입력 핸들러
-    // =======================================================================================
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
+        setForm(prev => ({ ...prev, [name]: value }));
     };
 
-    // =======================================================================================
-    // ✅ 수정 요청
-    // =======================================================================================
     const handleUpdate = async () => {
+        const token = localStorage.getItem('token');
         try {
-            const res = await updateCrating(token, form);
-            if (res.data) alert('수정 완료');
+            const result = await updateCrating(token, form);
+            if (result.data) alert('수정 완료');
+            else alert('수정 실패');
         } catch {
-            alert('수정 실패');
+            alert('에러 발생');
         }
     };
 
-    // =======================================================================================
-    // ✅ 승인 요청
-    // =======================================================================================
     const handleApprove = async () => {
+        const token = localStorage.getItem('token');
         try {
-            const res = await approveCrating(crno, token);
-            if (res.data) {
+            const result = await updateCrating(token, { ...form, crstate: 1 });
+            if (result.data) {
                 alert('승인 완료');
-                setForm((prev) => ({ ...prev, crstate: 1 }));
-            }
+                setForm(prev => ({ ...prev, crstate: 1 }));
+            } else alert('승인 실패');
         } catch {
-            alert('승인 실패');
+            alert('에러 발생');
         }
     };
 
-    // =======================================================================================
-    // ✅ 삭제 요청
-    // =======================================================================================
-    const handleDeleteConfirm = async () => {
-        try {
-            const res = await deleteCrating(crno, token);
-            if (res.data) {
-                alert('삭제 완료');
-                navigate('/admin/crating');
-            }
-        } catch {
-            alert('삭제 실패');
-        } finally {
-            setOpen(false);
-        }
-    };
-
-    // =======================================================================================
-    // ✅ 로딩 처리
-    // =======================================================================================
     if (!form) return <Typography>로딩 중...</Typography>;
 
     return (
-        <Box sx={{ px: 3, py: 3, bgcolor: '#fff', color: '#212529' }}>
-            {/* ✅ 타이틀 */}
-            <Typography level="h3" sx={{ mb: 2, fontWeight: 'bold', color: '#12b886' }}>
-                📝 기업 평가 상세
-            </Typography>
+        <Box sx={{ px: 3, py: 3 }}>
+            <Typography level="h3" sx={{ mb: 2 }}>📄 기업 평가 상세</Typography>
 
-            <Divider sx={{ mb: 3, borderColor: '#dee2e6' }} />
+            <Card>
+                <Input name="ctitle" value={form.ctitle} onChange={handleChange} sx={{ mb: 1 }} />
+                <Divider />
+                <Textarea name="ccontent" value={form.ccontent} onChange={handleChange} minRows={4} sx={{ mt: 1 }} />
 
-            {/* ✅ 입력 폼 */}
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
-                    maxWidth: 480,
-                    bgcolor: '#f8f9fa',
-                    p: 3,
-                    borderRadius: 'md',
-                    border: '1px solid #ced4da',
-                    boxShadow: 'sm'
-                }}
-            >
-                <Input
-                    name="crtitle"
-                    value={form.crtitle || ''}
-                    onChange={handleChange}
-                    placeholder="제목"
-                    variant="soft"
-                />
-                <Input
-                    name="crcontent"
-                    value={form.crcontent || ''}
-                    onChange={handleChange}
-                    placeholder="내용"
-                    variant="soft"
-                />
-                <Input
-                    name="crscore"
-                    type="number"
-                    value={form.crscore || ''}
-                    onChange={handleChange}
-                    placeholder="점수 (0~100)"
-                    variant="soft"
-                />
-                <Input
-                    name="crstate"
-                    value={form.crstate || ''}
-                    onChange={handleChange}
-                    placeholder="상태코드"
-                    variant="soft"
-                />
-
-                {/* ✅ 버튼 그룹 */}
-                <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
-                    <Button
-                        onClick={handleUpdate}
-                        variant="outlined"
-                        sx={{
-                            borderColor: '#12b886',
-                            color: '#12b886',
-                            '&:hover': { bgcolor: '#12b886', color: '#fff' }
-                        }}
-                    >
-                        수정
-                    </Button>
-                    <Button
-                        onClick={handleApprove}
-                        variant="outlined"
-                        sx={{
-                            borderColor: '#228be6',
-                            color: '#228be6',
-                            '&:hover': { bgcolor: '#228be6', color: '#fff' }
-                        }}
-                    >
-                        승인
-                    </Button>
-                    <Button color="danger" onClick={() => setOpen(true)}>
-                        삭제
-                    </Button>
+                <Box sx={{ mt: 2 }}>
+                    <p><strong>점수:</strong>
+                        <Select name="crscore" value={form.crscore} onChange={(_, val) => setForm(f => ({ ...f, crscore: val }))}>
+                            {[1, 2, 3, 4, 5].map(score => <Option key={score} value={score}>{score}점</Option>)}
+                        </Select>
+                    </p>
+                    <p><strong>상태:</strong> <StatusBadge code={form.crstate} type="crating" /></p>
+                    <p><strong>등록일:</strong> {form.createAt?.split('T')[0]}</p>
+                    <p><strong>프로젝트번호:</strong> {form.pno}</p>
+                    <p><strong>개발자번호:</strong> {form.dno}</p>
                 </Box>
-            </Box>
 
-            {/* ✅ 삭제 모달 */}
-            <Modal open={open} onClose={() => setOpen(false)}>
-                <ModalDialog variant="outlined" sx={{ bgcolor: '#fff', color: '#000' }}>
-                    <ModalClose />
-                    <Typography level="h4" sx={{ color: '#d9480f' }}>
-                        정말 삭제하시겠습니까?
-                    </Typography>
-                    <Typography level="body-sm" sx={{ my: 1 }}>
-                        이 평가는 복구할 수 없습니다.
-                    </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                        <Button variant="soft" onClick={() => setOpen(false)}>취소</Button>
-                        <Button color="danger" onClick={handleDeleteConfirm}>삭제</Button>
-                    </Box>
-                </ModalDialog>
-            </Modal>
+                <Box sx={{ mt: 3, display: 'flex', gap: 1 }}>
+                    <Button variant="soft" color="primary" onClick={handleUpdate}>수정</Button>
+                    {form.crstate !== 1 && (
+                        <Button variant="soft" color="success" onClick={handleApprove}>승인 처리</Button>
+                    )}
+                    <Button variant="plain" onClick={() => navigate(-1)}>목록</Button>
+                </Box>
+            </Card>
         </Box>
     );
 }

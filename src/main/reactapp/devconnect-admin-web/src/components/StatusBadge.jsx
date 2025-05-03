@@ -1,28 +1,22 @@
 // =======================================================================================
-// StatusBadge.jsx | rw 25-05-02 최종 리팩토링
+// StatusBadge.jsx | rw 25-05-03 최종 리팩토링 v2
 // [설명]
-// - 관리자 페이지 전용 상태 뱃지 컴포넌트
-// - Joy UI <Chip> 컴포넌트 기반
-// - admin / company / developer / project 타입별 상태 코드 처리
-// - 색상 및 텍스트는 ChatGPT.com 스타일 기반 soft 톤 반영
+// - Joy UI 기반 상태 뱃지 표시 컴포넌트
+// - 관리자 전용: admin / company / developer / project 등 타입별 코드 표시
+// - prop-types 사용 + fallback 안전 처리 + 소프트톤 스타일
 // =======================================================================================
 
 import React from 'react';
-import Chip from '@mui/joy/Chip'; // ✅ Joy UI Chip
+import PropTypes from 'prop-types'; // ✅ prop 타입 검사용
+import Chip from '@mui/joy/Chip';
 
 /**
  * 상태코드에 따라 텍스트와 색상을 반환하는 뱃지
  * @param {number} code - 상태 코드 (0, 1, 2, ...)
- * @param {string} type - 상태 타입 (admin | company | developer | project)
+ * @param {string} type - 상태 타입 (admin | company | developer | project ...)
  * @returns JSX.Element
  */
-export default function StatusBadge({ code, type = 'admin' }) {
-    let label = '기타';
-    let color = 'neutral'; // ✅ Joy UI 내장 색상 preset (success, danger 등)
-
-    // =======================================================================================
-    // ✅ 타입별 상태 매핑 정의
-    // =======================================================================================
+export default function StatusBadge({ code, type }) {
     const statusMap = {
         admin: {
             label: ['신청', '승인', '반려', '삭제'],
@@ -40,20 +34,30 @@ export default function StatusBadge({ code, type = 'admin' }) {
             label: ['모집중', '진행중', '종료'],
             color: ['primary', 'info', 'neutral'],
         },
+        crating: {
+            label: ['미승인', '승인', '삭제'],
+            color: ['warning', 'success', 'neutral'],
+        },
+        drating: {
+            label: ['미승인', '승인', '삭제'],
+            color: ['warning', 'success', 'neutral'],
+        },
+        projectJoin: {
+            label: ['신청', '참여중', '종료'],
+            color: ['primary', 'success', 'neutral'],
+        },
     };
 
-    // =======================================================================================
-    // ✅ 실제 상태코드에 따른 텍스트/색상 설정
-    // =======================================================================================
     const status = statusMap[type];
-    if (status) {
-        label = status.label[code] ?? `상태 ${code}`;
-        color = status.color[code] ?? 'neutral';
+
+    if (!status) {
+        console.warn(`[StatusBadge] 알 수 없는 type: "${type}"`);
+        return null;
     }
 
-    // =======================================================================================
-    // ✅ Chip 컴포넌트 렌더링 (Soft 톤)
-    // =======================================================================================
+    const label = status.label[code] ?? `상태 ${code}`;
+    const color = status.color[code] ?? 'neutral';
+
     return (
         <Chip
             color={color}
@@ -74,3 +78,12 @@ export default function StatusBadge({ code, type = 'admin' }) {
         </Chip>
     );
 }
+
+// ✅ prop 타입 검사 추가
+StatusBadge.propTypes = {
+    code: PropTypes.number.isRequired,
+    type: PropTypes.oneOf([
+        'admin', 'company', 'developer', 'project',
+        'crating', 'drating', 'projectJoin'
+    ]).isRequired,
+};

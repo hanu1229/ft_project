@@ -1,9 +1,9 @@
 // =======================================================================================
-// ProjectJoinList.jsx | rw 25-05-02 최종 리팩토링
+// ProjectJoinList.jsx | rw 25-05-03 v2 수정
 // [설명]
 // - 관리자 전용 프로젝트 신청 전체 조회 화면
 // - 신청번호, 프로젝트번호, 개발자번호, 상태코드 표시
-// - Joy UI 카드 기반 / ChatGPT 스타일 흰 배경 UI 반영
+// - getProjectJoinList(token, pno) 연동 완료
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
@@ -19,8 +19,9 @@ import {
 } from '@mui/joy';
 
 export default function ProjectJoinList() {
-    const [list, setList] = useState([]); // ✅ 신청 목록 상태
-    const navigate = useNavigate();       // ✅ 페이지 이동
+    const [list, setList] = useState([]);        // ✅ 신청 목록 상태
+    const [pno] = useState(1);                   // ✅ 테스트용 프로젝트 번호 (임시 고정값)
+    const navigate = useNavigate();             // ✅ 페이지 이동
 
     // =======================================================================================
     // ✅ 최초 마운트 시 전체 신청 목록 조회
@@ -28,7 +29,8 @@ export default function ProjectJoinList() {
     useEffect(() => {
         const fetchList = async () => {
             try {
-                const res = await getProjectJoinList();
+                const token = localStorage.getItem('token');  // ✅ 토큰 조회
+                const res = await getProjectJoinList(token, pno);
                 setList(res.data);
             } catch (err) {
                 alert('❗ 프로젝트 신청 목록 조회 실패');
@@ -36,20 +38,13 @@ export default function ProjectJoinList() {
             }
         };
         fetchList();
-    }, []);
+    }, [pno]);
 
     return (
         <div>
             {/* ✅ 제목 */}
-            <Typography
-                level="h3"
-                sx={{
-                    mb: 3,
-                    color: '#087f5b',
-                    fontWeight: 'bold'
-                }}
-            >
-                🤝 프로젝트 신청 목록
+            <Typography level="h3" sx={{ mb: 3, color: '#087f5b', fontWeight: 'bold' }}>
+                🤝 프로젝트 신청 목록 (pno: {pno})
             </Typography>
 
             {/* ✅ 카드 리스트 출력 */}

@@ -1,98 +1,109 @@
 // =======================================================================================
-// CompanyDetail.jsx | rw 25-05-02 최종 리팩토링 (ChatGPT 스타일 적용)
+// CompanyDetail.jsx | rw 25-05-03 최종 리팩토링 (v3)
 // [설명]
-// - 관리자 전용 기업 상세조회, 수정, 상태코드 변경 화면
-// - Joy UI + 흰 배경 + 민트 포인트 테마
+// - 백엔드 완성형 API 기반에 맞춘 최종 구조
+// - ✅ 상태 변경: /api/company/state (PUT, JSON)
+// - ✅ 정보 수정: /api/company/update (PUT, @ModelAttribute)
+// - ✅ 상태 9: 삭제 상태 → 버튼 비활성
+// - ✅ cprofile 이미지 미리보기 지원
 // =======================================================================================
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-    getCompanyDetail,
     updateCompany,
     updateCompanyState
 } from '../../api/companyApi';
 import {
-    Typography,
     Box,
+    Typography,
     Input,
-    Button,
-    Divider,
     Select,
-    Option
+    Option,
+    Button,
+    Alert,
+    Divider,
+    Avatar
 } from '@mui/joy';
 
 export default function CompanyDetail() {
     const { cno } = useParams();
     const token = localStorage.getItem('token');
 
-    const [company, setCompany] = useState(null);
     const [form, setForm] = useState({
+        cno: cno,
         cname: '',
         ceo: '',
         cemail: '',
         cphone: '',
-        cstate: 0
+        cadress: '',
+        cbusiness: '',
+        cprofile: '',
+        cpwd: '',
+        state: 0
     });
+
     const [newState, setNewState] = useState(0);
 
-    // ✅ 기업 상세 정보 로딩
+    // [!] 백엔드 조회 API 없음 → 수동 입력 경고 + 상태 초기값 동기화
     useEffect(() => {
-        const fetchDetail = async () => {
-            try {
-                const res = await getCompanyDetail(token, cno);
-                setCompany(res.data);
-                setForm(res.data);
-                setNewState(res.data.cstate);
-            } catch (err) {
-                console.error(err);
-                alert('기업 상세 조회 실패');
-            }
-        };
-        fetchDetail();
-    }, [token, cno]);
+        alert('⚠️ 상세조회 API가 없습니다. 데이터를 수동으로 입력하세요.');
+        setNewState(form.state);
+    }, []);
 
-    // ✅ 입력 필드 변경
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    // ✅ 기업 정보 수정
     const handleUpdate = async () => {
+        if (!form.cname || !form.ceo || !form.cemail || !form.cphone) {
+            alert('❗ 기업명, 대표자명, 이메일, 전화번호는 필수입니다.');
+            return;
+        }
         try {
-            const res = await updateCompany(token, form);
-            if (res.data) alert('✅ 정보 수정 완료');
+            const formData = new FormData();
+            for (let key in form) formData.append(key, form[key]);
+            const res = await updateCompany(token, formData);
+            if (res.data === true) alert('✅ 정보 수정 완료');
+            else alert('❌ 정보 수정 실패');
         } catch (err) {
-            alert('❌ 정보 수정 실패');
+            alert('❌ 서버 오류');
         }
     };
 
-    // ✅ 상태코드 변경
-    const handleStateUpdate = async () => {
+    const handleStateChange = async () => {
         try {
             const res = await updateCompanyState(token, {
                 cno: form.cno,
-                cstate: newState
+                state: newState
             });
-            if (res.data) alert('✅ 상태코드 변경 완료');
+            if (res.data === true) {
+                alert('✅ 상태 변경 완료');
+                setForm((prev) => ({ ...prev, state: newState }));
+            } else {
+                alert('❌ 상태 변경 실패');
+            }
         } catch (err) {
-            alert('❌ 상태 변경 실패');
+            alert('❌ 서버 오류');
         }
     };
 
-    // ✅ 로딩 중 표시
-    if (!company) return <p style={{ color: '#666' }}>로딩 중...</p>;
+    const profileUrl = form.cprofile ? `/uploads/${form.cprofile}` : null;
 
-    // =======================================================================================
-    // ✅ 렌더링
-    // =======================================================================================
     return (
-        <Box sx={{ bgcolor: '#fff', px: 3, py: 3, borderRadius: 'md' }}>
+        <Box sx={{ p: 3, bgcolor: '#fff', borderRadius: 'md' }}>
             <Typography level="h3" sx={{ mb: 2, color: '#12b886', fontWeight: 'bold' }}>
-                🏢 기업 상세
+                🏢 기업 상세 정보
             </Typography>
 
-            <Divider sx={{ mb: 3, borderColor: '#ced4da' }} />
+            {form.state === 9 && (
+                <Alert color="danger" variant="soft" sx={{ mb: 2 }}>
+                    🚫 현재 삭제 상태입니다. 수정이 제한됩니다.
+                </Alert>
+            )}
+
+            <Divider sx={{ mb: 3 }} />
 
             <Box
                 sx={{
@@ -103,56 +114,55 @@ export default function CompanyDetail() {
                     p: 3,
                     borderRadius: 'md',
                     backgroundColor: '#f8f9fa',
-                    border: '1px solid #dee2e6',
-                    boxShadow: 'sm',
+                    border: '1px solid #dee2e6'
                 }}
             >
-                {/* 기업 정보 입력 */}
-                <Input name="cname" value={form.cname} onChange={handleChange} placeholder="기업명" variant="soft" />
-                <Input name="ceo" value={form.ceo} onChange={handleChange} placeholder="대표자명" variant="soft" />
-                <Input name="cemail" value={form.cemail} onChange={handleChange} placeholder="이메일" variant="soft" />
-                <Input name="cphone" value={form.cphone} onChange={handleChange} placeholder="전화번호" variant="soft" />
+                <Input name="cname" value={form.cname} onChange={handleChange} placeholder="기업명" variant="soft" required />
+                <Input name="ceo" value={form.ceo} onChange={handleChange} placeholder="대표자명" variant="soft" required />
+                <Input name="cemail" value={form.cemail} onChange={handleChange} placeholder="이메일" variant="soft" required />
+                <Input name="cphone" value={form.cphone} onChange={handleChange} placeholder="전화번호" variant="soft" required />
+                <Input name="cadress" value={form.cadress} onChange={handleChange} placeholder="주소" variant="soft" />
+                <Input name="cbusiness" value={form.cbusiness} onChange={handleChange} placeholder="사업자번호" variant="soft" />
+                <Input name="cpwd" value={form.cpwd} onChange={handleChange} placeholder="비밀번호 확인용" variant="soft" type="password" />
 
-                {/* 상태코드 선택 */}
-                <Typography level="body-md" sx={{ mt: 2, color: '#495057' }}>
-                    상태코드 변경
-                </Typography>
+                {/* ✅ 이미지 미리보기 */}
+                {profileUrl && (
+                    <Box>
+                        <Typography level="body-sm">등록된 프로필 이미지</Typography>
+                        <Avatar src={profileUrl} size="lg" sx={{ mt: 1 }} />
+                    </Box>
+                )}
+
+                {/* ✅ 상태 변경 */}
+                <Typography level="body-md" sx={{ mt: 2, color: '#495057' }}>상태코드 변경</Typography>
                 <Select value={newState} onChange={(e, val) => setNewState(val)} variant="soft">
                     <Option value={0}>대기 (0)</Option>
                     <Option value={1}>승인 (1)</Option>
                     <Option value={9}>삭제 (9)</Option>
                 </Select>
 
-                {/* 버튼 영역 */}
                 <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
                     <Button
                         onClick={handleUpdate}
                         fullWidth
                         variant="outlined"
+                        disabled={form.state === 9}
                         sx={{
-                            color: '#12b886',
-                            borderColor: '#12b886',
-                            fontWeight: 'bold',
-                            '&:hover': {
-                                bgcolor: '#12b886',
-                                color: '#fff'
-                            }
+                            color: form.state === 9 ? '#adb5bd' : '#12b886',
+                            borderColor: form.state === 9 ? '#ced4da' : '#12b886',
+                            fontWeight: 'bold'
                         }}
                     >
                         정보 수정
                     </Button>
                     <Button
-                        onClick={handleStateUpdate}
+                        onClick={handleStateChange}
                         fullWidth
                         variant="outlined"
                         sx={{
                             color: '#12b886',
                             borderColor: '#12b886',
-                            fontWeight: 'bold',
-                            '&:hover': {
-                                bgcolor: '#12b886',
-                                color: '#fff'
-                            }
+                            fontWeight: 'bold'
                         }}
                     >
                         상태 변경

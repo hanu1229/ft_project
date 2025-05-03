@@ -261,7 +261,7 @@ insert into drating( dtitle , dcontent , drscore , create_at , update_at , drsta
 ( "저는 이사람을 평가합니다. 10" , "나는 이사람에게 놀랐어요. wow korean" , 5 , "2025-03-18 17:30" , "2025-04-22 19:30" , 1 , 10 , 10 );
 
 -- 관리자 샘플 데이터 등록 | rw 25-04-19 샘플생성
--- 로그인 테스트 시 adpwd = qwe1234로 입력
+-- 로그인 테스트 시 adpwd = qwe12345로 입력
 
 INSERT INTO admin (adid, adpwd, adname, adphone, adtype, create_at, update_at)
 VALUES

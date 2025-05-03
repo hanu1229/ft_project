@@ -1,188 +1,205 @@
-// CompanyList.jsx | 최종 리팩토링 25-05-02
+// =======================================================================================
+// CompanyList.jsx | rw 25-05-03 확장 리팩토링 (v6)
 // [설명]
-// - Joy UI 기반 기업 전체 목록 화면
-// - ChatGPT.com 감성 흰 배경 + 민트 포인트 UI
-// - 필터링, 검색, 삭제, 상세 이동 포함
+// - ✅ Joy UI 기업 목록 화면 확장버전
+// - ✅ 상태 뱃지 / ✅ 썸네일 / ✅ 정렬 / ✅ 검색 / ✅ 필터 / ✅ 페이지네이션
+// - ✅ 통계 카드 클릭 필터링 / ✅ 썸네일 확대 / ✅ CSV 다운로드 / ✅ 정렬 UI / ✅ 탭
+// - ✅ 페이지당 개수 선택 / ✅ 직접 페이지 이동 / ✅ 현재 범위 표시 / ✅ 로딩 스피너
+// =======================================================================================
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCompanyList, deleteCompany } from '../../api/companyApi';
+import { getCompanyList } from '../../api/companyApi';
+import StatusBadge from '../../components/StatusBadge';
+import CustomPagination from '../../components/CustomPagination';
 import {
-    Typography,
-    Grid,
-    Card,
-    Box,
-    Divider,
-    Button,
-    Input,
-    Select,
-    Option,
-    Modal,
-    ModalDialog,
-    ModalClose
+    Typography, Grid, Card, Box, Divider, Button, Input,
+    Select, Option, Modal, ModalDialog, ModalClose, Tabs,
+    TabList, Tab, DialogTitle, DialogContent, IconButton
 } from '@mui/joy';
+import { Download, Image as ImageIcon } from 'lucide-react';
 
 export default function CompanyList() {
     const [list, setList] = useState([]);
     const [search, setSearch] = useState('');
     const [filter, setFilter] = useState('all');
-    const [open, setOpen] = useState(false);
-    const [deleteTarget, setDeleteTarget] = useState(null);
+    const [sortKey, setSortKey] = useState('cname');
+    const [sortOrder, setSortOrder] = useState('asc');
+    const [page, setPage] = useState(1);
+    const [perPage, setPerPage] = useState(9);
+    const [openImg, setOpenImg] = useState(false);
+    const [previewImg, setPreviewImg] = useState(null);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    // ✅ 기업 목록 조회
     useEffect(() => {
-        const fetchList = async () => {
+        const fetch = async () => {
             try {
+                setLoading(true);
                 const res = await getCompanyList();
                 setList(res.data);
-            } catch (err) {
+            } catch {
                 alert('기업 목록 조회 실패');
+            } finally {
+                setLoading(false);
             }
         };
-        fetchList();
+        fetch();
     }, []);
 
-    // ✅ 상태별 통계 계산
     const stats = useMemo(() => ({
         total: list.length,
-        approved: list.filter(c => c.cstate === 1).length,
-        pending: list.filter(c => c.cstate === 0).length,
-        deleted: list.filter(c => c.cstate === 9).length,
+        approved: list.filter(c => c.state === 1).length,
+        pending: list.filter(c => c.state === 0).length,
+        deleted: list.filter(c => c.state === 9).length,
     }), [list]);
 
-    // ✅ 필터 + 검색
-    const filtered = list.filter(c =>
-        (filter === 'all' || String(c.cstate) === filter) &&
-        (search === '' || c.cname.includes(search) || c.ceo.includes(search))
-    );
+    const filtered = useMemo(() => {
+        let result = list.filter(c =>
+            (filter === 'all' || String(c.state) === filter) &&
+            (search === '' || c.cname.includes(search) || c.cid.includes(search))
+        );
+        return [...result].sort((a, b) => {
+            let aVal = a[sortKey];
+            let bVal = b[sortKey];
+            return sortOrder === 'asc'
+                ? String(aVal).localeCompare(String(bVal))
+                : String(bVal).localeCompare(String(aVal));
+        });
+    }, [list, filter, search, sortKey, sortOrder]);
 
-    // ✅ 삭제 처리
-    const handleDeleteConfirm = async () => {
-        const token = localStorage.getItem('token');
-        try {
-            const res = await deleteCompany(deleteTarget, token);
-            if (res.data) {
-                alert('삭제 완료');
-                setList(list.filter(c => c.cno !== deleteTarget));
-            }
-        } catch (err) {
-            alert('삭제 실패');
-        } finally {
-            setOpen(false);
-            setDeleteTarget(null);
-        }
+    const pageCount = Math.ceil(filtered.length / perPage);
+    const paged = filtered.slice((page - 1) * perPage, page * perPage);
+    const from = (page - 1) * perPage + 1;
+    const to = Math.min(page * perPage, filtered.length);
+
+    const exportCSV = () => {
+        const header = ['기업명', '아이디', '사업자번호', '상태'];
+        const rows = filtered.map(c => [c.cname, c.cid, c.cbusiness, c.state]);
+        const csv = [header, ...rows].map(e => e.join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'company_list.csv');
+        link.click();
     };
 
     return (
-        <Box sx={{ px: 3, py: 3, bgcolor: '#ffffff', color: '#222' }}>
-            {/* ✅ 타이틀 */}
-            <Typography level="h3" sx={{ mb: 3, fontWeight: 'bold', color: '#12b886' }}>
-                🏢 기업 목록
-            </Typography>
+        <Box sx={{ px: 3, py: 3 }}>
+            <Typography level="h3" sx={{ color: '#12b886', mb: 2, fontWeight: 600 }}>🏢 기업 목록</Typography>
 
-            {/* ✅ 통계 카드 */}
-            <Grid container spacing={2} sx={{ mb: 3 }}>
+            {/* 통계 카드 */}
+            <Grid container spacing={2} sx={{ mb: 2 }}>
                 {[
-                    ['전체', stats.total],
-                    ['승인', stats.approved],
-                    ['대기', stats.pending]
-                ].map(([label, count], idx) => (
-                    <Grid key={idx} xs={12} sm={4}>
-                        <Card sx={{
-                            bgcolor: '#f8f9fa',
-                            border: '1px solid #dee2e6',
-                            color: '#212529',
-                            fontWeight: 'bold'
-                        }}>
-                            {label}: <span style={{ color: '#12b886' }}>{count}</span>
+                    ['전체', 'all', stats.total, '#12b886'],
+                    ['승인', '1', stats.approved, '#51cf66'],
+                    ['대기', '0', stats.pending, '#fcc419'],
+                    ['삭제', '9', stats.deleted, '#ff6b6b']
+                ].map(([label, key, count, color], i) => (
+                    <Grid key={i} xs={6} sm={3}>
+                        <Card onClick={() => setFilter(key)} sx={{ cursor: 'pointer', borderLeft: `5px solid ${color}` }}>
+                            {label}: <strong style={{ color }}>{count}</strong>
                         </Card>
                     </Grid>
                 ))}
             </Grid>
 
-            {/* ✅ 필터 + 검색 */}
-            <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-                <Select
-                    value={filter}
-                    onChange={(e, val) => setFilter(val)}
-                    sx={{ minWidth: 120 }}
-                    variant="soft"
-                >
-                    <Option value="all">전체</Option>
-                    <Option value="0">대기</Option>
-                    <Option value="1">승인</Option>
-                    <Option value="9">삭제</Option>
+            {/* 탭 + 검색 + 정렬 */}
+            <Tabs value={filter} onChange={(e, val) => setFilter(val)} sx={{ mb: 2 }}>
+                <TabList>
+                    <Tab value="all">전체</Tab>
+                    <Tab value="1">승인</Tab>
+                    <Tab value="0">대기</Tab>
+                    <Tab value="9">삭제</Tab>
+                </TabList>
+            </Tabs>
+
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <Select value={sortKey} onChange={(e, val) => setSortKey(val)} variant="soft">
+                    <Option value="cname">기업명</Option>
+                    <Option value="createAt">가입일</Option>
                 </Select>
-                <Input
-                    placeholder="기업명 또는 대표자 검색"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    variant="soft"
-                    sx={{ flex: 1 }}
-                />
+                <Select value={sortOrder} onChange={(e, val) => setSortOrder(val)} variant="soft">
+                    <Option value="asc">오름차순</Option>
+                    <Option value="desc">내림차순</Option>
+                </Select>
+                <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="기업명, 아이디 검색" sx={{ flex: 1 }} />
+                <Button variant="soft" onClick={exportCSV} startDecorator={<Download size={16} />}>CSV</Button>
             </Box>
 
-            {/* ✅ 기업 리스트 카드 */}
-            <Grid container spacing={2}>
-                {filtered.map(c => (
-                    <Grid key={c.cno} xs={12} sm={6} md={4}>
-                        <Card
-                            variant="outlined"
-                            sx={{
-                                bgcolor: '#fefefe',
-                                borderColor: '#12b886',
-                                color: '#222',
-                                '&:hover': { boxShadow: 'md' }
-                            }}
-                        >
-                            <Typography level="title-md" sx={{ color: '#12b886', fontWeight: 'bold' }}>
-                                {c.cname}
-                            </Typography>
-                            <Divider sx={{ my: 1, borderColor: '#ccc' }} />
-                            <Box sx={{ fontSize: 14 }}>
-                                <p><strong>기업번호:</strong> {c.cno}</p>
-                                <p><strong>대표자:</strong> {c.ceo}</p>
-                                <p><strong>상태:</strong> {c.cstate}</p>
-                            </Box>
-                            <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
-                                <Button
-                                    variant="outlined"
-                                    color="neutral"
-                                    onClick={() => navigate(`/admin/company/${c.cno}`)}
-                                    sx={{ borderColor: '#12b886', color: '#12b886', fontWeight: 500 }}
-                                >
-                                    상세보기
-                                </Button>
-                                <Button
-                                    color="danger"
-                                    onClick={() => {
-                                        setDeleteTarget(c.cno);
-                                        setOpen(true);
-                                    }}
-                                >
-                                    삭제
-                                </Button>
-                            </Box>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
+            {/* 목록 or 로딩 */}
+            {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', my: 5 }}>
+                    <Typography level="body-md" color="neutral">로딩 중...</Typography>
+                </Box>
+            ) : (
+                <Grid container spacing={2}>
+                    {paged.map(c => (
+                        <Grid key={c.cno} xs={12} sm={6} md={4}>
+                            <Card variant="outlined" sx={{ borderColor: '#12b886' }}>
+                                <Typography level="title-md" sx={{ color: '#12b886', fontWeight: 'bold' }}>{c.cname}</Typography>
+                                <Divider sx={{ my: 1 }} />
+                                {c.cprofile ? (
+                                    <Box sx={{ position: 'relative' }}>
+                                        <img
+                                            src={`/images/${c.cprofile}`}
+                                            alt="profile"
+                                            style={{ width: '100%', height: 140, objectFit: 'cover', borderRadius: 8, cursor: 'pointer' }}
+                                            onClick={() => { setPreviewImg(`/images/${c.cprofile}`); setOpenImg(true); }}
+                                        />
+                                        <IconButton
+                                            variant="soft"
+                                            size="sm"
+                                            sx={{ position: 'absolute', top: 5, right: 5 }}
+                                            onClick={() => { setPreviewImg(`/images/${c.cprofile}`); setOpenImg(true); }}
+                                        >
+                                            <ImageIcon size={16} />
+                                        </IconButton>
+                                    </Box>
+                                ) : (
+                                    <Box sx={{ height: 140, bgcolor: '#f1f3f5', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Typography level="body-sm" color="neutral">이미지 없음</Typography>
+                                    </Box>
+                                )}
 
-            {/* ✅ 삭제 확인 모달 */}
-            <Modal open={open} onClose={() => setOpen(false)}>
-                <ModalDialog variant="outlined" sx={{ bgcolor: '#fff', color: '#000' }}>
+                                <Box sx={{ mt: 1, fontSize: 14 }}>
+                                    <p><strong>ID:</strong> {c.cid}</p>
+                                    <p><strong>사업자번호:</strong> {c.cbusiness}</p>
+                                    <p><strong>상태:</strong> <StatusBadge code={c.state} type="company" /></p>
+                                </Box>
+
+                                <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+                                    <Button onClick={() => navigate(`/admin/company/${c.cno}`)} variant="outlined" sx={{ color: '#12b886', borderColor: '#12b886' }}>상세</Button>
+                                    <Button disabled variant="outlined" color="danger">삭제</Button>
+                                </Box>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
+            )}
+
+            {/* 페이지네이션 + 범위 */}
+            <Box sx={{ mt: 3 }}>
+                <CustomPagination
+                    page={page}
+                    setPage={setPage}
+                    totalPages={pageCount}
+                    perPage={perPage}
+                    setPerPage={setPerPage}
+                />
+                <Typography level="body-sm" sx={{ mt: 1, textAlign: 'center', color: 'text.secondary' }}>
+                    {from}–{to} of {filtered.length}개
+                </Typography>
+            </Box>
+
+            <Modal open={openImg} onClose={() => setOpenImg(false)}>
+                <ModalDialog>
                     <ModalClose />
-                    <Typography level="h4" sx={{ color: '#d9480f' }}>
-                        정말 삭제하시겠습니까?
-                    </Typography>
-                    <Typography level="body-sm" sx={{ my: 1 }}>
-                        이 작업은 되돌릴 수 없습니다.
-                    </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                        <Button variant="soft" onClick={() => setOpen(false)}>취소</Button>
-                        <Button color="danger" onClick={handleDeleteConfirm}>삭제</Button>
-                    </Box>
+                    <DialogTitle>썸네일 미리보기</DialogTitle>
+                    <DialogContent>
+                        <img src={previewImg} alt="preview" style={{ width: '100%', borderRadius: 8 }} />
+                    </DialogContent>
                 </ModalDialog>
             </Modal>
         </Box>

@@ -1,102 +1,99 @@
 // =======================================================================================
-// DratingList.jsx | rw 25-05-02 최종 리팩토링
+// DratingList.jsx | rw 25-05-03 최종 생성
 // [설명]
-// - 관리자 전용 개발자 평가 목록 화면
-// - 평가 상세페이지 이동 버튼 포함
-// - Joy UI + ChatGPT 흰 배경 테마 구성
+// - 개발자 평가 목록 전체 조회 화면
+// - ✅ 점수 / ✅ 상태 뱃지 / ✅ 제목 검색 / ✅ 정렬 / ✅ 필터 / ✅ 페이지네이션 포함
 // =======================================================================================
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDratingList } from '../../api/dratingApi'; // ✅ 평가 전체 조회 API
 import {
-    Typography,
-    Grid,
-    Card,
-    Box,
-    Divider,
-    Button
+    Box, Typography, Grid, Card, Divider,
+    Select, Option, Input, Button
 } from '@mui/joy';
+import { getDratingList } from '../../api/dratingApi';
+import StatusBadge from '../../components/StatusBadge';
 
 export default function DratingList() {
-    const [list, setList] = useState([]);              // ✅ 평가 리스트 상태
-    const navigate = useNavigate();                    // ✅ 라우팅 이동 함수
+    const navigate = useNavigate();
+    const [list, setList] = useState([]);
+    const [search, setSearch] = useState('');
+    const [sortKey, setSortKey] = useState('createAt');
+    const [sortOrder, setSortOrder] = useState('desc');
+    const [page, setPage] = useState(1);
+    const perPage = 9;
 
-    // =======================================================================================
-    // ✅ useEffect - 최초 마운트 시 전체 평가 목록 요청
-    // =======================================================================================
+    // ✅ 데이터 불러오기
     useEffect(() => {
-        const fetchList = async () => {
+        const fetch = async () => {
             try {
-                const res = await getDratingList();    // (1) API 요청
-                setList(res.data);                     // (2) 상태 저장
+                const token = localStorage.getItem('token');
+                const res = await getDratingList(token, { page: 1, size: 100 });
+                setList(res.data.content);
             } catch (err) {
-                alert('개발자 평가 목록 조회 실패');
-                console.error(err);
+                alert('개발자 평가 조회 실패');
             }
         };
-        fetchList();
+        fetch();
     }, []);
 
+    // ✅ 필터링 + 정렬 + 검색
+    const filtered = useMemo(() => {
+        return [...list]
+            .filter(d => d.dtitle.includes(search) || d.dcontent.includes(search))
+            .sort((a, b) => {
+                const aVal = a[sortKey];
+                const bVal = b[sortKey];
+                return sortOrder === 'asc'
+                    ? String(aVal).localeCompare(String(bVal))
+                    : String(bVal).localeCompare(String(aVal));
+            });
+    }, [list, search, sortKey, sortOrder]);
+
+    const paged = filtered.slice((page - 1) * perPage, page * perPage);
+    const pageCount = Math.ceil(filtered.length / perPage);
+
     return (
-        <Box sx={{ px: 3, py: 3, bgcolor: '#ffffff', color: '#212529' }}>
-            {/* ✅ 페이지 타이틀 */}
-            <Typography
-                level="h3"
-                sx={{ mb: 3, color: '#12b886', fontWeight: 'bold' }}
-            >
-                🧾 개발자 평가 목록
-            </Typography>
+        <Box sx={{ px: 3, py: 3 }}>
+            <Typography level="h3" sx={{ mb: 2 }}>📝 개발자 평가 목록</Typography>
 
-            {/* ✅ 카드 레이아웃 */}
+            {/* 검색 / 정렬 */}
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <Input placeholder="제목, 내용 검색" value={search} onChange={(e) => setSearch(e.target.value)} sx={{ flex: 1 }} />
+                <Select value={sortKey} onChange={(e, val) => setSortKey(val)}>
+                    <Option value="createAt">등록일</Option>
+                    <Option value="drscore">점수</Option>
+                </Select>
+                <Select value={sortOrder} onChange={(e, val) => setSortOrder(val)}>
+                    <Option value="desc">내림차순</Option>
+                    <Option value="asc">오름차순</Option>
+                </Select>
+            </Box>
+
+            {/* 목록 카드 */}
             <Grid container spacing={2}>
-                {list.map((dr) => (
-                    <Grid key={dr.drno} xs={12} md={6} lg={4}>
-                        <Card
-                            variant="outlined"
-                            sx={{
-                                bgcolor: '#f8f9fa',
-                                color: '#212529',
-                                borderColor: '#12b886',
-                                '&:hover': {
-                                    boxShadow: '0 0 12px rgba(18, 184, 134, 0.3)',
-                                    transform: 'translateY(-2px)',
-                                },
-                            }}
-                        >
-                            {/* ✅ 평가 정보 */}
-                            <Typography level="title-md" sx={{ color: '#12b886' }}>
-                                평가번호: {dr.drno}
-                            </Typography>
-
-                            <Divider sx={{ my: 1, borderColor: '#ced4da' }} />
-
-                            <Box sx={{ fontSize: 14 }}>
-                                <p><strong>개발자번호:</strong> {dr.dno}</p>
-                                <p><strong>상태코드:</strong> {dr.drstate}</p>
+                {paged.map((d) => (
+                    <Grid key={d.drno} xs={12} sm={6} md={4}>
+                        <Card variant="outlined">
+                            <Typography level="title-md" sx={{ mb: 1 }}>{d.dtitle}</Typography>
+                            <Divider />
+                            <Box sx={{ mt: 1 }}>
+                                <p><strong>점수:</strong> {d.drscore}점</p>
+                                <p><strong>상태:</strong> <StatusBadge code={d.drstate} type="drating" /></p>
+                                <p><strong>등록일:</strong> {d.createAt?.split('T')[0]}</p>
                             </Box>
-
-                            {/* ✅ 상세보기 버튼 */}
-                            <Button
-                                size="sm"
-                                variant="outlined"
-                                onClick={() => navigate(`/admin/drating/${dr.drno}`)}
-                                sx={{
-                                    mt: 1,
-                                    borderColor: '#12b886',
-                                    color: '#12b886',
-                                    '&:hover': {
-                                        bgcolor: '#12b886',
-                                        color: '#fff'
-                                    }
-                                }}
-                            >
-                                상세보기
-                            </Button>
+                            <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+                                <Button size="sm" variant="outlined" onClick={() => navigate(`/admin/drating/${d.drno}`)}>상세/수정</Button>
+                            </Box>
                         </Card>
                     </Grid>
                 ))}
             </Grid>
+
+            {/* 페이지네이션 */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                <Typography level="body-sm">{page} / {pageCount} 페이지</Typography>
+            </Box>
         </Box>
     );
-}
+} // end

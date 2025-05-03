@@ -1,106 +1,117 @@
 // =======================================================================================
-// CratingList.jsx | rw 25-05-02 최종 리팩토링
+// CratingList.jsx | rw 25-05-03 최종본 (Pagination 제거, CustomPagination 연동)
 // [설명]
-// - 관리자 전용 기업 평가 전체 목록 조회 화면
-// - Joy UI 기반 카드 리스트 구성
-// - 흰 배경 + 절제된 민트/핑크 컬러 기반의 ChatGPT.com 스타일 적용
+// - 기업 평가 목록 전체 조회 화면
+// - ✅ 상태 뱃지 / ✅ 점수 / ✅ 제목 / ✅ 정렬 / ✅ 필터 / ✅ 검색 / ✅ 페이지네이션
 // =======================================================================================
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCratingList } from '../../api/cratingApi';
 import {
-    Typography,
-    Grid,
-    Card,
-    Box,
-    Divider,
-    Button
+    Box, Typography, Grid, Card, Divider,
+    Select, Option, Input, Button
 } from '@mui/joy';
+import { getCratingList } from '../../api/cratingApi';
+import StatusBadge from '../../components/StatusBadge';
+import CustomPagination from '../../components/CustomPagination'; // ✅ 교체된 페이지네이션
 
 export default function CratingList() {
-    const [list, setList] = useState([]);         // ✅ 기업 평가 목록 상태
-    const navigate = useNavigate();               // ✅ 페이지 이동
+    const navigate = useNavigate();
+    const [list, setList] = useState([]);
+    const [search, setSearch] = useState('');
+    const [sortKey, setSortKey] = useState('createAt');
+    const [sortOrder, setSortOrder] = useState('desc');
+    const [page, setPage] = useState(1);
+    const [perPage, setPerPage] = useState(9); // ✅ 유동적 페이지당 항목 수
 
-    // =======================================================================================
-    // ✅ 최초 마운트 시 전체 평가 데이터 조회 (최대 100건)
-    // =======================================================================================
+    // ✅ 1. 전체 데이터 불러오기
     useEffect(() => {
-        (async () => {
+        const fetch = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await getCratingList(token, { page: 1, size: 100 });
-                setList(res.data.content || []);
+                const res = await getCratingList(token, { page: 1, size: 100 }); // 전체 조회
+                setList(res.data.content);
             } catch (err) {
-                console.error('기업 평가 목록 조회 실패', err);
-                alert('기업 평가 목록 조회 실패');
+                alert('기업 평가 조회 실패');
             }
-        })();
+        };
+        fetch();
     }, []);
 
-    // =======================================================================================
-    // ✅ 평가 카드 UI 렌더링
-    // =======================================================================================
+    // ✅ 2. 필터 + 정렬 + 검색 적용
+    const filtered = useMemo(() => {
+        return [...list]
+            .filter(c =>
+                c.ctitle.includes(search) || c.ccontent.includes(search)
+            )
+            .sort((a, b) => {
+                const aVal = a[sortKey];
+                const bVal = b[sortKey];
+                return sortOrder === 'asc'
+                    ? String(aVal).localeCompare(String(bVal))
+                    : String(bVal).localeCompare(String(aVal));
+            });
+    }, [list, search, sortKey, sortOrder]);
+
+    const paged = filtered.slice((page - 1) * perPage, page * perPage);
+    const pageCount = Math.ceil(filtered.length / perPage);
+
     return (
-        <Box sx={{ px: 3, py: 3, bgcolor: '#fff', color: '#212529' }}>
-            {/* ✅ 타이틀 */}
-            <Typography
-                level="h3"
-                sx={{ mb: 3, color: '#12b886', fontWeight: 'bold' }}
-            >
-                📝 기업 평가 목록
-            </Typography>
+        <Box sx={{ px: 3, py: 3 }}>
+            <Typography level="h3" sx={{ mb: 2 }}>📄 기업 평가 목록</Typography>
 
-            {/* ✅ 카드 리스트 */}
+            {/* ✅ 검색 / 정렬 옵션 */}
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <Input
+                    placeholder="제목, 내용 검색"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    sx={{ flex: 1 }}
+                />
+                <Select value={sortKey} onChange={(e, val) => setSortKey(val)}>
+                    <Option value="createAt">등록일</Option>
+                    <Option value="crscore">점수</Option>
+                </Select>
+                <Select value={sortOrder} onChange={(e, val) => setSortOrder(val)}>
+                    <Option value="desc">내림차순</Option>
+                    <Option value="asc">오름차순</Option>
+                </Select>
+            </Box>
+
+            {/* ✅ 목록 카드 표시 */}
             <Grid container spacing={2}>
-                {list.map((cr) => (
-                    <Grid key={cr.crno} xs={12} sm={6} md={4}>
-                        <Card
-                            variant="outlined"
-                            sx={{
-                                bgcolor: '#f8f9fa',
-                                border: '1px solid #ced4da',
-                                color: '#212529',
-                                p: 2,
-                                borderRadius: 'md',
-                                boxShadow: 'sm',
-                                '&:hover': {
-                                    boxShadow: '0 0 0 2px #12b88633'
-                                }
-                            }}
-                        >
-                            <Typography level="title-md" sx={{ color: '#12b886', fontWeight: 600 }}>
-                                📋 평가번호: {cr.crno}
-                            </Typography>
-
-                            <Divider sx={{ my: 1, borderColor: '#dee2e6' }} />
-
-                            <Box sx={{ fontSize: 14 }}>
-                                <p><strong>기업번호:</strong> {cr.cno}</p>
-                                <p><strong>상태코드:</strong> {cr.crstate}</p>
-                                <p><strong>점수:</strong> {cr.crscore}</p>
+                {paged.map((c) => (
+                    <Grid key={c.crno} xs={12} sm={6} md={4}>
+                        <Card variant="outlined">
+                            <Typography level="title-md" sx={{ mb: 1 }}>{c.ctitle}</Typography>
+                            <Divider />
+                            <Box sx={{ mt: 1 }}>
+                                <p><strong>점수:</strong> {c.crscore}점</p>
+                                <p><strong>상태:</strong> <StatusBadge code={c.crstate} type="crating" /></p>
+                                <p><strong>등록일:</strong> {c.createAt?.split('T')[0]}</p>
                             </Box>
-
-                            <Button
-                                onClick={() => navigate(`/admin/crating/${cr.crno}`)}
-                                variant="outlined"
-                                sx={{
-                                    mt: 2,
-                                    borderColor: '#12b886',
-                                    color: '#12b886',
-                                    fontWeight: 'bold',
-                                    '&:hover': {
-                                        bgcolor: '#12b886',
-                                        color: '#fff'
-                                    }
-                                }}
-                            >
-                                상세보기
-                            </Button>
+                            <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+                                <Button
+                                    size="sm"
+                                    variant="outlined"
+                                    onClick={() => navigate(`/admin/crating/${c.crno}`)}
+                                >
+                                    상세/수정
+                                </Button>
+                            </Box>
                         </Card>
                     </Grid>
                 ))}
             </Grid>
+
+            {/* ✅ 커스텀 페이지네이션 적용 */}
+            <CustomPagination
+                page={page}
+                setPage={setPage}
+                totalPages={pageCount}
+                perPage={perPage}
+                setPerPage={setPerPage}
+            />
         </Box>
     );
 }
