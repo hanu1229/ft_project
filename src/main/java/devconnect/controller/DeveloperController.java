@@ -1,6 +1,7 @@
 package devconnect.controller;
 
 import devconnect.model.dto.DeveloperDto;
+import devconnect.model.dto.DeveloperPwdUpdateDto;
 import devconnect.service.DeveloperService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +67,19 @@ public class DeveloperController {
         }catch( Exception e ){ return ResponseEntity.status( 401 ).body( false ); }
 
         boolean result = developerService.onUpdate( developerDto, logInDno );
+        if( result ){ return ResponseEntity.status( 200 ).body( true ); }
+        else{ return ResponseEntity.status( 400 ).body( false ); }
+    } // f end
+
+    // 5-1. 개발자 비밀번호 수정
+    @PutMapping("/update_pwd")
+    public ResponseEntity<Boolean> onUpdatePwd(@RequestHeader("Authorization") String token ,
+                                               @RequestBody DeveloperPwdUpdateDto developerPwdUpdateDto ){
+        int logInDno;
+        try{ logInDno = developerService.info( token ).getDno();
+        }catch( Exception e ){ return ResponseEntity.status( 401 ).body( false ); }
+
+        boolean result = developerService.onUpdatePwd( developerPwdUpdateDto, logInDno );
         if( result ){ return ResponseEntity.status( 200 ).body( true ); }
         else{ return ResponseEntity.status( 400 ).body( false ); }
     } // f end

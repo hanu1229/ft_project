@@ -1,6 +1,7 @@
 package devconnect.service;
 
 import devconnect.model.dto.DeveloperDto;
+import devconnect.model.dto.DeveloperPwdUpdateDto;
 import devconnect.model.entity.DeveloperEntity;
 import devconnect.model.repository.DeveloperRepository;
 import devconnect.util.FileUtil;
@@ -127,6 +128,23 @@ public class DeveloperService {
 
         // 바뀐 이미지 삭제
         fileUtil.fileDelete( preFile );
+
+        return true;
+    } // f end
+
+    // 5-1. 개발자 비밀번호 수정
+    public Boolean onUpdatePwd( DeveloperPwdUpdateDto developerPwdUpdateDto, int logInDno ){
+        if( logInDno <= 0 ){ return false; }
+        Optional< DeveloperEntity > optionalDeveloperEntity = developerRepository.findById( logInDno );
+        if( optionalDeveloperEntity.isEmpty() ){ return false; }
+        DeveloperEntity developerEntity = optionalDeveloperEntity.get();
+
+        BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
+        boolean result = pwdEncoder.matches( developerPwdUpdateDto.getMatchPwd(), developerEntity.getDpwd() );
+        // 비밀번호 확인
+        if( !result ){ return false; }
+
+        developerEntity.setDpwd( developerPwdUpdateDto.getNewPwd() );
 
         return true;
     } // f end
