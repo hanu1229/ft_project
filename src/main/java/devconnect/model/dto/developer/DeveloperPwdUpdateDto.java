@@ -1,6 +1,5 @@
-package devconnect.model.dto;
+package devconnect.model.dto.developer;
 
-import devconnect.model.entity.DeveloperEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

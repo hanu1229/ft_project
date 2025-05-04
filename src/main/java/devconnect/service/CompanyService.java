@@ -1,9 +1,7 @@
 package devconnect.service;
 
 import devconnect.model.dto.CompanyDto;
-import devconnect.model.dto.DeveloperDto;
 import devconnect.model.entity.CompanyEntity;
-import devconnect.model.entity.DeveloperEntity;
 import devconnect.model.repository.CompanyRepository;
 import devconnect.util.FileUtil;
 import devconnect.util.JwtUtil;
