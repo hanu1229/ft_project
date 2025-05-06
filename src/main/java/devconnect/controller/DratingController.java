@@ -59,10 +59,10 @@ public class DratingController {
             @RequestParam( defaultValue = "1" ) int page,
             @RequestParam( defaultValue = "5" ) int size,
             @RequestParam( required = false ) String keyword,
-            @RequestParam( defaultValue = "0" ) int dno,
+            @RequestParam( defaultValue = "0" ) int cno,
             @RequestHeader("Authorization") String token ){
         System.out.println("DratingController.dratingList");
-        Page<DratingDto> findAll = dratingService.dratingList( token , page , size , keyword , dno );
+        Page<DratingDto> findAll = dratingService.dratingList( token , page , size , keyword , cno );
         if( findAll != null ){
             return ResponseEntity.ok(findAll);
         }else{
