@@ -8,8 +8,12 @@ import devconnect.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -171,8 +175,31 @@ public class CompanyService {
 
         return true;
 
-
     } // f end
+
+    //8 기업 정보 삭제
+    public boolean deleteProduct(String token , CompanyDto companyDto){
+        System.out.println("CompanyController.deleteProduct");
+        System.out.println("logincno = " + token + ", dto = " + companyDto);
+
+       String cid = jwtUtil.valnoateToken(token);
+
+       if ( cid == null) return false;
+       CompanyEntity companyEntity = companyRepository.findByCid(cid);
+
+       BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
+       boolean result = pwdEncoder.matches(companyDto.getCpwd() , companyEntity.getCpwd());
+       //비밀번호 확인
+        if (!result ) return false;
+
+        return  companyRepository.findById(companyEntity.getCno()).map((entity) -> {
+            companyRepository.deleteById(companyEntity.getCno());
+            return true;
+        }).orElse(false);
+
+    }
+
+    
 
 
 }
