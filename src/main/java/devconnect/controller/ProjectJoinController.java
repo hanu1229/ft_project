@@ -1,17 +1,20 @@
 package devconnect.controller;
 
+import devconnect.model.dto.ProjectDto;
 import devconnect.model.dto.ProjectJoinDto;
 import devconnect.service.DeveloperService;
 import devconnect.service.ProjectJoinService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/project_join")
+@RequestMapping("/api/project-join")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class ProjectJoinController {
@@ -38,6 +41,23 @@ public class ProjectJoinController {
         System.out.println("token = \n" + token + "\npno = " + pno);
         List<ProjectJoinDto> result = projectJoinService.findProjectJoin(token, pno);
         if(result == null || result.isEmpty()) { return ResponseEntity.status(404).body(result); }
+        return ResponseEntity.status(200).body(result);
+    }
+
+    ///  | 프로젝트 신청 전체조회 - 페이징 | <br/>
+    ///  ● 한 프로젝트의 모든 신청을 페이징으로 조회
+    // http://localhost:8080/api/project-join/paging
+    @GetMapping("/paging")
+    public ResponseEntity<Page<ProjectJoinDto>> findPagingProjectJoin(
+            @RequestHeader("Authorization") String token, @RequestParam(name = "pno") int pno,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        System.out.println("ProjectJoinController.findPagingProjectJoin");
+        System.out.println("token = \n" + token + "\npno = " + pno + ", page = " + page + ", size = " + size);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProjectJoinDto> result = projectJoinService.findPagingProjectJoin(token, pno, pageable);
+        if(result == null || result.isEmpty()) { return ResponseEntity.status(404).body(null); }
         return ResponseEntity.status(200).body(result);
     }
 
