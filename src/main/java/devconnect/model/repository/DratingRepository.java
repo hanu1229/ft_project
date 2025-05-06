@@ -15,5 +15,9 @@ public interface DratingRepository extends JpaRepository<DratingEntity, Integer>
             " where ( :keyword is null or dtitle like %:keyword% ) " +
             " and ( :dno = 0 or dno = :dno ) " , nativeQuery = true )
     Page<DratingEntity> findBysearch(String keyword , Pageable pageable , int dno );
+    
+    /// 개발자 전체 평점 구하는 부분
+    @Query(value = "select avg(drscore) from devconnect.drating where dno = :dno", nativeQuery = true)
+    double findByAvgDno(int dno);
 
 } // interface end
