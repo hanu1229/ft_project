@@ -2,7 +2,6 @@ package devconnect.controller;
 
 
 import devconnect.model.dto.CompanyDto;
-import devconnect.model.dto.DeveloperDto;
 import devconnect.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +37,7 @@ public class CompanyController {
 
     // 2. post(login) http://localhost:8080/api/company/login
     @PostMapping("/login") // {"cid" : "cmd1" , "cpwd" : "1234"} // 토큰 잘나옴
-    public  ResponseEntity<String> login(@RequestBody CompanyDto companyDto){
+    public ResponseEntity<String> login(@RequestBody CompanyDto companyDto){
         System.out.println("companyDto = " + companyDto);
         System.out.println("CompanyController.login");
         String token = companyService.login(companyDto);
@@ -80,7 +79,7 @@ public class CompanyController {
     }
 
 
-    //6. 기업 수정 update(상태) 012
+    //6. 기업 수정 update(상태) 01 // 삭제시 상태만 변경시킨후 기록은 남김 , 0 default  , 1 delete state
     @PutMapping("/state")
     public ResponseEntity<Boolean> stateCompany(@RequestHeader("Authorization") String token, @RequestBody CompanyDto companyDto) {
 
@@ -90,7 +89,7 @@ public class CompanyController {
     }
 
 
-    // 7. 기업 정보 수정
+    // 7. 기업 정보 수정 token , {cno: 1, cid: cmd1, cpwd: $2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a, cname: test(주), cphone: 02-2323-5343, cadress: test, cemail: test@naver.com, cbusiness: 214-88-13306, file: null}
     @PutMapping("/update")
     public ResponseEntity<Boolean> onUpdate(@RequestHeader("Authorization") String token,
                                             @ModelAttribute CompanyDto companyDto) {
@@ -110,4 +109,5 @@ public class CompanyController {
 
 
     }
+
 }
