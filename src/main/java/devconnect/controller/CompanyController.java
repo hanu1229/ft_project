@@ -2,7 +2,6 @@ package devconnect.controller;
 
 
 import devconnect.model.dto.CompanyDto;
-import devconnect.model.dto.DeveloperDto;
 import devconnect.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

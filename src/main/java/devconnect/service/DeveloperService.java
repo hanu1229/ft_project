@@ -1,6 +1,8 @@
 package devconnect.service;
 
-import devconnect.model.dto.DeveloperDto;
+import devconnect.model.dto.developer.DeveloperDeleteDto;
+import devconnect.model.dto.developer.DeveloperDto;
+import devconnect.model.dto.developer.DeveloperPwdUpdateDto;
 import devconnect.model.entity.DeveloperEntity;
 import devconnect.model.repository.DeveloperRepository;
 import devconnect.util.FileUtil;
@@ -9,16 +11,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -67,8 +63,9 @@ public class DeveloperService {
     // 2. 로그인
     public String logIn( DeveloperDto developerDto ){
         DeveloperEntity developerEntity = developerRepository.findByDid( developerDto.getDid() );
-        
-        if( developerEntity == null ){ return null; }
+
+                                        // 탈퇴회원은 표시 x
+        if( developerEntity == null || !developerEntity.isDstate() ){ return null; }
         BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
         boolean isMatch = pwdEncoder.matches( developerDto.getDpwd(), developerEntity.getDpwd() );
 
@@ -131,24 +128,38 @@ public class DeveloperService {
         return true;
     } // f end
 
+    // 5-1. 개발자 비밀번호 수정
+    public Boolean onUpdatePwd( DeveloperPwdUpdateDto developerPwdUpdateDto, int logInDno ){
+        if( logInDno <= 0 ){ return false; }
+        Optional< DeveloperEntity > optionalDeveloperEntity = developerRepository.findById( logInDno );
+        if( optionalDeveloperEntity.isEmpty() ){ return false; }
+        DeveloperEntity developerEntity = optionalDeveloperEntity.get();
+
+        BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
+        boolean result = pwdEncoder.matches( developerPwdUpdateDto.getMatchPwd(), developerEntity.getDpwd() );
+        // 비밀번호 확인
+        if( !result ){ return false; }
+
+        String newHashPwd = pwdEncoder.encode(developerPwdUpdateDto.getNewPwd() );
+        developerEntity.setDpwd( newHashPwd );
+
+        return true;
+    } // f end
+
     // 6. 개발자 정보 삭제
-    public boolean onDelete( String token, DeveloperDto developerDto ){
+    public boolean onDelete( String token, String dpwd ){
         String did = jwtUtil.valnoateToken( token );
 
         if( did == null ){ return false; }
         DeveloperEntity developerEntity = developerRepository.findByDid( did );
 
         BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
-        boolean result = pwdEncoder.matches( developerDto.getDpwd(), developerEntity.getDpwd() );
+        boolean result = pwdEncoder.matches( dpwd, developerEntity.getDpwd() );
 
         if( result == false ){ return false; }
+        developerEntity.setDstate( false );
 
-        return developerRepository.findById( developerEntity.getDno() )
-                .map( ( entity ) -> {
-                    developerRepository.deleteById( developerEntity.getDno() );
-                    return true;
-                })
-                .orElse( false );
+        return true;
     } // f end
 
     // 7. 개발자 전체 조회
