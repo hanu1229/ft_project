@@ -60,7 +60,7 @@ public class ProjectService {
                      // 여러개의 첨부파일이므로 반복문 사용
                      for(MultipartFile file : projectDto.getFiles()) {
                          // FileUtil에서 업로드 메소드 호출
-                         String saveFileName = fileUtil.fileUpload(file);
+                         String saveFileName = fileUtil.fileUploadProjectImage(file);
                          // 만약에 업로드를 실패하면 트랜잭션 롤백 | 강제 예외 발생
                          if(saveFileName == null) { throw new RuntimeException("이미지 업로드 오류 발생"); }
                          // 업로드 성공했으면 ProjectImageEntity 만들기
