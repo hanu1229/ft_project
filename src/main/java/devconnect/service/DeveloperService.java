@@ -136,7 +136,7 @@ public class DeveloperService {
         if( optionalDeveloperEntity.isEmpty() ){
             return new ApiResponse<>( false, "사용자 없음", null ); }
         if ( developerPwdUpdateDto.getNewPwd().length() < 8) {
-            return new ApiResponse<>(false, "비밀번호는 8자 이상이어야 합니다.", null); }
+            return new ApiResponse<>( false, "비밀번호는 8자 이상이어야 합니다.", null); }
 
         DeveloperEntity developerEntity = optionalDeveloperEntity.get();
         BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
