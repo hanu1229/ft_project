@@ -84,8 +84,9 @@ public class CompanyController {
     public ResponseEntity<Boolean> stateCompany(@RequestHeader("Authorization") String token, @RequestBody CompanyDto companyDto) {
 
         boolean result = companyService.stateCompany(token, companyDto);
-        if (result == false) ResponseEntity.status(400).body(false);
-        return ResponseEntity.status(200).body(true);
+        System.out.println("기업탈퇴 상태 확인: "  + result);
+        if (result == false) { return ResponseEntity.status(400).body(false); }
+        else { return ResponseEntity.status(200).body(true);}
     }
 
 

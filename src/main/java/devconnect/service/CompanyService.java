@@ -129,13 +129,19 @@ public class CompanyService {
         CompanyEntity loggedInCompany = companyRepository.findByCid(loggedInCid);
         if (loggedInCompany == null) return false; // 요부분 오류시 수정
 
+        BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
+        boolean result = pwdEncoder.matches(companyDto.getCpwd() , loggedInCompany.getCpwd());
+        System.out.println("기업수정비밀번호 :" +  result);
+
+        if (!result) return false;
+
 
         // 수정 기업 정보 조회
         Optional<CompanyEntity> companyEntityOptional = companyRepository.findById(loggedInCompany.getCno());
         if (companyEntityOptional.isEmpty()) return false;
 
         CompanyEntity companyEntity = companyEntityOptional.get();
-        System.out.println(companyEntity);
+
 
 
         if (companyEntity != null) { companyEntity.setState(1);} // 기업상태 변경
@@ -198,7 +204,7 @@ public class CompanyService {
 //
 //    }
 
-    //9 기업 비밀번호 변경
+    //9 기업 비밀번호 변경 오류시 확인할 부분 주석처리
     public  Boolean pwupdate(String token , CompanyDto companyDto){
         System.out.println("token = " + token + ", companyDto = " + companyDto);
         System.out.println("CompanyController.pwupdate");
@@ -210,14 +216,15 @@ public class CompanyService {
 
         BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
         boolean oldPasswordMatches = pwdEncoder.matches(companyDto.getCpwd() , companyEntity.getCpwd());
+        //System.out.println(oldPasswordMatches);
         //비밀번호 확인
         if (!oldPasswordMatches) {
-        System.out.println("Password verification failed for " + cid);
+        //System.out.println("Password verification failed for " + cid);
         return false;}
 
         // 사용자가 입력한 비밀번호 비어있는지 확인
         if (companyDto.getUpcpwd() == null || companyDto.getUpcpwd().isEmpty()){
-            System.out.println("New password is empty for " + cid);
+            //System.out.println("New password is empty for " + cid);
             return false;
         }
 
