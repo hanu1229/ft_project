@@ -112,15 +112,33 @@ public class CompanyController {
 
     //8 기업 정보 삭제
     @PutMapping("/delete")
-    public boolean deleteProduct(@RequestHeader("Authorization") String token , @RequestBody CompanyDto companyDto ){
+    public ResponseEntity<Boolean> deleteProduct(@RequestHeader("Authorization") String token , @RequestBody CompanyDto companyDto ){
         System.out.println("CompanyController.deleteProduct");
         System.out.println("token = " + token);
         System.out.println("token = " + token + ", companyDto = " + companyDto);
 
         boolean result = companyService.deleteProduct(token , companyDto);
-        return result;
 
+        if (result){
+            return  ResponseEntity.status(200).body(true);
+        } else {
+            return  ResponseEntity.status(400).body(false);
+        }
+    }
 
+    //9 기업 비밀번호 변경
+    @PutMapping("pwupdate")
+    public  ResponseEntity<Boolean> pwupdate(@RequestHeader("Authorization") String token, @RequestBody CompanyDto companyDto ){
+        System.out.println("token = " + token + ", companyDto = " + companyDto);
+        System.out.println("CompanyController.pwupdate");
+
+        boolean result = companyService.pwupdate(token , companyDto);
+
+        if (result){
+            return  ResponseEntity.status(200).body(true);
+        }else {
+            return ResponseEntity.status(400).body(false);
+        }
     }
 
 }
