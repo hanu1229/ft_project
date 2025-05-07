@@ -41,6 +41,7 @@ public class CompanyController {
         System.out.println("companyDto = " + companyDto);
         System.out.println("CompanyController.login");
         String token = companyService.login(companyDto);
+        System.out.println("로그인부분 : " + token);
         if (token != null) {
             return ResponseEntity.status(200).body(token);
         } else {
@@ -66,7 +67,6 @@ public class CompanyController {
         }
     }
 
-
     // 5. 기업정보 findall http://localhost:8080/api/company/findall
     @GetMapping("/findall")
     public ResponseEntity<List<CompanyDto>> findAll() {
@@ -83,7 +83,7 @@ public class CompanyController {
     @PutMapping("/state")
     public ResponseEntity<Boolean> stateCompany(@RequestHeader("Authorization") String token, @RequestBody CompanyDto companyDto) {
 
-        boolean result = companyService.stateCompany(token, companyDto.getCno(), companyDto.getState());
+        boolean result = companyService.stateCompany(token, companyDto);
         if (result == false) ResponseEntity.status(400).body(false);
         return ResponseEntity.status(200).body(true);
     }
@@ -110,35 +110,35 @@ public class CompanyController {
 
     }
 
-    //8 기업 정보 삭제
-    @PutMapping("/delete")
-    public ResponseEntity<Boolean> deleteProduct(@RequestHeader("Authorization") String token , @RequestBody CompanyDto companyDto ){
-        System.out.println("CompanyController.deleteProduct");
-        System.out.println("token = " + token);
-        System.out.println("token = " + token + ", companyDto = " + companyDto);
-
-        boolean result = companyService.deleteProduct(token , companyDto);
-
-        if (result){
-            return  ResponseEntity.status(200).body(true);
-        } else {
-            return  ResponseEntity.status(400).body(false);
-        }
-    }
-
-    //9 기업 비밀번호 변경
-//    @PutMapping("pwupdate")
-//    public  ResponseEntity<Boolean> pwupdate(@RequestHeader("Authorization") String token, @RequestBody CompanyDto companyDto ){
+//    //8 기업 정보 삭제 // 상태변경이 아닌 삭제이므로 혹 필요할꺼같아 유지함
+//    @PutMapping("/delete")
+//    public ResponseEntity<Boolean> deleteProduct(@RequestHeader("Authorization") String token , @RequestBody CompanyDto companyDto ){
+//        System.out.println("CompanyController.deleteProduct");
+//        System.out.println("token = " + token);
 //        System.out.println("token = " + token + ", companyDto = " + companyDto);
-//        System.out.println("CompanyController.pwupdate");
 //
-//        boolean result = companyService.pwupdate(token , companyDto);
+//        boolean result = companyService.deleteProduct(token , companyDto);
 //
 //        if (result){
 //            return  ResponseEntity.status(200).body(true);
-//        }else {
-//            return ResponseEntity.status(400).body(false);
+//        } else {
+//            return  ResponseEntity.status(400).body(false);
 //        }
 //    }
+
+    //9 기업 비밀번호 변경
+    @PutMapping("pwupdate")
+    public  ResponseEntity<Boolean> pwupdate(@RequestHeader("Authorization") String token, @RequestBody CompanyDto companyDto ){
+        System.out.println("token = " + token + ", companyDto = " + companyDto);
+        System.out.println("CompanyController.pwupdate");
+
+        boolean result = companyService.pwupdate(token , companyDto);
+
+        if (result){
+            return  ResponseEntity.status(200).body(true);
+        }else {
+            return ResponseEntity.status(400).body(false);
+        }
+    }
 
 }

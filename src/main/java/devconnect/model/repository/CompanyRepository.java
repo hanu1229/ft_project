@@ -10,5 +10,4 @@ public interface CompanyRepository extends JpaRepository<CompanyEntity, Integer>
     // id 찾는 추상메소드
     CompanyEntity findByCid(String cid);
 
-
 }
