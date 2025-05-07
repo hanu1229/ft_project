@@ -8,7 +8,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     getCratingDetail,
-    approveCrating,
     updateCrating,
     deleteCrating
 } from '../../api/cratingApi';
@@ -68,17 +67,17 @@ export default function CratingDetail() {
     // =======================================================================================
     // ✅ 승인 요청
     // =======================================================================================
-    const handleApprove = async () => {
-        try {
-            const res = await approveCrating(crno, token);
-            if (res.data) {
-                alert('승인 완료');
-                setForm((prev) => ({ ...prev, crstate: 1 }));
-            }
-        } catch {
-            alert('승인 실패');
-        }
-    };
+    // const handleApprove = async () => {
+    //     try {
+    //         const res = await approveCrating(crno, token);
+    //         if (res.data) {
+    //             alert('승인 완료');
+    //             setForm((prev) => ({ ...prev, crstate: 1 }));
+    //         }
+    //     } catch {
+    //         alert('승인 실패');
+    //     }
+    // };
 
     // =======================================================================================
     // ✅ 삭제 요청
