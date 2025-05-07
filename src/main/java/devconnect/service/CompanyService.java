@@ -82,15 +82,18 @@ public class CompanyService {
     public  String login(CompanyDto companyDto){
     CompanyEntity companyEntity = companyRepository.findByCid(companyDto.getCid());
     if (companyEntity == null){return null;}
+    if (companyEntity.getState() == 1){return null;}
+
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     boolean inMath = passwordEncoder.matches(companyDto.getCpwd() , companyEntity.getCpwd() );
 
-    if (inMath == false) return null;
+    if (inMath == false) {return null;}
 
 //    createToken( 아이디, 권한( Developer, Company, Admin ) )
     String token = jwtUtil.createToken(companyEntity.getCid(), "Company");
     return token;
+
     }
 
     // 3. post(logout)
@@ -117,25 +120,25 @@ public class CompanyService {
 
     //6. 기업 수정 update(상태) 012
 
-    public boolean stateCompany(String token , int cno , int state){
+    public boolean stateCompany(String token , CompanyDto companyDto){
 
         String loggedInCid = jwtUtil.valnoateToken(token);
         if (loggedInCid == null) return false; // 토큰이 유효하지 않을경우
 
-        //2. 로그인한 기업 정보 조회 (권한 확인)
+        // 로그인한 기업 정보 조회 (권한 확인)
         CompanyEntity loggedInCompany = companyRepository.findByCid(loggedInCid);
         if (loggedInCompany == null) return false; // 요부분 오류시 수정
 
+
         // 수정 기업 정보 조회
-        Optional<CompanyEntity> companyEntityOptional = companyRepository.findById(cno);
+        Optional<CompanyEntity> companyEntityOptional = companyRepository.findById(loggedInCompany.getCno());
         if (companyEntityOptional.isEmpty()) return false;
 
         CompanyEntity companyEntity = companyEntityOptional.get();
+        System.out.println(companyEntity);
 
-        if (state < 0 || state > 2) return  false;
 
-        //기업 상태 업데이트
-        companyEntity.setState(state);
+        if (companyEntity != null) { companyEntity.setState(1);} // 기업상태 변경
 
         return true;
     }
@@ -173,48 +176,56 @@ public class CompanyService {
 
     } // f end
 
-    //8 기업 정보 삭제
-    public boolean deleteProduct(String token , CompanyDto companyDto){
-        System.out.println("CompanyController.deleteProduct");
-        System.out.println("logincno = " + token + ", dto = " + companyDto);
-
-       String cid = jwtUtil.valnoateToken(token);
-
-       if ( cid == null) return false;
-       CompanyEntity companyEntity = companyRepository.findByCid(cid);
-
-       BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
-       boolean result = pwdEncoder.matches(companyDto.getCpwd() , companyEntity.getCpwd());
-       //비밀번호 확인
-        if (!result ) return false;
-
-        return  companyRepository.findById(companyEntity.getCno()).map((entity) -> {
-            companyRepository.deleteById(companyEntity.getCno());
-            return true;
-        }).orElse(false);
-
-    }
-
-    //9 기업 비밀번호 변경
-//    public  Boolean pwupdate(String token , CompanyDto companyDto){
-//        System.out.println("token = " + token + ", companyDto = " + companyDto);
-//        System.out.println("CompanyController.pwupdate");
+//    //8 기업 정보 삭제
+//    public boolean deleteProduct(String token , CompanyDto companyDto){
+//        System.out.println("CompanyController.deleteProduct");
+//        System.out.println("logincno = " + token + ", dto = " + companyDto);
 //
-//        String cid = jwtUtil.valnoateToken(token);
+//       String cid = jwtUtil.valnoateToken(token);
 //
-//        if (cid == null) return false;
-//        CompanyEntity companyEntity = companyRepository.findByCid(cid);
+//       if ( cid == null) return false;
+//       CompanyEntity companyEntity = companyRepository.findByCid(cid);
 //
-//        BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
-//        boolean result = pwdEncoder.matches(companyDto.getCpwd() , companyEntity.getCpwd());
-//        //비밀번호 확인
-//        if (!result) return false;
+//       BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
+//       boolean result = pwdEncoder.matches(companyDto.getCpwd() , companyEntity.getCpwd());
+//       //비밀번호 확인
+//        if (!result ) return false;
 //
-//        companyEntity.setCpwd(companyDto.getUpcpwd());
+//        return  companyRepository.findById(companyEntity.getCno()).map((entity) -> {
+//            companyRepository.deleteById(companyEntity.getCno());
+//            return true;
+//        }).orElse(false);
 //
 //    }
 
-    
+    //9 기업 비밀번호 변경
+    public  Boolean pwupdate(String token , CompanyDto companyDto){
+        System.out.println("token = " + token + ", companyDto = " + companyDto);
+        System.out.println("CompanyController.pwupdate");
 
+        String cid = jwtUtil.valnoateToken(token);
+
+        if (cid == null) return false;
+        CompanyEntity companyEntity = companyRepository.findByCid(cid);
+
+        BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
+        boolean oldPasswordMatches = pwdEncoder.matches(companyDto.getCpwd() , companyEntity.getCpwd());
+        //비밀번호 확인
+        if (!oldPasswordMatches) {
+        System.out.println("Password verification failed for " + cid);
+        return false;}
+
+        // 사용자가 입력한 비밀번호 비어있는지 확인
+        if (companyDto.getUpcpwd() == null || companyDto.getUpcpwd().isEmpty()){
+            System.out.println("New password is empty for " + cid);
+            return false;
+        }
+
+        System.out.println(companyDto.getUpcpwd());
+
+        String newHashedPassword = pwdEncoder.encode(companyDto.getUpcpwd()); //새 비밀번호 암호화
+        companyEntity.setCpwd(newHashedPassword);
+        return true; //성공시 true 반환
+    }
 
 }

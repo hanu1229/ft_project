@@ -92,7 +92,7 @@ public class AdminService {
     // [7] 관리자 삭제
     public boolean adminDelete(String adid) {
         return adminEntityRepository.findByAdid(adid).map(entity -> {
-            entity.setAdtype(9);
+            entity.setAdtype(3);
             adminEntityRepository.save(entity);
             return true;
         }).orElse(false);

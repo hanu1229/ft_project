@@ -31,6 +31,19 @@ public class FileUtil {
         return fileName;
     }
 
+    // 1. 업로드
+    public String fileUploadProjectImage( MultipartFile multipartFile ){
+        String uuid = UUID.randomUUID().toString();
+        String fileName = uuid + "_" + multipartFile.getOriginalFilename().replaceAll("_", "-");
+        String filePath = uploadPath + "project_image/" + fileName;
+        File file2 = new File( uploadPath );
+        if( file2.exists() ){ file2.mkdir(); }
+        File file = new File( filePath );
+        try{ multipartFile.transferTo( file );
+        }catch ( IOException e ){ System.out.println( e ); }
+        return fileName;
+    }
+
     // 2. 업로드된 파일 다운로드
     public void fileDownload(String fileName, HttpServletResponse resp ){
         String downloadPath = uploadPath + fileName;

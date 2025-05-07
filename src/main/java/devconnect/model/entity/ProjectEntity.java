@@ -79,6 +79,7 @@ public class ProjectEntity extends BaseTime {
                 .pno(this.pno).pname(this.pname).pintro(this.pintro).ptype(this.ptype)
                 .pcomment(this.pcomment).pcount(this.pcount).pstart(this.pstart).pend(this.pend)
                 .recruit_pstart(this.recruit_pstart).recruit_pend(this.recruit_pend).ppay(this.ppay).cno(companyEntity.getCno())
+                .images(projectImageEntityList.stream().map(ProjectImageEntity::getIname).collect(Collectors.toList()))
                 .createAt(getCreateAt()).updateAt(getUpdateAt())
                 .build();
     }

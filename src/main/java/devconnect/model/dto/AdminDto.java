@@ -40,7 +40,7 @@ public class AdminDto extends BaseTime { // CS
     private String adphone; // [5] 관리자 연락처
 
     @NotNull(message = "상태 코드는 필수 항목입니다.")
-    private Integer adtype; // [6] 관리자 상태 코드 (0:신청, 1:승인, 2:반려, 3~9:기타)
+    private Integer adtype; // [6] 관리자 상태 코드 (0:신청, 1:승인, 2:반려, 3:퇴사 , 4~9:기타)
 
     private LocalDateTime createAt; // [7] 계정 생성일시
     private LocalDateTime updateAt; // [8] 계정 최종 수정일시
