@@ -17,7 +17,7 @@ public interface DratingRepository extends JpaRepository<DratingEntity, Integer>
             "from drating d " +
             "join project p on d.pno = p.pno " +
             "where (:keyword is null or d.dtitle like %:keyword%) " +
-            "and (:cno = 0 on p.cno = :cno)", nativeQuery = true)
+            "and (:cno = 0 or p.cno = :cno)", nativeQuery = true)
     Page<DratingEntity> findBysearch(
             @Param("keyword") String keyword,
             Pageable pageable,
