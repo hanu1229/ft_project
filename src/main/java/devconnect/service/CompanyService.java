@@ -196,32 +196,23 @@ public class CompanyService {
     }
 
     //9 기업 비밀번호 변경
-    public  Boolean pwupdate(String token , CompanyDto companyDto){
-        System.out.println("token = " + token + ", companyDto = " + companyDto);
-        System.out.println("CompanyController.pwupdate");
-
-        String cid = jwtUtil.valnoateToken(token);
-
-        if (cid == null) return false;
-        CompanyEntity companyEntity = companyRepository.findByCid(cid);
-
-        BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
-        boolean result = pwdEncoder.matches(companyDto.getCpwd() , companyEntity.getCpwd());
-        //비밀번호 확인
-        if (!result) return false;
-
-        companyEntity.setCpwd(companyDto.getUpcpwd());
-
-
-
-
-
-
-
-
-
-
-    }
+//    public  Boolean pwupdate(String token , CompanyDto companyDto){
+//        System.out.println("token = " + token + ", companyDto = " + companyDto);
+//        System.out.println("CompanyController.pwupdate");
+//
+//        String cid = jwtUtil.valnoateToken(token);
+//
+//        if (cid == null) return false;
+//        CompanyEntity companyEntity = companyRepository.findByCid(cid);
+//
+//        BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
+//        boolean result = pwdEncoder.matches(companyDto.getCpwd() , companyEntity.getCpwd());
+//        //비밀번호 확인
+//        if (!result) return false;
+//
+//        companyEntity.setCpwd(companyDto.getUpcpwd());
+//
+//    }
 
     
 

@@ -127,18 +127,18 @@ public class CompanyController {
     }
 
     //9 기업 비밀번호 변경
-    @PutMapping("pwupdate")
-    public  ResponseEntity<Boolean> pwupdate(@RequestHeader("Authorization") String token, @RequestBody CompanyDto companyDto ){
-        System.out.println("token = " + token + ", companyDto = " + companyDto);
-        System.out.println("CompanyController.pwupdate");
-
-        boolean result = companyService.pwupdate(token , companyDto);
-
-        if (result){
-            return  ResponseEntity.status(200).body(true);
-        }else {
-            return ResponseEntity.status(400).body(false);
-        }
-    }
+//    @PutMapping("pwupdate")
+//    public  ResponseEntity<Boolean> pwupdate(@RequestHeader("Authorization") String token, @RequestBody CompanyDto companyDto ){
+//        System.out.println("token = " + token + ", companyDto = " + companyDto);
+//        System.out.println("CompanyController.pwupdate");
+//
+//        boolean result = companyService.pwupdate(token , companyDto);
+//
+//        if (result){
+//            return  ResponseEntity.status(200).body(true);
+//        }else {
+//            return ResponseEntity.status(400).body(false);
+//        }
+//    }
 
 }
