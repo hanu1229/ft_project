@@ -16,6 +16,14 @@ public class ProjectJoinDto {
     private int pjtype;
     // 신청 시간
     // private String pjtime;
+    // 프로젝트 이름
+    private String pname;
+    // 개발자 이름
+    private String dname;
+    // 개발자 레벨
+    private int dlevel;
+    // 개발자 평점
+    private double davg;
     // 프로젝트 번호
     private int pno;
     // 개발자 번호

@@ -88,6 +88,9 @@ public class ProjectService {
                 ProjectEntity projectEntity = projectEntityList.get(index);
                 ProjectDto projectDto = projectEntity.toDto();
                 projectDto.setCno(projectEntity.getCompanyEntity().getCno());
+                // 추가
+                projectDto.setCprofile(projectEntity.getCompanyEntity().getCprofile());
+                System.out.println(">> \n" + projectDto.getCprofile() + "\n");
                 projectDtoList.add(projectDto);
             }
         }
@@ -117,20 +120,31 @@ public class ProjectService {
 
     /// | 프로젝트 전체조회 - 페이징 | <br/>
     /// ● 모든 프로젝트를 조회
-    // http://localhost:8080/api/project/all
-    public List<ProjectDto> findPagingProject(Pageable pageable) {
+    // http://localhost:8080/api/project/paging?ptype=0&page=0&size=0
+    public List<ProjectDto> findPagingProject(int ptype, Pageable pageable) {
         System.out.println("ProjectService.findPagingProject");
-        Page<ProjectEntity> projectEntityPageList = projectRepository.findAll(pageable);
-        List<ProjectEntity> projectEntityList = projectEntityPageList.getContent();
+        Page<ProjectEntity> projectEntityPageList;
+        List<ProjectEntity> projectEntityList;
+        if(ptype >= 1) {
+            projectEntityPageList = projectRepository.findByPtype(ptype, pageable);
+        } else {
+            projectEntityPageList = projectRepository.findAll(pageable);
+        }
+        // Page<ProjectEntity> projectEntityPageList = projectRepository.findAll(pageable);
+        projectEntityList = projectEntityPageList.getContent();
         int totalPages = projectEntityPageList.getTotalPages();
         long totalData = projectEntityPageList.getTotalElements();
-        System.out.println("totalPage = " + totalPages + "totalData = " + totalData);
+        System.out.println("totalPage = " + totalPages + ", totalData = " + totalData);
         List<ProjectDto> projectDtoList = new ArrayList<>();
+        System.out.println(">> " + projectEntityList);
         if(!projectEntityList.isEmpty()) {
             for(int index = 0; index < projectEntityList.size(); index++) {
                 ProjectEntity projectEntity = projectEntityList.get(index);
                 ProjectDto projectDto = projectEntity.toDto();
                 projectDto.setCno(projectEntity.getCompanyEntity().getCno());
+                // 추가
+                projectDto.setCprofile(projectEntity.getCompanyEntity().getCprofile());
+                System.out.println(">> " + projectDto.getCprofile());
                 projectDtoList.add(projectDto);
             }
         }
@@ -152,6 +166,7 @@ public class ProjectService {
                 CompanyEntity companyEntity = companyRepository.findById(projectDto.getCno()).orElse(null);
                 if(companyEntity == null) { return null; }
                 projectDto.setCname(companyEntity.getCname());
+                projectDto.setCprofile(companyEntity.getCprofile());
                 System.out.println("projectDto = " + projectDto);
                 return projectDto;
             }
@@ -162,6 +177,7 @@ public class ProjectService {
                 CompanyEntity companyEntity = companyRepository.findById(projectDto.getCno()).orElse(null);
                 if(companyEntity == null) { return null; }
                 projectDto.setCname(companyEntity.getCname());
+                projectDto.setCprofile(companyEntity.getCprofile());
                 System.out.println("projectDto = " + projectDto);
                 return projectDto;
             }

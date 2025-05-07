@@ -58,15 +58,17 @@ public class ProjectController {
 
     /// | 프로젝트 전체조회 - 페이징 | <br/>
     /// ● 모든 프로젝트를 조회
-    // http://localhost:8080/api/project/all
+    // http://localhost:8080/api/project/paging
     @GetMapping("/paging")
     public ResponseEntity<List<ProjectDto>> findPagingProject(
-            @RequestParam(name = "page", defaultValue = "0")int page,
+            @RequestParam(name = "ptype", defaultValue = "0") int ptype,
+            @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "5") int size
     ) {
         System.out.println("ProjectController.findPagingProject");
+        System.out.println("ptype = " + ptype + ", page = " + page + ", size = " + size);
         Pageable pageable = PageRequest.of(page, size);
-        List<ProjectDto> result = projectService.findPagingProject(pageable);
+        List<ProjectDto> result = projectService.findPagingProject(ptype, pageable);
         if(result == null || result.isEmpty()) { return ResponseEntity.status(404).body(null); }
         return ResponseEntity.status(200).body(result);
     }
@@ -106,8 +108,5 @@ public class ProjectController {
         if(!result) { return ResponseEntity.status(404).body(false); }
         return ResponseEntity.status(200).body(result);
     }
-
-    /// | 프로젝트 삭제 | <br/>
-    /// ● <b>관리자</b>가 프로젝트를 삭제
 
 }

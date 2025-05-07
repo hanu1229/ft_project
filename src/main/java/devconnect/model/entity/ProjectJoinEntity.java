@@ -43,7 +43,8 @@ public class ProjectJoinEntity extends BaseTime {
     public ProjectJoinDto toDto() {
         return ProjectJoinDto.builder()
                 .pjno(this.pjno).pjtype(this.pjtype)
-                .pno(projectEntity.getPno()).dno(developerEntity.getDno())
+                .pno(projectEntity.getPno()).pname(projectEntity.getPname())
+                .dno(developerEntity.getDno()).dname(developerEntity.getDname()).dlevel(developerEntity.getDlevel())
                 .createAt(getCreateAt()).updateAt(getUpdateAt())
                 .build();
     }
