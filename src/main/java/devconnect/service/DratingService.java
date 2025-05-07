@@ -29,7 +29,7 @@ public class DratingService {
     private final ProjectRepository projectRepository;
     private final DeveloperRepository developerRepository;
     private final JwtUtil jwtUtil;
-    
+
     // 개발자 평가 등록
     public boolean dratingWrite(DratingDto dratingDto , int loginCno ){
         System.out.println("DratingService.dratingWrite");
@@ -51,7 +51,7 @@ public class DratingService {
         } // if end
         return false;
     } // f end
-    
+
     // 개발자 평가 전체 조회
     public Page<DratingDto> dratingList( String token , int page , int size , String keyword , int cno ){
         System.out.println("DratingService.dratingList");
@@ -86,7 +86,7 @@ public class DratingService {
         // 값이 없으면 null 반환
         return null;
     } // f end
-    
+
     // 개발자 평가 수정
     public boolean dratingUpdate( DratingDto dratingDto , String token ){
         System.out.println("DratingService.dratingUpdate");
@@ -114,7 +114,7 @@ public class DratingService {
         // 값이 없으면 false 반환
         return false;
     } // f end
-    
+
     // 개발자 평가 삭제
     public boolean dratingDelete( int drno , String token ){
         System.out.println("DratingService.dratingDelete");

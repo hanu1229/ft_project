@@ -1,16 +1,31 @@
-// main.jsx | Vite 기반 진입점
-// [설명] React 애플리케이션의 진입점으로, 최상위 App 컴포넌트를 DOM에 렌더링합니다.
-//        - React 18 방식의 createRoot 사용
-//        - Vite에서는 이 파일을 기본 entry point로 인식합니다.
+// =======================================================================================
+// main.jsx | rw 25-05-02 (Vite 기반 진입점 파일)
+// [설명]
+// - React 애플리케이션의 최상위 컴포넌트(App)를 HTML 루트(#root)에 마운트합니다.
+// - React 18 이후의 createRoot 방식 사용
+// - 반드시 <BrowserRouter>로 감싸야 App 내부 <Routes> 사용 가능
+// =======================================================================================
 
-import React from 'react'; // [1] React 컴포넌트 구문 지원을 위한 기본 import
-import ReactDOM from 'react-dom/client'; // [2] React 18의 새로운 root 렌더링 API 사용
-import App from './App'; // [3] 최상위 컴포넌트(App.jsx) import
-import './index.css'; // [4] 전체 앱에 적용할 기본 CSS import
+// ✅ [1] React 및 DOM 관련 모듈 import
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 
-// [5] 루트 DOM 요소(#root)를 기준으로 App 컴포넌트 렌더링
-ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode> {/* [6] 개발 모드에서 자식 컴포넌트 검사 강화 */}
-        <App /> {/* [7] 실제 전체 화면을 담당하는 컴포넌트 */}
+// ✅ [2] 최상위 컴포넌트 import
+import App from './App';
+
+// ✅ [3] 전역 스타일 (검정 배경, 핑크 텍스트 등)
+import './index.css';
+
+// ✅ [4] 리액트 라우팅을 위한 BrowserRouter import
+import { BrowserRouter } from 'react-router-dom';
+
+// ✅ [5] 루트 DOM 요소를 기준으로 렌더링 수행
+const rootElement = document.getElementById('root');
+ReactDOM.createRoot(rootElement).render(
+    <React.StrictMode>
+        {/* ✅ 모든 라우팅을 BrowserRouter로 감싸야 useRoutes() 사용 가능 */}
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
     </React.StrictMode>
 );

@@ -1,14 +1,38 @@
-// Sidebar.jsx | rw 25-05-01
-// [설명] 관리자 페이지용 좌측 사이드 메뉴
+// =======================================================================================
+// Sidebar.jsx | rw 25-05-02 최종 리팩토링
+// [설명]
+// - 관리자 전용 사이드바 메뉴
+// - ChatGPT.com 느낌의 흰 배경 + 절제된 포인트 컬러
+// - 메뉴 클릭 시 useNavigate로 페이지 이동
+// =======================================================================================
 
 import React from 'react';
-import { Box, List, ListItem, ListItemButton, ListItemDecorator, Typography } from '@mui/joy';
-import { useNavigate } from 'react-router-dom';
-import { FaTachometerAlt, FaUsers, FaBuilding, FaCode, FaStar, FaFolderOpen, FaClipboardList } from 'react-icons/fa';
+import {
+    Box,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemDecorator,
+    Typography,
+} from '@mui/joy';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+// ✅ 아이콘 구성 (FontAwesome 기반)
+import {
+    FaTachometerAlt,
+    FaUsers,
+    FaBuilding,
+    FaCode,
+    FaStar,
+    FaFolderOpen,
+    FaClipboardList,
+} from 'react-icons/fa';
 
 export default function Sidebar() {
     const navigate = useNavigate();
+    const location = useLocation();
 
+    // ✅ 메뉴 목록 정의
     const menu = [
         { label: '대시보드', icon: <FaTachometerAlt />, path: '/admin/dashboard' },
         { label: '관리자 목록', icon: <FaUsers />, path: '/admin/list' },
@@ -21,19 +45,59 @@ export default function Sidebar() {
     ];
 
     return (
-        <Box sx={{ width: 220, backgroundColor: '#111', color: '#FF4081', p: 2 }}>
-            <Typography level="h5" sx={{ mb: 3, textAlign: 'center' }}>
+        <Box
+            sx={{
+                width: 240,
+                bgcolor: '#ffffff', // ✅ 흰 배경
+                color: '#333',
+                py: 3,
+                px: 2,
+                minHeight: '100vh',
+                borderRight: '1px solid #e0e0e0', // ✅ 연한 회색 테두리
+            }}
+        >
+            {/* ✅ 상단 로고/브랜드 */}
+            <Typography
+                level="h4"
+                sx={{
+                    mb: 4,
+                    textAlign: 'center',
+                    color: '#12b886', // ✅ 녹색 포인트
+                    fontWeight: 'bold',
+                    fontSize: '20px',
+                }}
+            >
                 DevConnect
             </Typography>
-            <List>
-                {menu.map((item, idx) => (
-                    <ListItem key={idx}>
-                        <ListItemButton onClick={() => navigate(item.path)}>
-                            <ListItemDecorator>{item.icon}</ListItemDecorator>
-                            {item.label}
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+
+            {/* ✅ 메뉴 목록 렌더링 */}
+            <List sx={{ gap: 0.5 }}>
+                {menu.map((item, idx) => {
+                    const isActive = location.pathname.startsWith(item.path);
+                    return (
+                        <ListItem key={idx} disablePadding>
+                            <ListItemButton
+                                onClick={() => navigate(item.path)}
+                                selected={isActive}
+                                sx={{
+                                    borderRadius: '8px',
+                                    px: 2,
+                                    py: 1.2,
+                                    bgcolor: isActive ? '#f1f3f5' : 'transparent', // ✅ 선택 시 배경
+                                    '&:hover': {
+                                        bgcolor: '#f8f9fa',
+                                    },
+                                    color: isActive ? '#12b886' : '#555',
+                                }}
+                            >
+                                <ListItemDecorator sx={{ color: isActive ? '#12b886' : '#aaa' }}>
+                                    {item.icon}
+                                </ListItemDecorator>
+                                {item.label}
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
             </List>
         </Box>
     );

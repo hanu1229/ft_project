@@ -1,63 +1,162 @@
-// adminApi.js | rw 25-05-01 (정리 완료)
-// [설명] 관리자(Admin) 관련 API 요청 함수 모음
-//        모든 요청은 커스텀 axios 인스턴스를 통해 이루어짐
+// =======================================================================================
+// adminApi.js | rw 25-05-02 최종 리팩토링
+// [설명]
+// - 관리자(Admin) 관련 API 요청 함수 모음
+// - 모든 요청 URL은 axiosInstance.js의 baseURL(`/api`) 기준 상대경로로 작성됨
+// =======================================================================================
 
-import axios from "./axiosInstance"; // 공통 인스턴스 사용
+import axios from './axiosInstance'; // ✅ 공통 Axios 인스턴스
 
-// ✅ 1. 관리자 로그인 (POST /login)
-export const signupAdmin = async (adminDto) => {
-    return await axios.post('/admin/signup', adminDto, {
+// =======================================================================================
+// ✅ 1. 관리자 회원가입 요청
+/*
+    - 매핑 방식: POST
+    - 요청 URL: /api/admin/signup
+    - 요청 데이터: AdminDto (RequestBody)
+    - 응답 데이터: Boolean
+*/
+export const signupAdmin = (adminDto) => {
+    return axios.post('/admin/signup', adminDto);
+};
+
+// =======================================================================================
+// ✅ 2. 관리자 로그인 요청
+/*
+    - 매핑 방식: POST
+    - 요청 URL: /api/admin/login
+    - 요청 데이터: AdminLoginDto (RequestBody)
+    - 응답 데이터: String (JWT 토큰)
+*/
+export const adminLogin = (adminLoginDto) => {
+    return axios.post('/admin/login', adminLoginDto);
+};
+
+// =======================================================================================
+// ✅ 3. 로그인 관리자 본인 정보 조회
+/*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/info
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: AdminDto
+*/
+export const getAdminInfo = (token) => {
+    return axios.get('/admin/info', {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+};
+
+// =======================================================================================
+// ✅ 4. 관리자 전체 목록 조회
+/*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/allinfo
+    - 응답 데이터: List<AdminDto>
+*/
+export const getAdminList = () => {
+    return axios.get('/admin/allinfo');
+};
+
+// =======================================================================================
+// ✅ 5. 관리자 정보 수정
+/*
+    - 매핑 방식: PUT
+    - 요청 URL: /api/admin/update
+    - 요청 헤더: Authorization: Bearer {token}
+    - 요청 데이터: FormData (adname, adphone 등)
+    - 응답 데이터: Boolean
+*/
+export const updateAdmin = (token, formData) => {
+    return axios.put('/admin/update', formData, {
         headers: {
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
         },
     });
 };
 
-// ✅ 2. 관리자 본인 정보 조회 (GET /info)
-export const getAdminInfo = () => {
-    return axios.get("/api/admin/info");
-};
-
-// ✅ 3. 관리자 정보 수정 (PUT /update) - formData 전송
-export const updateAdmin = (formData) => {
-    return axios.put("/api/admin/update", formData);
-};
-
-// ✅ 4. 관리자 전체 목록 조회 (GET /allinfo)
-export const getAdminList = () => {
-    return axios.get("/api/admin/allinfo");
-};
-
-// ✅ 5. 관리자 삭제 요청 (PUT /delete?adid=xxx)
+// =======================================================================================
+// ✅ 6. 관리자 삭제 요청
+/*
+    - 매핑 방식: PUT
+    - 요청 URL: /api/admin/delete?adid=admin01
+    - 요청 파라미터: adid (String)
+    - 응답 데이터: Boolean
+*/
 export const deleteAdmin = (adid) => {
-    return axios.put(`/api/admin/delete?adid=${adid}`);
+    return axios.put(`/admin/delete?adid=${adid}`);
 };
 
-// ✅ 6. 관리자 로그아웃 (GET /logout)
-export const logoutAdmin = () => {
-    return axios.get("/api/admin/logout");
+// =======================================================================================
+// ✅ 7. 관리자 로그아웃 요청
+/*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/logout
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: 없음 (204 No Content)
+*/
+export const logoutAdmin = (token) => {
+    return axios.get('/admin/logout', {
+        headers: { Authorization: `Bearer ${token}` },
+    });
 };
 
-// ✅ 7. Redis 상태 확인 (GET /admin/redis-status)
-export const getRedisStatus = (token) =>
-    axios.get('/admin/redis-status', {
-        headers: { Authorization: `Bearer ${token}` },
-    });
+// =======================================================================================
+// ✅ 8. 관리자 대시보드 통계 조회
+/*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/stats
+    - 응답 데이터: Map<String, Object>
+      ex) { companyCount: 5, developerCount: 10, ... }
+*/
+export const getDashboardStats = () => {
+    return axios.get('/admin/stats');
+};
 
-// ✅ 8. 전체 통계 조회 (기업/개발자/프로젝트/참여/평가)
-export const getDashboardStats = (token) =>
-    axios.get('/admin/stats', {
-        headers: { Authorization: `Bearer ${token}` },
-    });
+// =======================================================================================
+// ✅ 9. 최근 승인 항목 리스트 조회
+/*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/recent-approved
+    - 응답 데이터: Map<String, List<Object>>
+      ex) { companies: [...], developers: [...], projects: [...] }
+*/
+export const getRecentApprovedList = () => {
+    return axios.get('/admin/recent-approved');
+};
 
-// ✅ 9. 최근 승인된 항목 (기업/개발자/프로젝트)
-export const getRecentItems = (token) =>
-    axios.get('/admin/recent-approved', {
-        headers: { Authorization: `Bearer ${token}` },
-    });
+// =======================================================================================
+// ✅ 10. 월별 프로젝트 참여 수 통계 조회
+/*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/monthly-join
+    - 응답 데이터: List<{ month: String, joins: Number }>
+*/
+export const getMonthlyJoinStats = () => {
+    return axios.get('/admin/monthly-join');
+};
 
-// ✅ 10. 월별 프로젝트 참여 추이 (차트용)
-export const getMonthlyJoins = (token) =>
-    axios.get('/admin/monthly-join', {
+// =======================================================================================
+// ✅ 11. 최근 24시간 로그인 수 전체 조회
+/*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/login/count/all
+    - 응답 데이터: Map<String, Integer>
+      ex) { admin: 3, company: 6, developer: 9 }
+*/
+export const getLoginCountAll = () => {
+    return axios.get('/admin/login/count/all');
+};
+
+// =======================================================================================
+// ✅ 12. Redis 상태 확인 (선택 기능)
+/*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/redis-status
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: { status: "CONNECTED", timestamp: ... }
+*/
+export const getRedisStatus = (token) => {
+    return axios.get('/admin/redis-status', {
         headers: { Authorization: `Bearer ${token}` },
     });
+};

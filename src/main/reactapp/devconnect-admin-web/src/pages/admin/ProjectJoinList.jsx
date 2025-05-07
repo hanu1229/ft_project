@@ -1,65 +1,109 @@
-// ProjectJoinList.jsx | rw 25-05-01
-// [설명] 전체 프로젝트 신청 목록 출력 화면
-//        - 관리자(Admin) 전용 화면
-//        - 신청번호, 프로젝트번호, 개발자번호, 신청상태 요약 표시
-//        - 상세보기 버튼 클릭 시 상세 페이지로 이동
+// =======================================================================================
+// ProjectJoinList.jsx | rw 25-05-02 최종 리팩토링
+// [설명]
+// - 관리자 전용 프로젝트 신청 전체 조회 화면
+// - 신청번호, 프로젝트번호, 개발자번호, 상태코드 표시
+// - Joy UI 카드 기반 / ChatGPT 스타일 흰 배경 UI 반영
+// =======================================================================================
 
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';               // [1] 페이지 이동용 hook
-import { getProjectJoinList } from '../../api/projectJoinApi'; // [2] 신청 전체 목록 조회 API
-import AdminLayout from '../../layouts/AdminLayout';          // [3] 좌측 메뉴 포함한 관리자 레이아웃
-
+import { useNavigate } from 'react-router-dom';
+import { getProjectJoinList } from '../../api/projectJoinApi';
 import {
-    Typography, Grid, Card, Box, Divider, Button             // [4] Joy UI 컴포넌트
+    Typography,
+    Grid,
+    Card,
+    Box,
+    Divider,
+    Button
 } from '@mui/joy';
 
 export default function ProjectJoinList() {
-    const [list, setList] = useState([]); // [5] 신청 목록 배열 상태
-    const navigate = useNavigate();       // [6] 페이지 이동 함수
+    const [list, setList] = useState([]); // ✅ 신청 목록 상태
+    const navigate = useNavigate();       // ✅ 페이지 이동
 
-    // [7] 마운트 시 신청 전체 목록 조회
+    // =======================================================================================
+    // ✅ 최초 마운트 시 전체 신청 목록 조회
+    // =======================================================================================
     useEffect(() => {
         const fetchList = async () => {
             try {
-                const res = await getProjectJoinList(); // (1) 서버 요청
-                setList(res.data);                      // (2) 상태 저장
+                const res = await getProjectJoinList();
+                setList(res.data);
             } catch (err) {
-                alert('신청 목록 조회 실패');           // (3) 예외 처리
+                alert('❗ 프로젝트 신청 목록 조회 실패');
+                console.error(err);
             }
         };
         fetchList();
-    }, []); // 컴포넌트 최초 렌더링 시 실행
+    }, []);
 
     return (
-        <AdminLayout>
-            {/* [8] 페이지 제목 */}
-            <Typography level="h3" sx={{ mb: 3 }}>전체 프로젝트 신청 목록</Typography>
+        <div>
+            {/* ✅ 제목 */}
+            <Typography
+                level="h3"
+                sx={{
+                    mb: 3,
+                    color: '#087f5b',
+                    fontWeight: 'bold'
+                }}
+            >
+                🤝 프로젝트 신청 목록
+            </Typography>
 
-            {/* [9] 그리드 레이아웃으로 카드형 신청 리스트 출력 */}
+            {/* ✅ 카드 리스트 출력 */}
             <Grid container spacing={2}>
                 {list.map((pj) => (
-                    <Grid key={pj.pjno} xs={12} md={6} lg={4}> {/* 반응형 카드 배치 */}
-                        <Card variant="outlined">
-                            <Typography level="title-md">
+                    <Grid key={pj.pjno} xs={12} md={6} lg={4}>
+                        <Card
+                            variant="outlined"
+                            sx={{
+                                bgcolor: '#ffffff',
+                                borderColor: '#ced4da',
+                                boxShadow: 'sm',
+                                '&:hover': {
+                                    boxShadow: '0 0 8px #12b886',
+                                    borderColor: '#12b886'
+                                },
+                            }}
+                        >
+                            {/* ✅ 신청번호 */}
+                            <Typography level="title-md" sx={{ color: '#12b886' }}>
                                 신청번호: {pj.pjno}
                             </Typography>
-                            <Divider sx={{ my: 1 }} />
 
-                            {/* [10] 신청 요약 정보 출력 */}
-                            <Box>
+                            <Divider sx={{ my: 1, borderColor: '#e0e0e0' }} />
+
+                            {/* ✅ 정보 영역 */}
+                            <Box sx={{ fontSize: 14, color: '#495057' }}>
                                 <p><strong>프로젝트번호:</strong> {pj.pno}</p>
                                 <p><strong>개발자번호:</strong> {pj.dno}</p>
-                                <p><strong>신청상태:</strong> {pj.pjtype}</p>
+                                <p><strong>상태코드:</strong> {pj.pjtype}</p>
                             </Box>
 
-                            {/* [11] 상세페이지 이동 버튼 */}
-                            <Button onClick={() => navigate(`/admin/project-join/${pj.pjno}`)}>
+                            {/* ✅ 상세 이동 버튼 */}
+                            <Button
+                                variant="outlined"
+                                size="sm"
+                                onClick={() => navigate(`/admin/project-join/${pj.pjno}`)}
+                                sx={{
+                                    mt: 2,
+                                    borderColor: '#12b886',
+                                    color: '#12b886',
+                                    fontWeight: 500,
+                                    '&:hover': {
+                                        bgcolor: '#12b886',
+                                        color: '#fff'
+                                    }
+                                }}
+                            >
                                 상세보기
                             </Button>
                         </Card>
                     </Grid>
                 ))}
             </Grid>
-        </AdminLayout>
+        </div>
     );
 }

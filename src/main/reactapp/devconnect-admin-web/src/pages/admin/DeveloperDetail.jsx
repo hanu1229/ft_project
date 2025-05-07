@@ -1,54 +1,76 @@
-// DeveloperDetail.jsx | rw 25-05-01
-// [설명] 개발자 상세 조회 + 수정 + 상태변경 기능 포함
+// =======================================================================================
+// DeveloperDetail.jsx | rw 25-05-02 최종 리팩토링
+// [설명]
+// - 관리자 전용 개발자 상세 조회/수정/상태변경 페이지
+// - Joy UI 기반 / ChatGPT 스타일: 흰 배경 + 절제된 컬러 UI
+// =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-    getDeveloperDetail, updateDeveloper, updateDeveloperState
+    getDeveloperDetail,
+    updateDeveloper,
+    updateDeveloperState
 } from '../../api/developerApi';
-import AdminLayout from '../../layouts/AdminLayout';
+
 import {
-    Typography, Box, Input, Button, Divider, Select, Option
+    Typography,
+    Box,
+    Input,
+    Button,
+    Divider,
+    Select,
+    Option
 } from '@mui/joy';
 
 export default function DeveloperDetail() {
-    const { dno } = useParams();                         // [1] URL에서 개발자 번호 추출
-    const [dev, setDev] = useState(null);                // [2] 상세 조회 원본 데이터
-    const [form, setForm] = useState({});                // [3] 수정용 상태
-    const [newState, setNewState] = useState();          // [4] 상태코드 변경용
+    const { dno } = useParams();
     const token = localStorage.getItem('token');
 
-    // [5] 개발자 상세 정보 불러오기
+    const [dev, setDev] = useState(null);         // ✅ 원본 개발자 정보
+    const [form, setForm] = useState({});         // ✅ 수정용 상태값
+    const [newState, setNewState] = useState();   // ✅ 상태코드 변경값
+
+    // =======================================================================================
+    // ✅ 개발자 상세 정보 조회
+    // =======================================================================================
     useEffect(() => {
         const fetchDetail = async () => {
             try {
-                const res = await getDeveloperDetail(token);
+                const res = await getDeveloperDetail(token, dno);
                 setDev(res.data);
                 setForm(res.data);
                 setNewState(res.data.dstate);
             } catch (err) {
-                alert('상세 조회 실패');
+                console.error('개발자 상세 조회 실패', err);
+                alert('개발자 상세정보 조회 실패');
             }
         };
         fetchDetail();
-    }, [token]);
+    }, [token, dno]);
 
-    // [6] 입력값 변경 핸들러
+    // =======================================================================================
+    // ✅ 입력 변경 핸들러
+    // =======================================================================================
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    // [7] 정보 수정
+    // =======================================================================================
+    // ✅ 정보 수정 요청
+    // =======================================================================================
     const handleUpdate = async () => {
         try {
             const res = await updateDeveloper(token, form);
-            if (res.data) alert('수정 완료');
+            if (res.data) alert('정보 수정 완료');
         } catch (err) {
             alert('수정 실패');
         }
     };
 
-    // [8] 상태코드 변경 요청
+    // =======================================================================================
+    // ✅ 상태코드 변경 요청
+    // =======================================================================================
     const handleStateUpdate = async () => {
         try {
             const res = await updateDeveloperState(token, {
@@ -57,34 +79,110 @@ export default function DeveloperDetail() {
             });
             if (res.data) alert('상태코드 변경 완료');
         } catch (err) {
-            alert('변경 실패');
+            alert('상태 변경 실패');
         }
     };
 
-    if (!dev) return <p>로딩 중...</p>;
+    if (!dev) return <p style={{ color: '#666' }}>로딩 중...</p>;
 
+    // =======================================================================================
+    // ✅ 컴포넌트 렌더링
+    // =======================================================================================
     return (
-        <AdminLayout>
-            <Typography level="h3">개발자 상세</Typography>
-            <Divider sx={{ my: 2 }} />
+        <Box sx={{ px: 3, py: 3, bgcolor: '#fff', color: '#212529' }}>
+            {/* ✅ 타이틀 */}
+            <Typography level="h3" sx={{ mb: 2, color: '#12b886', fontWeight: 'bold' }}>
+                👨‍💻 개발자 상세 정보
+            </Typography>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Input name="dname" value={form.dname || ''} onChange={handleChange} placeholder="이름" />
-                <Input name="demail" value={form.demail || ''} onChange={handleChange} placeholder="이메일" />
-                <Input name="dphone" value={form.dphone || ''} onChange={handleChange} placeholder="전화번호" />
+            <Divider sx={{ mb: 3, borderColor: '#ced4da' }} />
 
-                <Typography level="body-md">상태코드 변경</Typography>
-                <Select value={newState} onChange={(e, val) => setNewState(val)}>
-                    <Option value={0}>대기(0)</Option>
-                    <Option value={1}>승인(1)</Option>
-                    <Option value={9}>삭제(9)</Option>
-                </Select>
+            {/* ✅ 입력 폼 카드 */}
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2,
+                    maxWidth: 480,
+                    p: 3,
+                    borderRadius: 'lg',
+                    bgcolor: '#f8f9fa',
+                    border: '1px solid #ced4da',
+                    boxShadow: 'sm'
+                }}
+            >
+                {/* 이름 */}
+                <Input
+                    name="dname"
+                    value={form.dname || ''}
+                    onChange={handleChange}
+                    placeholder="이름"
+                />
+                {/* 이메일 */}
+                <Input
+                    name="demail"
+                    value={form.demail || ''}
+                    onChange={handleChange}
+                    placeholder="이메일"
+                />
+                {/* 전화번호 */}
+                <Input
+                    name="dphone"
+                    value={form.dphone || ''}
+                    onChange={handleChange}
+                    placeholder="전화번호"
+                />
 
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Button onClick={handleUpdate}>정보 수정</Button>
-                    <Button onClick={handleStateUpdate}>상태코드 변경</Button>
+                {/* 상태코드 변경 */}
+                <Box>
+                    <Typography level="body-sm" sx={{ mb: 1, color: '#495057' }}>
+                        상태코드 변경
+                    </Typography>
+                    <Select
+                        value={newState}
+                        onChange={(e, val) => setNewState(val)}
+                        sx={{ minWidth: 180 }}
+                    >
+                        <Option value={0}>대기 (0)</Option>
+                        <Option value={1}>승인 (1)</Option>
+                        <Option value={9}>삭제 (9)</Option>
+                    </Select>
+                </Box>
+
+                {/* 버튼 그룹 */}
+                <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+                    <Button
+                        onClick={handleUpdate}
+                        variant="outlined"
+                        sx={{
+                            borderColor: '#12b886',
+                            color: '#12b886',
+                            fontWeight: 'bold',
+                            '&:hover': {
+                                bgcolor: '#12b886',
+                                color: '#fff'
+                            }
+                        }}
+                    >
+                        정보 수정
+                    </Button>
+                    <Button
+                        onClick={handleStateUpdate}
+                        variant="outlined"
+                        sx={{
+                            borderColor: '#339af0',
+                            color: '#339af0',
+                            fontWeight: 'bold',
+                            '&:hover': {
+                                bgcolor: '#339af0',
+                                color: '#fff'
+                            }
+                        }}
+                    >
+                        상태 변경
+                    </Button>
                 </Box>
             </Box>
-        </AdminLayout>
+        </Box>
     );
 }

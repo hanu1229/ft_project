@@ -29,7 +29,7 @@ public class CratingController {
     private final CratingService cratingService;
     private final DeveloperService developerService;
     private final AdminService adminService;
-    
+
     // 기업 평가 등록
     // [POST] : http://localhost:8080/api/crating
     // { "crscore" : # , "pno" : # , "dno" : # }
@@ -51,7 +51,7 @@ public class CratingController {
             return ResponseEntity.status(400).body(false);
         } // if end
     } // f end
-    
+
     // 기업 평가 전체 조회
     // [GET] : http://localhost:8080/api/crating
     @GetMapping("")
@@ -69,7 +69,7 @@ public class CratingController {
             return ResponseEntity.noContent().build(); // 204
         } // if end
     } // f end
-    
+
     // 기업 평가 개별 조회
     // [GET] : http://localhost:8080/api/crating/view?crno=#
     @GetMapping("view")
@@ -84,7 +84,7 @@ public class CratingController {
             return ResponseEntity.status(401).build();
         } // if end
     } // f end
-    
+
     // 기업 평가 수정
     // [PUT] : http://localhost:8080/api/crating
     // { "crno" : # , "crscore" : # }
@@ -101,7 +101,7 @@ public class CratingController {
             return ResponseEntity.status(400).body(false);
         } // if end
     } // f end
-    
+
     // 기업 평가 삭제
     // [DELETE] : http://localhost:8080/api/crating?crno=#
     @DeleteMapping("")
