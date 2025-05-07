@@ -9,7 +9,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-    getProjectJoinDetail,
     updateProjectJoin,
     deleteProjectJoin
 } from '../../api/projectJoinApi';
@@ -38,19 +37,19 @@ export default function ProjectJoinDetail() {
     // =======================================================================================
     // ✅ 상세 조회 API 요청
     // =======================================================================================
-    useEffect(() => {
-        const fetchDetail = async () => {
-            try {
-                const res = await getProjectJoinDetail(pjno, token);
-                setPj(res.data);
-                setNewType(res.data.pjtype); // 상태 초기화
-            } catch (err) {
-                alert('❗ 신청 상세 조회 실패');
-                console.error(err);
-            }
-        };
-        fetchDetail();
-    }, [pjno, token]);
+    // useEffect(() => {
+    //     const fetchDetail = async () => {
+    //         try {
+    //             const res = await getProjectJoinDetail(pjno, token);
+    //             setPj(res.data);
+    //             setNewType(res.data.pjtype); // 상태 초기화
+    //         } catch (err) {
+    //             alert('❗ 신청 상세 조회 실패');
+    //             console.error(err);
+    //         }
+    //     };
+    //     fetchDetail();
+    // }, [pjno, token]);
 
     // =======================================================================================
     // ✅ 상태코드 수정 요청
