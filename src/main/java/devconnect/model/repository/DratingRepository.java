@@ -24,4 +24,8 @@ public interface DratingRepository extends JpaRepository<DratingEntity, Integer>
             @Param("cno") int cno
     );
 
+    /// 개발자 전체 평점 구하는 부분
+    @Query(value = "select avg(drscore) from devconnect.drating where dno = :dno", nativeQuery = true)
+    double findByAvgDno(int dno);
+
 } // interface end

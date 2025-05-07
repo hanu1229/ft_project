@@ -69,7 +69,7 @@ public class CratingController {
             return ResponseEntity.noContent().build(); // 204
         } // if end
     } // f end
-    
+
     // 기업 평가 개별 조회
     // [GET] : http://localhost:8080/api/crating/view?crno=#
     @GetMapping("view")

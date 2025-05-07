@@ -37,7 +37,7 @@ public class CompanyController {
 
     // 2. post(login) http://localhost:8080/api/company/login
     @PostMapping("/login") // {"cid" : "cmd1" , "cpwd" : "1234"} // 토큰 잘나옴
-    public ResponseEntity<String> login(@RequestBody CompanyDto companyDto){
+    public ResponseEntity<String> login(@RequestBody CompanyDto companyDto) {
         System.out.println("companyDto = " + companyDto);
         System.out.println("CompanyController.login");
         String token = companyService.login(companyDto);
@@ -109,5 +109,36 @@ public class CompanyController {
 
 
     }
+
+    //8 기업 정보 삭제
+    @PutMapping("/delete")
+    public ResponseEntity<Boolean> deleteProduct(@RequestHeader("Authorization") String token , @RequestBody CompanyDto companyDto ){
+        System.out.println("CompanyController.deleteProduct");
+        System.out.println("token = " + token);
+        System.out.println("token = " + token + ", companyDto = " + companyDto);
+
+        boolean result = companyService.deleteProduct(token , companyDto);
+
+        if (result){
+            return  ResponseEntity.status(200).body(true);
+        } else {
+            return  ResponseEntity.status(400).body(false);
+        }
+    }
+
+    //9 기업 비밀번호 변경
+//    @PutMapping("pwupdate")
+//    public  ResponseEntity<Boolean> pwupdate(@RequestHeader("Authorization") String token, @RequestBody CompanyDto companyDto ){
+//        System.out.println("token = " + token + ", companyDto = " + companyDto);
+//        System.out.println("CompanyController.pwupdate");
+//
+//        boolean result = companyService.pwupdate(token , companyDto);
+//
+//        if (result){
+//            return  ResponseEntity.status(200).body(true);
+//        }else {
+//            return ResponseEntity.status(400).body(false);
+//        }
+//    }
 
 }
