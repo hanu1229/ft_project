@@ -2,6 +2,7 @@ package devconnect.controller;
 
 import devconnect.model.dto.ProjectDto;
 import devconnect.model.dto.ProjectJoinDto;
+import devconnect.service.CompanyService;
 import devconnect.service.DeveloperService;
 import devconnect.service.ProjectJoinService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class ProjectJoinController {
 
     private final ProjectJoinService projectJoinService;
     private final DeveloperService developerService;
+    private final CompanyService companyService;
 
     /// | 프로젝트 신청 등록 | <br/>
     /// ● <b>개발자</b>가 프로젝트에 참가를 신청
@@ -105,4 +107,25 @@ public class ProjectJoinController {
         return ResponseEntity.status(200).body(result);
     }
 
+    // 05-08 이민진 코드 추가
+    // 프로젝트에 참여한 개발자 조회(기업입장)
+    @GetMapping("/getdno")
+    public ResponseEntity<List<Integer>> getDno(
+            @RequestHeader("Authorization") String token,
+            @RequestParam( "pno" ) int pno ){
+        System.out.println("ProjectJoinController.getDno");
+        int loginCno;
+        try{
+            loginCno = companyService.info(token).getCno();
+        }catch (Exception e ) { return ResponseEntity.status(401).body(null); }
+        System.out.println("loginCno = " + loginCno);
+        if( loginCno >= 1) {
+            List<Integer> dnoList = projectJoinService.getDno( pno );
+            if( dnoList != null ){
+                System.out.println("dnoList = " + dnoList);
+                return ResponseEntity.ok( dnoList );
+            } // if end
+        } // if end
+        return ResponseEntity.status(401).body(null);
+    } // f  end
 }
