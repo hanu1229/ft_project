@@ -5,6 +5,7 @@ import devconnect.model.dto.developer.DeveloperDto;
 import devconnect.model.dto.developer.DeveloperPwdUpdateDto;
 import devconnect.model.entity.DeveloperEntity;
 import devconnect.model.repository.DeveloperRepository;
+import devconnect.util.ApiResponse;
 import devconnect.util.FileUtil;
 import devconnect.util.JwtUtil;
 import jakarta.transaction.Transactional;
@@ -129,21 +130,26 @@ public class DeveloperService {
     } // f end
 
     // 5-1. 개발자 비밀번호 수정
-    public Boolean onUpdatePwd( DeveloperPwdUpdateDto developerPwdUpdateDto, int logInDno ){
-        if( logInDno <= 0 ){ return false; }
+    public ApiResponse<Boolean> onUpdatePwd(DeveloperPwdUpdateDto developerPwdUpdateDto, int logInDno ){
         Optional< DeveloperEntity > optionalDeveloperEntity = developerRepository.findById( logInDno );
-        if( optionalDeveloperEntity.isEmpty() ){ return false; }
-        DeveloperEntity developerEntity = optionalDeveloperEntity.get();
+        // 유효성 검사
+        if( optionalDeveloperEntity.isEmpty() ){
+            return new ApiResponse<>( false, "사용자 없음", null ); }
+        if ( developerPwdUpdateDto.getNewPwd().length() < 8) {
+            return new ApiResponse<>(false, "비밀번호는 8자 이상이어야 합니다.", null); }
 
+        DeveloperEntity developerEntity = optionalDeveloperEntity.get();
         BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
+
         boolean result = pwdEncoder.matches( developerPwdUpdateDto.getMatchPwd(), developerEntity.getDpwd() );
-        // 비밀번호 확인
-        if( !result ){ return false; }
+        // 현재 비밀번호 일치 유효성 검사
+        if( !result ){
+            return new ApiResponse<>( false, "현재 비밀번호가 일치하지 않습니다.", null ); }
 
         String newHashPwd = pwdEncoder.encode(developerPwdUpdateDto.getNewPwd() );
         developerEntity.setDpwd( newHashPwd );
 
-        return true;
+        return new ApiResponse<>( true, "비밀번호 변경이 완료되었습니다.", true );
     } // f end
 
     // 6. 개발자 정보 삭제
