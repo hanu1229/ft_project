@@ -23,7 +23,7 @@ public class ProjectEntity extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int pno;
     // 프로젝트 이름
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 50)
     private String pname;
     // 소개
     @Column(nullable = false)
