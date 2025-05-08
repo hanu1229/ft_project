@@ -38,10 +38,10 @@ public class DeveloperController {
 
     // 2. 개발자 로그인
     @PostMapping("/login")
-    public ResponseEntity<String> logIn( @RequestBody DeveloperDto developerDto ){
-        String token = developerService.logIn( developerDto );
-        if( token != null ){ return ResponseEntity.status( 200 ).body( token ); }
-        else{ return ResponseEntity.status( 400 ).body( "로그인 실패" ); }
+    public ResponseEntity< ApiResponse<String> > logIn( @RequestBody DeveloperDto developerDto ){
+        ApiResponse<String> result = developerService.logIn( developerDto );
+        if( result.getData() != null ){ return ResponseEntity.status( 200 ).body( result ); }
+        else{ return ResponseEntity.status( 400 ).body( result ); }
     } // f end
 
     // 3. 내 정보 조회

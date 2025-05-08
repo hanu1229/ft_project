@@ -62,22 +62,22 @@ public class DeveloperService {
 
 
     // 2. 로그인
-    public String logIn( DeveloperDto developerDto ){
+    public ApiResponse<String> logIn( DeveloperDto developerDto ){
         DeveloperEntity developerEntity = developerRepository.findByDid( developerDto.getDid() );
 
                                         // 탈퇴회원은 표시 x
-        if( developerEntity == null || !developerEntity.isDstate() ){ return null; }
+        if( developerEntity == null || !developerEntity.isDstate() ){ return new ApiResponse<>( false, "존재하지 않는 ID입니다.", null ); }
         BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
         boolean isMatch = pwdEncoder.matches( developerDto.getDpwd(), developerEntity.getDpwd() );
 
-        if( isMatch == false ) { return null; }
+        if( isMatch == false ) { return new ApiResponse<>( false, "비밀번호가 일치하지 않습니다.", null ); }
         String token = jwtUtil.createToken( developerEntity.getDid(), "Developer" );
         System.out.println("token = " + token);
 
         stringRedisTemplate.opsForValue().set(
                 "RECENT_LOGIN : " + developerDto.getDid(), "true", 1, TimeUnit.DAYS );
 
-        return token;
+        return new ApiResponse<>( true, "로그인 성공", token );
     } // f end
 
     // 3. 내 정보 조회
