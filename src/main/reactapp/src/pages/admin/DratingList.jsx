@@ -1,102 +1,107 @@
 // =======================================================================================
-// DratingList.jsx | rw 25-05-02 최종 리팩토링
-// [설명]
-// - 관리자 전용 개발자 평가 목록 화면
-// - 평가 상세페이지 이동 버튼 포함
-// - Joy UI + ChatGPT 흰 배경 테마 구성
+// DratingList.jsx | rw 25-05-08 리팩토링 - 공통 컴포넌트 기반 적용
+// [설명] 관리자 전용 개발자 평가 리스트 화면 (검색 + 상태필터 + 삭제)
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDratingList } from '../../api/dratingApi.js'; // ✅ 평가 전체 조회 API
-import {
-    Typography,
-    Grid,
-    Card,
-    Box,
-    Divider,
-    Button
-} from '@mui/joy';
+import { getDratingList, deleteDrating } from '../../api/dratingApi';
+import FilterSearchBar from '../../components/FilterSearchBar';
+import ConfirmDeleteModal from '../../components/ConfirmDeleteModal';
+import EntityCard from '../../components/EntityCard';
 
 export default function DratingList() {
-    const [list, setList] = useState([]);              // ✅ 평가 리스트 상태
-    const navigate = useNavigate();                    // ✅ 라우팅 이동 함수
+    const navigate = useNavigate();
+    const [list, setList] = useState([]);
+    const [filter, setFilter] = useState('all');
+    const [search, setSearch] = useState('');
+    const [open, setOpen] = useState(false);
+    const [deleteTarget, setDeleteTarget] = useState(null);
 
-    // =======================================================================================
-    // ✅ useEffect - 최초 마운트 시 전체 평가 목록 요청
-    // =======================================================================================
+    const token = localStorage.getItem('token');
+
+    // ✅ 목록 조회
+    const fetchList = async () => {
+        try {
+            const res = await getDratingList(token, {
+                page: 0,
+                size: 100,
+                keyword: search
+            });
+            setList(res.data.content || []);
+        } catch (err) {
+            console.error('개발자 평가 조회 실패', err);
+            alert('❗ 평가 조회 실패');
+        }
+    };
+
     useEffect(() => {
-        const fetchList = async () => {
-            try {
-                const res = await getDratingList();    // (1) API 요청
-                setList(res.data);                     // (2) 상태 저장
-            } catch (err) {
-                alert('개발자 평가 목록 조회 실패');
-                console.error(err);
-            }
-        };
         fetchList();
-    }, []);
+    }, [search]);
+
+    // ✅ 삭제 실행
+    const handleDelete = async () => {
+        try {
+            const res = await deleteDrating(token, deleteTarget);
+            if (res.data) {
+                setList((prev) => prev.filter(item => item.drno !== deleteTarget));
+                setOpen(false);
+            }
+        } catch (err) {
+            alert('❗ 삭제 실패');
+        }
+    };
+
+    // ✅ 필터링된 리스트
+    const filteredList = list.filter(item =>
+        filter === 'all' ? true : item.drstate.toString() === filter
+    );
 
     return (
-        <Box sx={{ px: 3, py: 3, bgcolor: '#ffffff', color: '#212529' }}>
-            {/* ✅ 페이지 타이틀 */}
-            <Typography
-                level="h3"
-                sx={{ mb: 3, color: '#12b886', fontWeight: 'bold' }}
-            >
-                🧾 개발자 평가 목록
-            </Typography>
+        <div>
+            <h2 style={{ color: '#087f5b', fontWeight: 'bold', marginBottom: 16 }}>⭐ 개발자 평가 목록</h2>
 
-            {/* ✅ 카드 레이아웃 */}
-            <Grid container spacing={2}>
-                {list.map((dr) => (
-                    <Grid key={dr.drno} xs={12} md={6} lg={4}>
-                        <Card
-                            variant="outlined"
-                            sx={{
-                                bgcolor: '#f8f9fa',
-                                color: '#212529',
-                                borderColor: '#12b886',
-                                '&:hover': {
-                                    boxShadow: '0 0 12px rgba(18, 184, 134, 0.3)',
-                                    transform: 'translateY(-2px)',
-                                },
-                            }}
-                        >
-                            {/* ✅ 평가 정보 */}
-                            <Typography level="title-md" sx={{ color: '#12b886' }}>
-                                평가번호: {dr.drno}
-                            </Typography>
+            <FilterSearchBar
+                filter={filter}
+                setFilter={setFilter}
+                search={search}
+                setSearch={setSearch}
+                filterOptions={[
+                    { value: 'all', label: '전체' },
+                    { value: '0', label: '승인대기' },
+                    { value: '1', label: '승인완료' },
+                    { value: '2', label: '반려' }
+                ]}
+            />
 
-                            <Divider sx={{ my: 1, borderColor: '#ced4da' }} />
-
-                            <Box sx={{ fontSize: 14 }}>
-                                <p><strong>개발자번호:</strong> {dr.dno}</p>
-                                <p><strong>상태코드:</strong> {dr.drstate}</p>
-                            </Box>
-
-                            {/* ✅ 상세보기 버튼 */}
-                            <Button
-                                size="sm"
-                                variant="outlined"
-                                onClick={() => navigate(`/admin/drating/${dr.drno}`)}
-                                sx={{
-                                    mt: 1,
-                                    borderColor: '#12b886',
-                                    color: '#12b886',
-                                    '&:hover': {
-                                        bgcolor: '#12b886',
-                                        color: '#fff'
-                                    }
-                                }}
-                            >
-                                상세보기
-                            </Button>
-                        </Card>
-                    </Grid>
+            {/* ✅ 리스트 렌더링 */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+                {filteredList.map(item => (
+                    <EntityCard
+                        key={item.drno}
+                        title={`평가번호: ${item.drno}`}
+                        fields={[
+                            { label: '개발자번호', value: item.dno },
+                            { label: '프로젝트번호', value: item.pno },
+                            { label: '점수', value: item.drscore },
+                        ]}
+                        statusCode={item.drstate}
+                        statusType="rating"
+                        onDetailClick={() => navigate(`/admin/drating/${item.drno}`)}
+                        onDeleteClick={() => {
+                            setDeleteTarget(item.drno);
+                            setOpen(true);
+                        }}
+                    />
                 ))}
-            </Grid>
-        </Box>
+            </div>
+
+            {/* ✅ 삭제 확인 모달 */}
+            <ConfirmDeleteModal
+                open={open}
+                onClose={() => setOpen(false)}
+                onConfirm={handleDelete}
+            />
+        </div>
     );
 }

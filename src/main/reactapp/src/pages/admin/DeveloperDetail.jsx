@@ -1,113 +1,191 @@
 // =======================================================================================
-// DeveloperDetail.jsx | rw 25-05-03 최종 생성
+// DeveloperDetail.jsx | rw 25-05-08 최종 리팩토링
 // [설명]
-// - 개발자 상세 정보 조회 + 수정 + 삭제 상태변경 화면 (관리자 전용)
-// - ✅ 상세 데이터 조회
-// - ✅ 프로필 이미지 출력
-// - ✅ 수정 버튼 → updateDeveloper 호출
-// - ✅ 삭제(상태변경) 버튼 → updateDeveloperState 호출
+// - 관리자(Admin) 전용 개발자 상세 페이지
+// - 개발자 정보 조회 + 수정 + 상태코드 변경 가능
+// - Joy UI + ChatGPT 스타일 적용 (절제된 흰 배경 UI)
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import {
-    Box, Typography, Input, Button, Sheet, Stack, Avatar
-} from '@mui/joy';
+import { useParams } from 'react-router-dom';
 import {
     getDeveloperDetail,
     updateDeveloper,
     updateDeveloperState
 } from '../../api/developerApi.js';
 
-export default function DeveloperDetail() {
-    const { dno } = useParams();
-    const navigate = useNavigate();
-    const [developer, setDeveloper] = useState(null);
-    const [form, setForm] = useState({});
+import {
+    Typography,
+    Box,
+    Input,
+    Button,
+    Divider,
+    Select,
+    Option
+} from '@mui/joy';
 
-    // ✅ 데이터 조회
+export default function DeveloperDetail() {
+    // =======================================================================================
+    // ✅ 상태 선언
+    // =======================================================================================
+    const { dno } = useParams();                                // 개발자 번호 추출 (URL 파라미터)
+    const token = localStorage.getItem('token');                // 인증 토큰
+
+    const [dev, setDev] = useState(null);                       // 원본 상세 정보
+    const [form, setForm] = useState({});                       // 입력 폼 상태
+    const [newState, setNewState] = useState();                 // 상태코드 변경값
+
+    // =======================================================================================
+    // ✅ 상세 조회 요청
+    // =======================================================================================
     useEffect(() => {
-        const fetch = async () => {
+        const fetchDetail = async () => {
             try {
-                const res = await getDeveloperDetail(dno);
-                setDeveloper(res.data);
+                const res = await getDeveloperDetail(token, dno);
+                setDev(res.data);
                 setForm(res.data);
+                setNewState(res.data.dstate);
             } catch (err) {
-                alert('개발자 조회 실패');
+                console.error('❌ 개발자 상세 조회 실패', err);
+                alert('개발자 상세정보 조회 실패');
             }
         };
-        fetch();
-    }, [dno]);
+        fetchDetail();
+    }, [token, dno]);
 
-    // ✅ 입력값 변경
-    const onChange = (e) => {
-        const { name, value } = e.target;
-        setForm({ ...form, [name]: value });
+    // =======================================================================================
+    // ✅ 입력 필드 변경 핸들러
+    // =======================================================================================
+    const handleChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    // ✅ 프로필 파일 변경
-    const onFileChange = (e) => {
-        setForm({ ...form, dfile: e.target.files[0] });
-    };
-
-    // ✅ 수정 요청
-    const onUpdate = async () => {
-        const token = localStorage.getItem('token');
-        const formData = new FormData();
-        Object.entries(form).forEach(([key, val]) => {
-            formData.append(key, val);
-        });
-
-        const res = await updateDeveloper(token, formData);
-        if (res.data) {
-            alert('수정 성공');
-            navigate('/admin/developer');
-        } else {
+    // =======================================================================================
+    // ✅ 정보 수정 요청
+    // =======================================================================================
+    const handleUpdate = async () => {
+        try {
+            const res = await updateDeveloper(token, form);
+            if (res.data) alert('✅ 정보 수정 완료');
+        } catch (err) {
+            console.error('❌ 수정 실패', err);
             alert('수정 실패');
         }
     };
 
-    // ✅ 삭제(상태변경) 요청
-    const onDelete = async () => {
-        const token = localStorage.getItem('token');
-        const res = await updateDeveloperState(token, {
-            dno: developer.dno,
-            dstate: false
-        });
-        if (res.data) {
-            alert('삭제 완료');
-            navigate('/admin/developer');
-        } else {
-            alert('삭제 실패');
+    // =======================================================================================
+    // ✅ 상태코드 변경 요청
+    // =======================================================================================
+    const handleStateUpdate = async () => {
+        try {
+            const res = await updateDeveloperState(token, {
+                dno: form.dno,
+                dstate: newState
+            });
+            if (res.data) alert('✅ 상태코드 변경 완료');
+        } catch (err) {
+            console.error('❌ 상태 변경 실패', err);
+            alert('상태 변경 실패');
         }
     };
 
-    if (!developer) return <Typography>Loading...</Typography>;
+    if (!dev) return <p style={{ color: '#666' }}>로딩 중...</p>;
 
+    // =======================================================================================
+    // ✅ UI 렌더링
+    // =======================================================================================
     return (
-        <Box sx={{ px: 3, py: 3 }}>
-            <Typography level="h3" sx={{ mb: 2 }}>👨‍💻 개발자 상세</Typography>
+        <Box sx={{ px: 3, py: 3, bgcolor: '#fff', color: '#212529' }}>
+            {/* ✅ 타이틀 */}
+            <Typography level="h3" sx={{ mb: 2, color: '#12b886', fontWeight: 'bold' }}>
+                👨‍💻 개발자 상세 정보
+            </Typography>
 
-            <Sheet sx={{ p: 3, borderRadius: 8, maxWidth: 600 }}>
-                <Stack direction="row" spacing={2}>
-                    <Avatar
-                        src={`/upload/${developer.dprofile}`}
-                        alt="프로필"
-                        sx={{ width: 100, height: 100 }}
-                    />
-                    <Input type="file" onChange={onFileChange} />
-                </Stack>
+            <Divider sx={{ mb: 3, borderColor: '#ced4da' }} />
 
-                <Input name="dname" value={form.dname} onChange={onChange} sx={{ mt: 2 }} placeholder="이름" />
-                <Input name="dphone" value={form.dphone} onChange={onChange} sx={{ mt: 1 }} placeholder="연락처" />
-                <Input name="daddress" value={form.daddress} onChange={onChange} sx={{ mt: 1 }} placeholder="주소" />
-                <Input name="demail" value={form.demail} onChange={onChange} sx={{ mt: 1 }} placeholder="이메일" />
+            {/* ✅ 입력 폼 카드 */}
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2,
+                    maxWidth: 480,
+                    p: 3,
+                    borderRadius: 'lg',
+                    bgcolor: '#f8f9fa',
+                    border: '1px solid #ced4da',
+                    boxShadow: 'sm'
+                }}
+            >
+                <Input
+                    name="dname"
+                    value={form.dname || ''}
+                    onChange={handleChange}
+                    placeholder="이름"
+                />
+                <Input
+                    name="demail"
+                    value={form.demail || ''}
+                    onChange={handleChange}
+                    placeholder="이메일"
+                />
+                <Input
+                    name="dphone"
+                    value={form.dphone || ''}
+                    onChange={handleChange}
+                    placeholder="전화번호"
+                />
 
-                <Box sx={{ display: 'flex', gap: 1, mt: 3 }}>
-                    <Button color="primary" onClick={onUpdate}>수정</Button>
-                    <Button color="danger" onClick={onDelete}>삭제</Button>
+                {/* ✅ 상태코드 셀렉트 */}
+                <Box>
+                    <Typography level="body-sm" sx={{ mb: 1, color: '#495057' }}>
+                        상태코드 변경
+                    </Typography>
+                    <Select
+                        value={newState}
+                        onChange={(e, val) => setNewState(val)}
+                        sx={{ minWidth: 180 }}
+                    >
+                        <Option value={0}>대기 (0)</Option>
+                        <Option value={1}>승인 (1)</Option>
+                        <Option value={9}>삭제 (9)</Option>
+                    </Select>
                 </Box>
-            </Sheet>
+
+                {/* ✅ 버튼 그룹 */}
+                <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+                    <Button
+                        onClick={handleUpdate}
+                        variant="outlined"
+                        sx={{
+                            borderColor: '#12b886',
+                            color: '#12b886',
+                            fontWeight: 'bold',
+                            '&:hover': {
+                                bgcolor: '#12b886',
+                                color: '#fff'
+                            }
+                        }}
+                    >
+                        정보 수정
+                    </Button>
+                    <Button
+                        onClick={handleStateUpdate}
+                        variant="outlined"
+                        sx={{
+                            borderColor: '#339af0',
+                            color: '#339af0',
+                            fontWeight: 'bold',
+                            '&:hover': {
+                                bgcolor: '#339af0',
+                                color: '#fff'
+                            }
+                        }}
+                    >
+                        상태 변경
+                    </Button>
+                </Box>
+            </Box>
         </Box>
     );
 }

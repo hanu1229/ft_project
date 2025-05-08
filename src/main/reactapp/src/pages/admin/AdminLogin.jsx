@@ -75,7 +75,7 @@ export default function AdminLogin() {
                         textAlign: 'center',
                     }}
                 >
-                    관리자 로그인
+                    관리자 페이지
                 </Typography>
 
                 {/* 아이디 입력 */}

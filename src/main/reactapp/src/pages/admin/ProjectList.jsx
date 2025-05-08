@@ -1,9 +1,8 @@
 // =======================================================================================
-// ProjectList.jsx | rw 25-05-02 최종 리팩토링
+// ProjectList.jsx | rw 25-05-08 상세 확장 리팩토링 적용
 // [설명]
-// - 관리자 전용 프로젝트 목록 전체 조회 페이지
-// - 카드형 출력 + 삭제 기능 포함
-// - Joy UI + ChatGPT 스타일 흰 배경 + 연두색 포인트 UI 적용
+// - Joy UI 카드 기반 프로젝트 목록 페이지
+// - 상세보기 클릭 시 버튼 확장 (닫기/삭제/수정/승인)
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
@@ -22,14 +21,12 @@ import {
 } from '@mui/joy';
 
 export default function ProjectList() {
-    const [projects, setProjects] = useState([]);         // ✅ 프로젝트 목록
-    const [deleteTarget, setDeleteTarget] = useState();   // ✅ 삭제 대상 번호
-    const [open, setOpen] = useState(false);              // ✅ 모달 오픈 여부
+    const [projects, setProjects] = useState([]);
+    const [deleteTarget, setDeleteTarget] = useState();
+    const [open, setOpen] = useState(false);
+    const [expanded, setExpanded] = useState(null); // ✅ 확장 카드 번호
     const navigate = useNavigate();
 
-    // =======================================================================================
-    // ✅ 프로젝트 전체 목록 불러오기 (최초 마운트 시 실행)
-    // =======================================================================================
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -42,9 +39,6 @@ export default function ProjectList() {
         fetchData();
     }, []);
 
-    // =======================================================================================
-    // ✅ 삭제 요청 처리
-    // =======================================================================================
     const handleDeleteConfirm = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -63,12 +57,10 @@ export default function ProjectList() {
 
     return (
         <div>
-            {/* ✅ 타이틀 */}
             <Typography level="h3" sx={{ mb: 3, color: '#087f5b', fontWeight: 'bold' }}>
                 📁 전체 프로젝트 목록
             </Typography>
 
-            {/* ✅ 카드형 프로젝트 목록 출력 */}
             <Grid container spacing={2}>
                 {projects.map((project) => (
                     <Grid key={project.pno} xs={12} md={6} lg={4}>
@@ -84,51 +76,83 @@ export default function ProjectList() {
                                 }
                             }}
                         >
-                            {/* 제목 */}
                             <Typography level="title-md" sx={{ color: '#12b886' }}>
                                 {project.pname}
                             </Typography>
 
-                            {/* 구분선 */}
                             <Divider sx={{ my: 1, borderColor: '#e9ecef' }} />
 
-                            {/* 상세 정보 */}
                             <Box sx={{ fontSize: 14 }}>
                                 <p><strong>번호:</strong> {project.pno}</p>
                                 <p><strong>모집 인원:</strong> {project.pcount}</p>
                                 <p><strong>시작일:</strong> {project.pstart?.split('T')[0]}</p>
                             </Box>
 
-                            {/* 버튼 그룹 */}
-                            <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
-                                <Button
-                                    variant="outlined"
-                                    onClick={() => navigate(`/admin/project/${project.pno}`)}
-                                    sx={{
-                                        borderColor: '#12b886',
-                                        color: '#12b886',
-                                        '&:hover': { bgcolor: '#12b886', color: '#fff' }
-                                    }}
-                                >
-                                    상세보기
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    color="danger"
-                                    onClick={() => {
-                                        setDeleteTarget(project.pno);
-                                        setOpen(true);
-                                    }}
-                                >
-                                    삭제
-                                </Button>
-                            </Box>
+                            {expanded === project.pno ? (
+                                <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                                    <Button
+                                        color="primary"
+                                        onClick={() => setExpanded(null)}
+                                    >
+                                        닫기
+                                    </Button>
+                                    <Button
+                                        color="danger"
+                                        variant="solid"
+                                        onClick={() => {
+                                            setDeleteTarget(project.pno);
+                                            setOpen(true);
+                                        }}
+                                    >
+                                        삭제
+                                    </Button>
+                                    <Button
+                                        sx={{
+                                            bgcolor: '#d3f9d8',
+                                            color: '#212529',
+                                            fontWeight: 'bold',
+                                            '&:hover': {
+                                                bgcolor: '#b2f2bb'
+                                            }
+                                        }}
+                                        onClick={() => navigate(`/admin/project/${project.pno}`)}
+                                    >
+                                        수정 / 상세
+                                    </Button>
+                                    <Button variant="outlined" color="primary">
+                                        승인하기
+                                    </Button>
+                                </Box>
+                            ) : (
+                                <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => setExpanded(project.pno)}
+                                        sx={{
+                                            borderColor: '#12b886',
+                                            color: '#12b886',
+                                            '&:hover': { bgcolor: '#12b886', color: '#fff' }
+                                        }}
+                                    >
+                                        상세보기
+                                    </Button>
+                                    <Button
+                                        color="danger"
+                                        variant="solid"
+                                        onClick={() => {
+                                            setDeleteTarget(project.pno);
+                                            setOpen(true);
+                                        }}
+                                    >
+                                        삭제
+                                    </Button>
+                                </Box>
+                            )}
                         </Card>
                     </Grid>
                 ))}
             </Grid>
 
-            {/* ✅ 삭제 확인 모달 */}
             <Modal open={open} onClose={() => setOpen(false)}>
                 <ModalDialog variant="outlined" role="alertdialog" sx={{ bgcolor: '#fff', color: '#212529' }}>
                     <ModalClose />
