@@ -121,9 +121,9 @@ public class ProjectJoinService {
         if(!projectJoinEntityList.isEmpty()) {
             for(int index = 0; index < projectJoinEntityList.size(); index++) {
                 ProjectJoinEntity projectJoinEntity = projectJoinEntityList.get(index);
-                double avg = dratingRepository.findByAvgDno(projectJoinEntity.getDeveloperEntity().getDno());
+                // double avg = dratingRepository.findByAvgDno(projectJoinEntity.getDeveloperEntity().getDno());
                 ProjectJoinDto projectJoinDto = projectJoinEntity.toDto();
-                projectJoinDto.setDavg(avg);
+                // projectJoinDto.setDavg(avg);
                 projectJoinDtoList.add(projectJoinDto);
             }
         }
