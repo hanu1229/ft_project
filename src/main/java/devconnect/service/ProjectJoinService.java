@@ -1,19 +1,17 @@
 package devconnect.service;
 
+import devconnect.model.dto.ProjectDto;
 import devconnect.model.dto.ProjectJoinDto;
 import devconnect.model.entity.*;
 import devconnect.model.repository.*;
 import devconnect.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,6 +24,7 @@ public class ProjectJoinService {
     private final CompanyRepository companyRepository;
     private final DeveloperRepository developerRepository;
     private final AdminEntityRepository adminRepository;
+    private final DratingRepository dratingRepository;
     private final JwtUtil jwtutil;
 
     /// 토큰에 존재하는 데이터를 이용하여 엔티티를 반환하는 함수 <br/>
@@ -83,9 +82,78 @@ public class ProjectJoinService {
         System.out.println("token = \n" + token + "\npno = " + pno);
         CompanyEntity companyEntity = tokenToCompanyEntity(token);
         if(companyEntity == null) { return null; }
+        System.out.println(">> 회사 정보 가져옴");
         ProjectEntity projectEntity = projectRepository.findById(pno).orElse(null);
         if(projectEntity == null) { return null; }
-        return null;
+        System.out.println(">> 프로젝트 번호 가져옴");
+        List<ProjectJoinEntity> projectJoinEntityList = projectJoinRepository.findByProjectEntity(projectEntity);
+        if(projectJoinEntityList.isEmpty()) { return null; }
+        System.out.println(">> 프로젝트 정보 가져옴");
+        System.out.println(">> projectJoinEntityList : \n" + projectJoinEntityList);
+        List<ProjectJoinDto> projectJoinDtoList = new ArrayList<>();
+        System.out.println(">> for문 시작");
+        for(int index = 0; index < projectJoinEntityList.size(); index++) {
+            System.out.println(">> for문 " + index);
+            ProjectJoinEntity projectJoinEntity = projectJoinEntityList.get(index);
+            ProjectJoinDto projectJoinDto = projectJoinEntity.toDto();
+            projectJoinDtoList.add(projectJoinDto);
+        }
+        System.out.println(">> for문 끝");
+        return projectJoinDtoList;
+    }
+
+    ///  | 프로젝트 신청 전체조회 - 페이징 | <br/>
+    ///  ● 한 프로젝트의 모든 신청을 페이징으로 조회
+    public Page<ProjectJoinDto> findPagingProjectJoin(String token, int pno, Pageable pageable) {
+        System.out.println("ProjectJoinService.findPagingProjectJoin");
+        System.out.println("token = \n" + token + "\npno = " + pno + ", pageable = " + pageable);
+        String id = jwtutil.valnoateToken(token);
+        String code = jwtutil.returnCode(id);
+        if(!code.equals("Company")) { return null; }
+        ProjectEntity projectEntity = projectRepository.findById(pno).orElse(null);
+        if(projectEntity == null) { return null; }
+        Page<ProjectJoinEntity> projectJoinEntityPageList = projectJoinRepository.findByPnoJoin(pno, pageable);
+        List<ProjectJoinEntity> projectJoinEntityList = projectJoinEntityPageList.getContent();
+        int totalPages = projectJoinEntityPageList.getTotalPages();
+        long totalData = projectJoinEntityPageList.getTotalElements();
+        System.out.println("totalPages = " + totalPages + ", totalData = " + totalData);
+        List<ProjectJoinDto> projectJoinDtoList = new ArrayList<>();
+        if(!projectJoinEntityList.isEmpty()) {
+            for(int index = 0; index < projectJoinEntityList.size(); index++) {
+                ProjectJoinEntity projectJoinEntity = projectJoinEntityList.get(index);
+                double avg = dratingRepository.findByAvgDno(projectJoinEntity.getDeveloperEntity().getDno());
+                ProjectJoinDto projectJoinDto = projectJoinEntity.toDto();
+                projectJoinDto.setDavg(avg);
+                projectJoinDtoList.add(projectJoinDto);
+            }
+        }
+        Page<ProjectJoinDto> projectJoinDtoPage = new PageImpl<>(projectJoinDtoList, projectJoinEntityPageList.getPageable(), totalData);
+        return projectJoinDtoPage;
+    }
+
+    /// | 프로젝트 전체조회 - 페이징 | <br/>
+    /// ● 모든 프로젝트를 조회
+    // http://localhost:8080/api/project/all
+    public List<ProjectDto> findPagingProject(Pageable pageable) {
+        System.out.println("ProjectService.findPagingProject");
+        Page<ProjectEntity> projectEntityPageList = projectRepository.findAll(pageable);
+        List<ProjectEntity> projectEntityList = projectEntityPageList.getContent();
+        int totalPages = projectEntityPageList.getTotalPages();
+        long totalData = projectEntityPageList.getTotalElements();
+        System.out.println("totalPage = " + totalPages + "totalData = " + totalData);
+        List<ProjectDto> projectDtoList = new ArrayList<>();
+        if(!projectEntityList.isEmpty()) {
+            for(int index = 0; index < projectEntityList.size(); index++) {
+                ProjectEntity projectEntity = projectEntityList.get(index);
+                ProjectDto projectDto = projectEntity.toDto();
+                projectDto.setCno(projectEntity.getCompanyEntity().getCno());
+                // 추가
+                projectDto.setCprofile(projectEntity.getCompanyEntity().getCprofile());
+                System.out.println(">> \n" + projectDto.getCprofile() + "\n");
+                projectDtoList.add(projectDto);
+            }
+        }
+        return projectDtoList;
     }
 
     /// | 프로젝트 신청 수정 | <br/>

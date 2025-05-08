@@ -43,6 +43,8 @@ public class ProjectDto {
     private LocalDateTime createAt;
     // 수정일
     private LocalDateTime updateAt;
+    // 회사 로고 이미지
+    private String cprofile;
     // 이미지 파일
     private List<MultipartFile> files = new ArrayList<>();
     // 이미지명

@@ -1,6 +1,6 @@
 package devconnect.model.entity;
 
-import devconnect.model.dto.DeveloperDto;
+import devconnect.model.dto.developer.DeveloperDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;

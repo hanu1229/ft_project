@@ -136,7 +136,7 @@ public class AdminService { // CS
 
         // [방법2] Stream 방식 ============================= //
         return adminEntityRepository.findByAdid(adid).map(entity -> {
-            entity.setAdtype(9);
+            entity.setAdtype(3);
             adminEntityRepository.save(entity);
             return true;
         }).orElse(false);

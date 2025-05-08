@@ -25,6 +25,7 @@ public class CompanyDto {
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private String cprofile;
+    private String upcpwd;
 
     private MultipartFile file; // jpg파일
     private int state;
@@ -44,6 +45,8 @@ public class CompanyDto {
                 .state(state)
                 .build();
     }
+
+
 
 
 

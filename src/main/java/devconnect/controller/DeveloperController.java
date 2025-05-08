@@ -1,6 +1,7 @@
 package devconnect.controller;
 
-import devconnect.model.dto.DeveloperDto;
+import devconnect.model.dto.developer.DeveloperDto;
+import devconnect.model.dto.developer.DeveloperPwdUpdateDto;
 import devconnect.service.DeveloperService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class DeveloperController {
         return ResponseEntity.status( 201 ).body( true );
     } // f end
 
-//    { "did" : "qwe123", "dpwd" : "qwe123" }
+//    { "did" : "qwe123", "dpwd" : "1234" }
 
     // 2. 개발자 로그인
     @PostMapping("/login")
@@ -70,11 +71,24 @@ public class DeveloperController {
         else{ return ResponseEntity.status( 400 ).body( false ); }
     } // f end
 
+    // 5-1. 개발자 비밀번호 수정
+    @PutMapping("/update/pwd")
+    public ResponseEntity<Boolean> onUpdatePwd( @RequestHeader("Authorization") String token ,
+                                                @RequestBody DeveloperPwdUpdateDto developerPwdUpdateDto ){
+        int logInDno;
+        try{ logInDno = developerService.info( token ).getDno();
+        }catch( Exception e ){ return ResponseEntity.status( 401 ).body( false ); }
+
+        boolean result = developerService.onUpdatePwd( developerPwdUpdateDto, logInDno );
+        if( result ){ return ResponseEntity.status( 200 ).body( true ); }
+        else{ return ResponseEntity.status( 400 ).body( false ); }
+    } // f end
+
     // 6. 개발자 정보 삭제 // 상태 수정으로 변경
     @PutMapping("/delete")
     public boolean onDelete( @RequestHeader("Authorization") String token,
-                             @RequestBody DeveloperDto developerDto ){
-        boolean result = developerService.onDelete( token, developerDto );
+                             @RequestBody String dpwd ){
+        boolean result = developerService.onDelete( token, dpwd );
         return result;
     } // f end
 
