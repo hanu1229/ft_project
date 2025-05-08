@@ -85,7 +85,7 @@ public class CratingService {
         // 값이 없으면 null 반환
         return null;
     } // f end
-    
+
     // 기업 평가 수정
     public boolean cratingUpdate( CratingDto cratingDto , String token ){
         System.out.println("CratingService.cratingUpdate");

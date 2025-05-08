@@ -131,31 +131,6 @@ public class ProjectJoinService {
         return projectJoinDtoPage;
     }
 
-    /// | 프로젝트 전체조회 - 페이징 | <br/>
-    /// ● 모든 프로젝트를 조회
-    // http://localhost:8080/api/project/all
-    public List<ProjectDto> findPagingProject(Pageable pageable) {
-        System.out.println("ProjectService.findPagingProject");
-        Page<ProjectEntity> projectEntityPageList = projectRepository.findAll(pageable);
-        List<ProjectEntity> projectEntityList = projectEntityPageList.getContent();
-        int totalPages = projectEntityPageList.getTotalPages();
-        long totalData = projectEntityPageList.getTotalElements();
-        System.out.println("totalPage = " + totalPages + "totalData = " + totalData);
-        List<ProjectDto> projectDtoList = new ArrayList<>();
-        if(!projectEntityList.isEmpty()) {
-            for(int index = 0; index < projectEntityList.size(); index++) {
-                ProjectEntity projectEntity = projectEntityList.get(index);
-                ProjectDto projectDto = projectEntity.toDto();
-                projectDto.setCno(projectEntity.getCompanyEntity().getCno());
-                // 추가
-                projectDto.setCprofile(projectEntity.getCompanyEntity().getCprofile());
-                System.out.println(">> \n" + projectDto.getCprofile() + "\n");
-                projectDtoList.add(projectDto);
-            }
-        }
-        return projectDtoList;
-    }
-
     /// | 프로젝트 신청 수정 | <br/>
     /// ● <b>회사</b>가 개발자의 신청을 수락 또는 거절
     public boolean updateProjectJoin(String token, ProjectJoinDto projectJoinDto) {
