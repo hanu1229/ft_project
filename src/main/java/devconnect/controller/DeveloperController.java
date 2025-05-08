@@ -3,6 +3,7 @@ package devconnect.controller;
 import devconnect.model.dto.developer.DeveloperDto;
 import devconnect.model.dto.developer.DeveloperPwdUpdateDto;
 import devconnect.service.DeveloperService;
+import devconnect.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,10 +38,10 @@ public class DeveloperController {
 
     // 2. 개발자 로그인
     @PostMapping("/login")
-    public ResponseEntity<String> logIn( @RequestBody DeveloperDto developerDto ){
-        String token = developerService.logIn( developerDto );
-        if( token != null ){ return ResponseEntity.status( 200 ).body( token ); }
-        else{ return ResponseEntity.status( 400 ).body( "로그인 실패" ); }
+    public ResponseEntity< ApiResponse<String> > logIn( @RequestBody DeveloperDto developerDto ){
+        ApiResponse<String> result = developerService.logIn( developerDto );
+        if( result.getData() != null ){ return ResponseEntity.status( 200 ).body( result ); }
+        else{ return ResponseEntity.status( 400 ).body( result ); }
     } // f end
 
     // 3. 내 정보 조회
@@ -73,15 +74,16 @@ public class DeveloperController {
 
     // 5-1. 개발자 비밀번호 수정
     @PutMapping("/update/pwd")
-    public ResponseEntity<Boolean> onUpdatePwd( @RequestHeader("Authorization") String token ,
-                                                @RequestBody DeveloperPwdUpdateDto developerPwdUpdateDto ){
+    public ResponseEntity<ApiResponse<Boolean>> onUpdatePwd(@RequestHeader("Authorization") String token ,
+                                                   @RequestBody DeveloperPwdUpdateDto developerPwdUpdateDto ){
         int logInDno;
-        try{ logInDno = developerService.info( token ).getDno();
-        }catch( Exception e ){ return ResponseEntity.status( 401 ).body( false ); }
-
-        boolean result = developerService.onUpdatePwd( developerPwdUpdateDto, logInDno );
-        if( result ){ return ResponseEntity.status( 200 ).body( true ); }
-        else{ return ResponseEntity.status( 400 ).body( false ); }
+        try{
+            logInDno = developerService.info( token ).getDno();
+            ApiResponse<Boolean> result = developerService.onUpdatePwd( developerPwdUpdateDto, logInDno );
+            return result.isSuccess() ? ResponseEntity.ok( result ) : ResponseEntity.badRequest().body( result );
+        }catch( Exception e ){
+            return ResponseEntity.status( 401 ).body( new ApiResponse<>( false, "토큰 인증 실패", null ) );
+        }
     } // f end
 
     // 6. 개발자 정보 삭제 // 상태 수정으로 변경
