@@ -53,6 +53,22 @@ public class DeveloperEntity extends BaseTime{
     @ColumnDefault("true")
     private boolean dstate;
 
+    @PrePersist
+    public void prePersist() {
+        if (this.dlevel == 0) {
+            this.dlevel = 1;
+        }
+        if (this.dcurrentExp == 0) {
+            this.dcurrentExp = 0;
+        }
+        if (this.dtotalExp == 0) {
+            this.dtotalExp = 0;
+        }
+        if (!this.dstate) {
+            this.dstate = true;
+        }
+    }
+
     @OneToMany( mappedBy = "developerEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
     @Builder.Default
     @ToString.Exclude
