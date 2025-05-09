@@ -138,7 +138,7 @@ public class CompanyController {
         if (result){
             return  ResponseEntity.status(200).body(true);
         }else {
-            return ResponseEntity.status(400).body(false);
+            return ResponseEntity.status(401).body(false);
         }
     }
 

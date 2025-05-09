@@ -175,7 +175,7 @@ public class CompanyService {
             companyEntity.setCprofile(saveFilename);
         }
 
-        // 바뀐 이미지 삭제
+        // 바뀐 이미지 삭제 // 여기 수정 필요
         fileUtil.fileDelete(file);
 
         return true;
