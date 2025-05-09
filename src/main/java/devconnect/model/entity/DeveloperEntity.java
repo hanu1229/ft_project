@@ -4,18 +4,20 @@ import devconnect.model.dto.developer.DeveloperDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Builder @Entity @Table( name = "developer" )
-@Data @NoArgsConstructor @AllArgsConstructor
+@Data @NoArgsConstructor @AllArgsConstructor @DynamicInsert @DynamicUpdate
 public class DeveloperEntity extends BaseTime{
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private int dno;
 
-    @Column( length = 30, nullable = false, unique = true )
+    @Column( length = 20, nullable = false, unique = true )
     private String did;
 
     @Column( length = 100, nullable = false )
@@ -33,11 +35,10 @@ public class DeveloperEntity extends BaseTime{
     @Column( length = 255, nullable = false )
     private String demail;
 
-    @Column( length = 255 )
+    @Column( length = 255, nullable = false )
     @ColumnDefault("'default.jpg'")
     private String dprofile;
 
-    @Column( nullable = false )
     @ColumnDefault("1")
     private int dlevel;
 
@@ -49,8 +50,24 @@ public class DeveloperEntity extends BaseTime{
     @ColumnDefault("0")
     private int dtotalExp;
 
-    @ColumnDefault("1")
+    @ColumnDefault("true")
     private boolean dstate;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.dlevel == 0) {
+            this.dlevel = 1;
+        }
+        if (this.dcurrentExp == 0) {
+            this.dcurrentExp = 0;
+        }
+        if (this.dtotalExp == 0) {
+            this.dtotalExp = 0;
+        }
+        if (!this.dstate) {
+            this.dstate = true;
+        }
+    }
 
     @OneToMany( mappedBy = "developerEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
     @Builder.Default

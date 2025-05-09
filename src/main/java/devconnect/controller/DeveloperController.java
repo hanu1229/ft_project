@@ -5,6 +5,7 @@ import devconnect.model.dto.developer.DeveloperPwdUpdateDto;
 import devconnect.service.DeveloperService;
 import devconnect.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -106,6 +107,17 @@ public class DeveloperController {
         } // if end
     } // f end
 
+    // 8. 개발자 순위 조회
+    @GetMapping("/ranking")
+    public ResponseEntity< Page<DeveloperDto> > ranking(
+            @RequestParam( defaultValue = "1") int page,
+            @RequestParam( defaultValue = "5") int size,
+            @RequestParam( required = false ) String keyword ){
+        System.out.println("page = " + page + ", size = " + size + ", keyword = " + keyword);
+        Page< DeveloperDto > result = developerService.ranking( page, size, keyword );
+        return ResponseEntity.status( 200 ).body( result );
+
+    } // f end
 
 }
 
