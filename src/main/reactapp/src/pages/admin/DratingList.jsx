@@ -28,8 +28,10 @@ export default function DratingList() {
     useEffect(() => {
         const fetchList = async () => {
             try {
-                const res = await getDratingList();    // (1) API 요청
-                setList(res.data);                     // (2) 상태 저장
+                const token = localStorage.getItem('token');
+                const res = await getDratingList(token, { page: 1, size: 100 });    // (1) API 요청
+                console.log(res.data)
+                setList(res.data['content']);                     // (2) 상태 저장
             } catch (err) {
                 alert('개발자 평가 목록 조회 실패');
                 console.error(err);

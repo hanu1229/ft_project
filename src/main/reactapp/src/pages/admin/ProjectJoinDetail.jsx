@@ -34,22 +34,22 @@ export default function ProjectJoinDetail() {
     const [newType, setNewType] = useState();             // ✅ 상태 변경용
     const [open, setOpen] = useState(false);              // ✅ 삭제 확인 모달 상태
 
-    // =======================================================================================
-    // ✅ 상세 조회 API 요청
-    // =======================================================================================
-    // useEffect(() => {
-    //     const fetchDetail = async () => {
-    //         try {
-    //             const res = await getProjectJoinDetail(pjno, token);
-    //             setPj(res.data);
-    //             setNewType(res.data.pjtype); // 상태 초기화
-    //         } catch (err) {
-    //             alert('❗ 신청 상세 조회 실패');
-    //             console.error(err);
-    //         }
-    //     };
-    //     fetchDetail();
-    // }, [pjno, token]);
+   // =======================================================================================
+      //✅ 상세 조회 API 요청
+   // =======================================================================================
+    useEffect(() => {
+        const fetchDetail = async () => {
+            try {
+                const res = await getProjectJoinDetail(token, pjno);
+                setPj(res.data);
+                setNewType(res.data.pjtype); // 상태 초기화
+            } catch (err) {
+                alert('❗ 신청 상세 조회 실패');
+                console.error(err);
+            }
+        };
+        fetchDetail();
+    }, [token, pjno]);
 
     // =======================================================================================
     // ✅ 상태코드 수정 요청

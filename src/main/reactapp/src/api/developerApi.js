@@ -1,6 +1,9 @@
-// developerApi.js | rw 25-05-02 최종 리팩토링
-// [설명] 개발자(Developer) 관련 관리자 및 본인 전용 API 요청 함수 모음
-//        - 모든 요청은 axiosInstance.js의 baseURL("/api") 하위에서 처리됨
+// =======================================================================================
+// developerApi.js | rw 25-05-09 최종 리팩토링
+// [설명]
+// - 관리자(Admin) 전용 개발자(Developer) API 요청 함수 모음
+// - 모든 요청은 axiosInstance.js의 baseURL(`/api`) 기준 상대경로로 구성됨
+// =======================================================================================
 
 import axios from './axiosInstance.js'; // ✅ 공통 Axios 인스턴스 import
 
@@ -8,24 +11,31 @@ import axios from './axiosInstance.js'; // ✅ 공통 Axios 인스턴스 import
 // ✅ 1. 전체 개발자 목록 조회 (관리자 전용)
 /*
     - 매핑 방식: GET
-    - 요청 URL: /api/developer/findall
-    - 요청 데이터: 없음
+    - 요청 URL: /api/admin/developer
+    - 요청 헤더: Authorization: Bearer {token}
     - 응답 데이터: List<DeveloperDto>
 */
-export const getDeveloperList = () => {
-    return axios.get('/developer/findall');
+export const getDeveloperList = (token) => {
+    return axios.get('/developer/findall', {
+        headers: { Authorization: `Bearer ${token}` },
+    });
 };
+
 
 // =======================================================================================
 // ✅ 2. 개발자 상세 조회 (관리자 전용)
 /*
     - 매핑 방식: GET
-    - 요청 URL: /api/developer/detail?dno={dno}
+    - 요청 URL: /api/admin/developer/detail?dno={dno}
     - 요청 파라미터: dno (Query Param)
+    - 요청 헤더: Authorization: Bearer {token}
     - 응답 데이터: DeveloperDto
 */
-export const getDeveloperDetail = (dno) => {
-    return axios.get(`/developer/detail?dno=${dno}`);
+// 올바른 버전 (token 포함)
+export const getDeveloperDetail = (token, dno) => {
+    return axios.get(`/admin/developer/detail?dno=${dno}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
 };
 
 // =======================================================================================

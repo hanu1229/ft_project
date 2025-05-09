@@ -6,13 +6,13 @@
 
 package devconnect.controller;
 
+import devconnect.model.dto.*;
+import devconnect.model.dto.developer.DeveloperDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
-import devconnect.model.dto.AdminDto;
-import devconnect.model.dto.AdminLoginDto;
 import devconnect.service.AdminService;
 
 import java.util.HashMap;
@@ -23,6 +23,7 @@ import java.util.Map;
 @RequestMapping("api/admin")                    // [B] 공통 URL prefix 적용
 @RequiredArgsConstructor                         // [C] 생성자 자동 주입
 @CrossOrigin("*")                              // [D] 모든 출처 허용
+// @CrossOrigin(origins = "http://localhost:5173")  // [E] 정확한 Origin만 허용
 public class AdminController { // CS
 
     private final AdminService adminService; // [*] 서비스 계층 주입
@@ -200,6 +201,168 @@ public class AdminController { // CS
         result.put("company", adminService.companyLoginCount());
         result.put("developer", adminService.developerLoginCount());
         return ResponseEntity.ok(result);
+    }
+
+
+// =======================================================================================
+   // ✅ 1. 관리자 기반 기업 상세조회 API
+// =======================================================================================
+    /*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/company/detail
+    - 설명: 관리자 권한으로 특정 기업(cno)의 상세 정보를 조회합니다.
+           Authorization 헤더에 포함된 Bearer 토큰을 통해 관리자 인증을 수행하며,
+           해당 토큰이 유효한 관리자일 경우 기업 정보를 반환합니다.
+    - 요청 헤더: Authorization: Bearer {token}
+    - 요청 파라미터: cno (int) - 조회할 기업 번호
+    - 응답 데이터 타입: CompanyDto (200 OK) | null (204 No Content)
+    */
+    @GetMapping("/company/detail")
+    public ResponseEntity<CompanyDto> getCompanyDetail(@RequestHeader("Authorization") String token, @RequestParam int cno) {
+        AdminDto adminDto = adminService.adminFindById(extractToken(token));
+        if (adminDto == null) return ResponseEntity.noContent().build();
+
+        CompanyDto companyDto = adminService.getCompanyDetail(cno);
+        return (companyDto != null) ? ResponseEntity.ok(companyDto) : ResponseEntity.noContent().build();
+    }
+
+
+// =======================================================================================
+   // ✅ 2. 관리자 기반 개발자 상세조회 API (dno 기반)
+// =======================================================================================
+/*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/developer/detail
+    - 설명: 관리자 권한으로 특정 개발자(dno)의 상세 정보를 조회합니다.
+           Authorization 헤더에 포함된 Bearer 토큰을 통해 관리자 인증을 수행하며,
+           해당 토큰이 유효한 관리자일 경우 개발자 정보를 반환합니다.
+    - 요청 헤더: Authorization: Bearer {token}
+    - 요청 파라미터: dno (int) - 조회할 개발자 번호
+    - 응답 데이터 타입: DeveloperDto (200 OK) | null (204 No Content)
+*/
+    @GetMapping("/developer/detail")
+    public ResponseEntity<DeveloperDto> getDeveloperDetail(@RequestHeader("Authorization") String token, @RequestParam int dno) {
+        AdminDto adminDto = adminService.adminFindById(extractToken(token));
+        if (adminDto == null) return ResponseEntity.noContent().build();
+
+        DeveloperDto developerDto = adminService.getDeveloperDetail(dno);
+        return (developerDto != null) ? ResponseEntity.ok(developerDto) : ResponseEntity.noContent().build();
+    }
+
+// =======================================================================================
+    // ✅ 3. 관리자 기반 기업평가 상세조회 API (crno 기반)
+// =======================================================================================
+/*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/crating/detail
+    - 설명: 관리자 권한으로 특정 기업평가(crno)의 상세 정보를 조회합니다.
+           Authorization 헤더에 포함된 Bearer 토큰을 통해 관리자 인증을 수행하며,
+           해당 토큰이 유효한 관리자일 경우 기업평가 정보를 반환합니다.
+    - 요청 헤더: Authorization: Bearer {token}
+    - 요청 파라미터: crno (int) - 조회할 기업평가 번호
+    - 응답 데이터 타입: CratingDto (200 OK) | null (204 No Content)
+*/
+    @GetMapping("/crating/detail")
+    public ResponseEntity<CratingDto> getCratingDetail(@RequestHeader("Authorization") String token, @RequestParam int crno){
+        AdminDto adminDto = adminService.adminFindById(extractToken(token));
+        if (adminDto == null) return ResponseEntity.noContent().build();
+
+        CratingDto cratingDto = adminService. getCratingDetail(crno);
+        return (cratingDto != null) ? ResponseEntity.ok(cratingDto) : ResponseEntity.noContent().build();
+    }
+
+// =======================================================================================
+    // ✅ 4. 관리자 기반 개발자평가 상세조회 API (drno 기반)
+// =======================================================================================
+/*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/drating/detail
+    - 설명: 관리자 권한으로 특정 개발자평가(drno)의 상세 정보를 조회합니다.
+           Authorization 헤더에 포함된 Bearer 토큰을 통해 관리자 인증을 수행하며,
+           해당 토큰이 유효한 관리자일 경우 개발자평가 정보를 반환합니다.
+    - 요청 헤더: Authorization: Bearer {token}
+    - 요청 파라미터: drno (int) - 조회할 개발자 번호
+    - 응답 데이터 타입: DratingDto (200 OK) | null (204 No Content)
+*/
+
+    @GetMapping("/drating/detail")
+    public ResponseEntity<DratingDto> getDratingDetail(@RequestHeader("Authorization") String token, @RequestParam int drno){
+        AdminDto adminDto = adminService.adminFindById(extractToken(token));
+        if (adminDto == null) return ResponseEntity.noContent().build();
+
+        DratingDto dratingDto = adminService. getDratingDetail(drno);
+        return (dratingDto != null) ? ResponseEntity.ok(dratingDto) : ResponseEntity.noContent().build();
+    }
+
+
+// =======================================================================================
+    // ✅ 5. 관리자 기반 프로젝트(기업) 상세조회 API (pno 기반)
+// =======================================================================================
+/*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/project/detail
+    - 설명: 관리자 권한으로 특정 프로젝트(pno)의 상세 정보를 조회합니다.
+           Authorization 헤더에 포함된 Bearer 토큰을 통해 관리자 인증을 수행하며,
+           해당 토큰이 유효한 관리자일 경우 프로젝트 정보를 반환합니다.
+    - 요청 헤더: Authorization: Bearer {token}
+    - 요청 파라미터: pno (int) - 조회할 프로젝트 번호
+    - 응답 데이터 타입: ProjectDto (200 OK) | null (204 No Content)
+*/
+
+    @GetMapping("/project/detail")
+    public ResponseEntity<ProjectDto> getProjectDetail(@RequestHeader("Authorization") String token, @RequestParam int pno){
+        AdminDto adminDto = adminService.adminFindById(extractToken(token));
+        if (adminDto == null) return ResponseEntity.noContent().build();
+
+        ProjectDto projectDto = adminService. getProjectDetail(pno);
+        return (projectDto != null) ? ResponseEntity.ok(projectDto) : ResponseEntity.noContent().build();
+    }
+
+
+
+// =======================================================================================
+    // ✅ 6. 관리자 기반 프로젝트참여(개발자) 상세조회 API (    기반)
+// =======================================================================================
+/*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/project-join/detail
+    - 설명: 관리자 권한으로 특정 프로젝트참여(pjno)의 상세 정보를 조회합니다.
+           Authorization 헤더에 포함된 Bearer 토큰을 통해 관리자 인증을 수행하며,
+           해당 토큰이 유효한 관리자일 경우 프로젝트참여 정보를 반환합니다.
+    - 요청 헤더: Authorization: Bearer {token}
+    - 요청 파라미터: pjno (int) - 조회할 프로젝트참여 번호
+    - 응답 데이터 타입: ProjectJoinDto (200 OK) | null (204 No Content)
+*/
+    @GetMapping("/project-join/detail")
+    public ResponseEntity<ProjectJoinDto> getProjectJoinDetail(@RequestHeader("Authorization") String token, @RequestParam int pjno){
+        AdminDto adminDto = adminService.adminFindById(extractToken(token));
+        if (adminDto == null) return ResponseEntity.noContent().build();
+
+        ProjectJoinDto projectJoinDto = adminService. getProjectJoinDetail(pjno);
+        return (projectJoinDto != null) ? ResponseEntity.ok(projectJoinDto) : ResponseEntity.noContent().build();
+    }
+
+
+
+// =======================================================================================
+   // ✅ 7. 관리자 기반 프로젝트참여(개발자) 전체조회 API
+// =======================================================================================
+/*
+    - 매핑 방식: GET
+    - 요청 URL: /api/admin/project-join/alljoin
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: List<ProjectJoinDto>
+*/
+    @GetMapping("/project-join/alljoin")
+    public ResponseEntity<List<ProjectJoinDto>> getAllProjectJoins(
+            @RequestHeader("Authorization") String token
+    ) {
+        AdminDto admin = adminService.adminFindById(extractToken(token));
+        if (admin == null) return ResponseEntity.status(403).build();
+
+        List<ProjectJoinDto> list = adminService.getAllProjectJoins();
+        if (list == null || list.isEmpty()) return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(list);
     }
 
     // =======================================================================================

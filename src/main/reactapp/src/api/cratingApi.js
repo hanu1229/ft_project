@@ -24,17 +24,17 @@ export const getCratingList = (token, { page = 1, size = 5, keyword = '', dno = 
 };
 
 // =======================================================================================
-// ✅ 2. 기업 평가 개별 상세 조회
+// ✅ 2. 기업 평가 상세 조회 (관리자 전용)
 /*
     - 매핑 방식: GET
-    - 요청 URL: /api/crating/view?crno=123
+    - 요청 URL: /api/admin/crating/detail?crno={crno}
+    - 요청 파라미터: crno (Query Param)
     - 요청 헤더: Authorization: Bearer {token}
     - 응답 데이터: CratingDto
 */
 export const getCratingDetail = (token, crno) => {
-    return axios.get(`/crating/view`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { crno },
+    return axios.get(`/admin/crating/detail?crno=${crno}`, {
+        headers: { Authorization: `Bearer ${token}` }
     });
 };
 

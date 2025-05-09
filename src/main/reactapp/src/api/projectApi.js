@@ -5,77 +5,36 @@
 
 import axios from './axiosInstance.js'; // ✅ 공통 Axios 인스턴스 사용
 
-// =======================================================================================
-// ✅ 1. 프로젝트 등록 (기업 전용)
-/*
-    - 매핑 방식: POST
-    - 요청 URL: /api/project
-    - 요청 데이터: ProjectDto (FormData)
-    - 요청 헤더: Authorization: Bearer {token}, Content-Type: multipart/form-data
-    - 응답 데이터: Boolean
-*/
-export const createProject = (token, formData) => {
-    return axios.post('/project', formData, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-        },
-    });
-};
+
 
 // =======================================================================================
-// ✅ 2. 전체 프로젝트 목록 조회 (관리자/비로그인 포함)
+// ✅ 프로젝트 전체조회 (관리자 전용)
 /*
     - 매핑 방식: GET
     - 요청 URL: /api/project
-    - 요청 파라미터: 없음
-    - 응답 데이터: List<ProjectDto>
-*/
-export const getProjectList = () => {
-    return axios.get('/project');
-};
-
-// =======================================================================================
-// ✅ 3. 페이징 프로젝트 목록 조회 (관리자/기업)
-/*
-    - 매핑 방식: GET
-    - 요청 URL: /api/project/paging?page=0&size=5
-    - 요청 파라미터: page, size (QueryParam)
-    - 응답 데이터: List<ProjectDto>
-*/
-export const getPagingProjects = (page = 0, size = 5) => {
-    return axios.get('/project/paging', {
-        params: { page, size },
-    });
-};
-
-// =======================================================================================
-// ✅ 4. 기업 전용 프로젝트 목록 조회
-/*
-    - 매핑 방식: GET
-    - 요청 URL: /api/project/company
     - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: List<ProjectDto>
+    - 응답 데이터: ProjectDto[] (전체 목록)
 */
-export const getCompanyProjects = (token) => {
-    return axios.get('/project/company', {
-        headers: { Authorization: `Bearer ${token}` },
+export const getProjectList = (token) => {
+    return axios.get('/project', {
+        headers: { Authorization: `Bearer ${token}` }
     });
 };
 
+
+
 // =======================================================================================
-// ✅ 5. 프로젝트 상세 조회
+// ✅ 프로젝트 상세 조회 (관리자 전용)
 /*
     - 매핑 방식: GET
-    - 요청 URL: /api/project/detail?pno={pno}
+    - 요청 URL: /admin/project/detail?pno={pno}
     - 요청 파라미터: pno (QueryParam)
     - 요청 헤더: Authorization: Bearer {token}
     - 응답 데이터: ProjectDto
 */
 export const getProjectDetail = (token, pno) => {
-    return axios.get('/project/detail', {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { pno },
+    return axios.get(`/admin/project/detail?pno=${pno}`, {
+        headers: { Authorization: `Bearer ${token}` }
     });
 };
 

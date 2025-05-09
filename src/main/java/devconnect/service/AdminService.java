@@ -6,12 +6,10 @@
 
 package devconnect.service;
 
-import devconnect.model.dto.AdminDto;
-import devconnect.model.entity.AdminEntity;
-import devconnect.model.entity.CompanyEntity;
-import devconnect.model.entity.DeveloperEntity;
-import devconnect.model.entity.ProjectEntity;
-import devconnect.model.repository.AdminEntityRepository;
+import devconnect.model.dto.*;
+import devconnect.model.dto.developer.DeveloperDto;
+import devconnect.model.entity.*;
+import devconnect.model.repository.*;
 import devconnect.util.JwtUtil;
 
 import jakarta.persistence.EntityManager;
@@ -34,6 +32,12 @@ public class AdminService {
     private final AdminEntityRepository adminEntityRepository;
     private final StringRedisTemplate stringRedisTemplate;
     private final JwtUtil jwtUtil;
+    private final CompanyRepository companyRepository;
+    private final DeveloperRepository developerRepository;
+    private final CratingRepository cratingRepository;
+    private final DratingRepository dratingRepository;
+    private final ProjectRepository projectRepository;
+    private final ProjectJoinRepository projectJoinRepository;
 
     @PersistenceContext
     private EntityManager em;
@@ -168,5 +172,140 @@ public class AdminService {
         Set<String> keys = stringRedisTemplate.keys("RESENT_LOGIN_DEVELOPER:*");
         return keys == null ? 0 : keys.size();
     }
+// =======================================================================================
+// ✅ 1. 관리자 기반 기업 상세조회 (cno 기반) API-메서드
+// =======================================================================================
+    /*
+    - 설명: 기업의 고유번호(cno)를 기반으로 기업 정보를 조회하여 CompanyDto로 반환합니다.
+    - 사용 위치: AdminController → /api/admin/company/detail
+    - 반환 조건:
+        • 해당 cno가 존재하면 CompanyDto 반환
+        • 존재하지 않으면 null 반환
+    - 참고:
+        • .map(CompanyEntity::toDto) : 엔티티를 DTO로 변환
+        • .orElse(null) : 조회 결과 없을 경우 null 반환
+    */
+    public CompanyDto getCompanyDetail(int cno)  {
+        return companyRepository.findById(cno)
+                .map(CompanyEntity::toDto)
+                .orElse(null);
+    }
+
+
+// =======================================================================================
+   // ✅ 2. 관리자 기반 개발자 상세조회 (dno 기반)
+// =======================================================================================
+/*
+    - 설명: 개발자의 고유번호(dno)를 기반으로 개발자 정보를 조회하여 DeveloperDto로 반환합니다.
+    - 사용 위치: AdminController → /api/admin/developer/detail
+    - 반환 조건:
+        • 해당 dno가 존재하면 DeveloperDto 반환
+        • 존재하지 않으면 null 반환
+    - 참고:
+        • .map(DeveloperEntity::toDto) : 엔티티를 DTO로 변환
+        • .orElse(null) : 조회 결과 없을 경우 null 반환
+*/
+    public DeveloperDto getDeveloperDetail(int dno) {
+        return developerRepository.findById(dno)
+                .map(DeveloperEntity::toDto)
+                .orElse(null);
+    }
+
+// =======================================================================================
+    // ✅ 3. 관리자 기반 기업평가 상세조회 (crno 기반)
+// =======================================================================================
+/*
+    - 설명: 기업평가의 고유번호(dno)를 기반으로 기업평가 정보를 조회하여 CratingDto로 반환합니다.
+    - 사용 위치: AdminController → /api/admin/crating/detail
+    - 반환 조건:
+        • 해당 crno가 존재하면 CratingDto 반환
+        • 존재하지 않으면 null 반환
+    - 참고:
+        • .map(CratingEntity::toDto) : 엔티티를 DTO로 변환
+        • .orElse(null) : 조회 결과 없을 경우 null 반환
+*/
+
+    public CratingDto getCratingDetail(int crno) {
+        return cratingRepository.findById(crno)
+                .map(CratingEntity::toDto)
+                .orElse(null);
+    }
+
+// =======================================================================================
+    // ✅ 4. 관리자 기반 개발자평가 상세조회 (drno 기반)
+// =======================================================================================
+/*
+    - 설명: 개발자평가의 고유번호(drno)를 기반으로 개발자평가 정보를 조회하여 DratingDto로 반환합니다.
+    - 사용 위치: AdminController → /api/admin/drating/detail
+    - 반환 조건:
+        • 해당 drno가 존재하면 DratingDto 반환
+        • 존재하지 않으면 null 반환
+    - 참고:
+        • .map(DratingEntity::toDto) : 엔티티를 DTO로 변환
+        • .orElse(null) : 조회 결과 없을 경우 null 반환
+*/
+
+    public DratingDto getDratingDetail(int drno) {
+        return dratingRepository.findById(drno)
+                .map(DratingEntity::toDto)
+                .orElse(null);
+    }
+
+
+// =======================================================================================
+    // ✅ 5. 관리자 기반 프로젝트(기업) 상세조회 (pno 기반)
+// =======================================================================================
+/*
+    - 설명: 프로젝트(기업)의 고유번호(pno)를 기반으로 프로젝트(기업) 정보를 조회하여 ProjectDto로 반환합니다.
+    - 사용 위치: AdminController → /api/admin/project/detail
+    - 반환 조건:
+        • 해당 drno가 존재하면 ProjectDto 반환
+        • 존재하지 않으면 null 반환
+    - 참고:
+        • .map(ProjectEntity::toDto) : 엔티티를 DTO로 변환
+        • .orElse(null) : 조회 결과 없을 경우 null 반환
+*/
+
+    public ProjectDto getProjectDetail(int pno) {
+        return projectRepository.findById(pno)
+                .map(ProjectEntity::toDto)
+                .orElse(null);
+    }
+
+// =======================================================================================
+    // ✅ 6. 관리자 기반 프로젝트참여(개발자) 상세조회 (pjno 기반)
+// =======================================================================================
+/*
+    - 설명: 프로젝트참여(개발자)의 고유번호(pjno)를 기반으로 프로젝트참여(개발자)를 조회하여 ProjectJoinDto로 반환합니다.
+    - 사용 위치: AdminController → /api/admin/project-join/detail
+    - 반환 조건:
+        • 해당 pjno가 존재하면 ProjectJoinDto 반환
+        • 존재하지 않으면 null 반환
+    - 참고:
+        • .map(DratingEntity::toDto) : 엔티티를 DTO로 변환
+        • .orElse(null) : 조회 결과 없을 경우 null 반환
+*/
+
+
+    public ProjectJoinDto getProjectJoinDetail(int pjno) {
+        return projectJoinRepository.findById(pjno)
+                .map(ProjectJoinEntity::toDto)
+                .orElse(null);
+    }
+
+    // =======================================================================================
+// ✅ 7. 관리자 기반 프로젝트참여 전체 조회 서비스
+// =======================================================================================
+/*
+    - 설명: 프로젝트참여 전체 리스트를 가져옵니다.
+    - 반환: List<ProjectJoinDto>
+*/
+    public List<ProjectJoinDto> getAllProjectJoins() {
+        return projectJoinRepository.findAll().stream()
+                .map(ProjectJoinEntity::toDto)
+                .collect(Collectors.toList());
+    }
+
+
 
 } // CE

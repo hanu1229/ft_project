@@ -25,13 +25,14 @@ export const getDratingList = (token, { page = 1, size = 5, keyword = '', dno = 
 // ✅ 2. 개발자 평가 상세 조회
 /*
     - 매핑 방식: GET
-    - 요청 URL: /drating/view?drno={drno}
+    - 요청 URL: /admin/drating/detail?drno=${drno}
+    - 요청 파라미터: drno (QueryParam)
     - 요청 헤더: Authorization: Bearer {token}
     - 응답 데이터: DratingDto
 */
 export const getDratingDetail = (token, drno) => {
-    return axios.get(`/drating/view?drno=${drno}`, {
-        headers: { Authorization: `Bearer ${token}` },
+    return axios.get(`/admin/drating/detail?drno=${drno}`, {
+        headers: { Authorization: `Bearer ${token}` }
     });
 };
 

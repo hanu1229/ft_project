@@ -23,16 +23,15 @@ export default function ProjectDetail() {
     useEffect(() => {
         const fetchDetail = async () => {
             try {
-                const res = await getProjectDetail(pno);
+                const res = await getProjectDetail(token,pno);
                 setProject(res.data);       // 원본 저장
                 setForm(res.data);          // 수정폼 초기화
             } catch (err) {
                 alert('❗ 프로젝트 상세 조회 실패');
-                console.error(err);
             }
         };
         fetchDetail();
-    }, [pno]);
+    }, [token, pno]);
 
     // =======================================================================================
     // ✅ 입력 필드 변경 처리

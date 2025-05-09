@@ -30,20 +30,21 @@ export default function CratingDetail() {
     const [form, setForm] = useState(null);     // ✅ 평가 정보 (수정 포함)
     const [open, setOpen] = useState(false);    // ✅ 삭제 모달
 
-    // =======================================================================================
-    // ✅ 평가 상세 조회
-    // =======================================================================================
+    // ✅ 기업 상세 정보 로딩
     useEffect(() => {
-        (async () => {
+        const fetchDetail = async () => {
             try {
                 const res = await getCratingDetail(token, crno);
+               // setCrating(res.data);
                 setForm(res.data);
-            } catch {
-                alert('기업 평가 상세 조회 실패');
+               // setNewState(res.data.crstate);
+            } catch (err) {
+                console.error(err);
+                alert('기업 상세 조회 실패');
             }
-        })();
-    }, [crno, token]);
-
+        };
+        fetchDetail();
+    }, [token, crno]);
     // =======================================================================================
     // ✅ 입력 핸들러
     // =======================================================================================
@@ -67,17 +68,17 @@ export default function CratingDetail() {
     // =======================================================================================
     // ✅ 승인 요청
     // =======================================================================================
-    // const handleApprove = async () => {
-    //     try {
-    //         const res = await approveCrating(crno, token);
-    //         if (res.data) {
-    //             alert('승인 완료');
-    //             setForm((prev) => ({ ...prev, crstate: 1 }));
-    //         }
-    //     } catch {
-    //         alert('승인 실패');
-    //     }
-    // };
+     const handleApprove = async () => {
+         try {
+             const res = await approveCrating(crno, token);
+             if (res.data) {
+                alert('승인 완료');
+                setForm((prev) => ({ ...prev, crstate: 1 }));
+            }
+        } catch {
+            alert('승인 실패');
+        }
+    };
 
     // =======================================================================================
     // ✅ 삭제 요청

@@ -37,6 +37,7 @@ export default function ProjectList() {
                 setProjects(res.data);
             } catch (err) {
                 alert('❗ 프로젝트 목록 조회 실패');
+                console.error(err);
             }
         };
         fetchData();

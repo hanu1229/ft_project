@@ -102,7 +102,7 @@ export const updateCompanyState = (token, companyDto) => {
     - 응답 데이터: CompanyDto
 */
 export const getCompanyDetail = (token, cno) => {
-    return axios.get(`/company/detail?cno=${cno}`, {
+    return axios.get(`/admin/company/detail?cno=${cno}`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 };

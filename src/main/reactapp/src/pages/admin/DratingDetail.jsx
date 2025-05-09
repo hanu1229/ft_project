@@ -39,15 +39,15 @@ export default function DratingDetail() {
     useEffect(() => {
         const fetchDetail = async () => {
             try {
-                const res = await getDratingDetail(drno, token);
+                const res = await getDratingDetail(token, drno );
                 setDr(res.data);
                 setForm(res.data);
             } catch (err) {
-                alert('개발자 평가 상세 조회 실패');
+                alert('❗ 개발자 평가 상세 조회 실패');
             }
         };
         fetchDetail();
-    }, [drno, token]);
+    }, [token, drno]);
 
     // =======================================================================================
     // ✅ 입력값 상태 변경 핸들러
