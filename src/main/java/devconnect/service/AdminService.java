@@ -1,39 +1,48 @@
-/*  AdminService 클래스 | rw 25-05-02 최종 리팩토링
-    - 관리자 회원가입, 로그인(JWT 발급), 로그아웃, 전체 조회, 개별 조회, 수정, 삭제 기능 담당
+/*  AdminService 클래스 | rw 25-05-03 리팩토링 (주석 보완 완료)
+    - 관리자 회원가입, 로그인(JWT 발급), 로그아웃, 전체 조회, 단건 조회, 수정, 삭제 기능 담당
     - 최근 승인 항목 및 월별 참여 통계 포함 (대시보드용)
     - 최근 24시간 로그인 접속자 수 기능 포함 (Admin, Company, Developer 별도 Redis 키)
 */
 
 package devconnect.service;
 
+// [A] DTO, Entity, Repository import
 import devconnect.model.dto.AdminDto;
+import devconnect.model.dto.CompanyDto;
 import devconnect.model.entity.AdminEntity;
 import devconnect.model.entity.CompanyEntity;
 import devconnect.model.entity.DeveloperEntity;
 import devconnect.model.entity.ProjectEntity;
 import devconnect.model.repository.AdminEntityRepository;
+import devconnect.model.repository.CompanyRepository;
 import devconnect.util.JwtUtil;
 
+// [B] 스프링 관련 import
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+// [C] 기타 유틸
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-@Service
-@Transactional
-@RequiredArgsConstructor
-public class AdminService {
+@Service // [A-1] 서비스 컴포넌트 명시
+@Transactional // [A-2] 트랜잭션 처리 적용
+@RequiredArgsConstructor // [B-1] 생성자 기반 의존성 주입
+public class AdminService { // CS
 
     private final AdminEntityRepository adminEntityRepository;
     private final StringRedisTemplate stringRedisTemplate;
     private final JwtUtil jwtUtil;
+
+    @Autowired
+    private CompanyRepository companyRepository;
 
     @PersistenceContext
     private EntityManager em;
@@ -50,11 +59,20 @@ public class AdminService {
     // =======================================================================================
     // [2] 관리자 로그인 (JWT 발급 + Redis 최근 로그인 기록)
     public String adminLogIn(String adid, String adpwd) {
+        // [방법1] 일반 방식 ============================= //
         AdminEntity entity = adminEntityRepository.findByAdid(adid).orElse(null);
         if (entity == null || !new BCryptPasswordEncoder().matches(adpwd, entity.getAdpwd())) return null;
         String token = jwtUtil.createToken(adid, "Admin");
         stringRedisTemplate.opsForValue().set("RESENT_LOGIN_ADMIN:" + adid, "true", 1, TimeUnit.DAYS);
         return token;
+
+        // [방법2] Stream 방식 ============================= //
+        // return adminEntityRepository.findByAdid(adid)
+        //         .filter(e -> new BCryptPasswordEncoder().matches(adpwd, e.getAdpwd()))
+        //         .map(e -> {
+        //             stringRedisTemplate.opsForValue().set("RESENT_LOGIN_ADMIN:" + adid, "true", 1, TimeUnit.DAYS);
+        //             return jwtUtil.createToken(adid, "Admin");
+        //         }).orElse(null);
     }
 
     // =======================================================================================
@@ -74,12 +92,33 @@ public class AdminService {
     // [5] 관리자 단건 조회
     public AdminDto adminFindById(String token) {
         String adid = jwtUtil.valnoateToken(token);
+
+        // [방법1] 일반 방식 ============================= //
+//        Optional<AdminEntity> optional = adminEntityRepository.findByAdid(adid);
+//        if (optional.isPresent()) {
+//            return optional.get().toDto();
+//        }
+//        return null;
+
+        // [방법2] Stream 방식 ============================= //
         return adid == null ? null : adminEntityRepository.findByAdid(adid).map(AdminEntity::toDto).orElse(null);
     }
 
     // =======================================================================================
     // [6] 관리자 정보 수정
     public boolean adminUpdate(AdminDto dto, String loginAdid) {
+        // [방법1] 일반 방식 ============================= //
+//        Optional<AdminEntity> optional = adminEntityRepository.findByAdid(loginAdid);
+//        if (optional.isPresent()) {
+//            AdminEntity entity = optional.get();
+//            entity.setAdname(dto.getAdname());
+//            entity.setAdphone(dto.getAdphone());
+//            adminEntityRepository.save(entity);
+//            return true;
+//        }
+//        return false;
+
+        // [방법2] Stream 방식 ============================= //
         return adminEntityRepository.findByAdid(loginAdid).map(entity -> {
             entity.setAdname(dto.getAdname());
             entity.setAdphone(dto.getAdphone());
@@ -91,6 +130,17 @@ public class AdminService {
     // =======================================================================================
     // [7] 관리자 삭제
     public boolean adminDelete(String adid) {
+        // [방법1] 일반 방식 ============================= //
+//        Optional<AdminEntity> optional = adminEntityRepository.findByAdid(adid);
+//        if (optional.isPresent()) {
+//            AdminEntity entity = optional.get();
+//            entity.setAdtype(9);
+//            adminEntityRepository.save(entity);
+//            return true;
+//        }
+//        return false;
+
+        // [방법2] Stream 방식 ============================= //
         return adminEntityRepository.findByAdid(adid).map(entity -> {
             entity.setAdtype(3);
             adminEntityRepository.save(entity);
@@ -167,6 +217,16 @@ public class AdminService {
     public int developerLoginCount() {
         Set<String> keys = stringRedisTemplate.keys("RESENT_LOGIN_DEVELOPER:*");
         return keys == null ? 0 : keys.size();
+    }
+
+
+    // =======================================================================================
+    // ✅ 관리자 기반 기업 상세조회 (cno 기반)
+    // =======================================================================================
+    public CompanyDto getCompanyDetail(int cno)  {
+        return companyRepository.findById(cno)
+                .map(CompanyEntity::toDto)
+                .orElse(null);
     }
 
 } // CE

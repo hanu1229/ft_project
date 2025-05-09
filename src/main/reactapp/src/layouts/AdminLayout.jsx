@@ -10,6 +10,7 @@ import React, { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Box, Typography, Divider } from '@mui/joy';
 import { jwtDecode } from 'jwt-decode';
+import { getToken } from '../utils/tokenUtil';
 
 // ✅ 공통 컴포넌트
 import Sidebar from '../components/Sidebar.jsx'; // 좌측 메뉴바
@@ -22,7 +23,7 @@ export default function AdminLayout() {
     // ✅ 마운트 시: JWT 토큰 디코딩 → 관리자 정보 추출
     // =======================================================================================
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = getToken();
         if (token) {
             try {
                 const decoded = jwtDecode(token);

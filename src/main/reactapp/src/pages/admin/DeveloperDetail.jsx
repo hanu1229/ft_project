@@ -1,8 +1,9 @@
 // =======================================================================================
-// DeveloperDetail.jsx | rw 25-05-02 최종 리팩토링
+// DeveloperDetail.jsx | rw 25-05-08 최종 리팩토링
 // [설명]
-// - 관리자 전용 개발자 상세 조회/수정/상태변경 페이지
-// - Joy UI 기반 / ChatGPT 스타일: 흰 배경 + 절제된 컬러 UI
+// - 관리자(Admin) 전용 개발자 상세 페이지
+// - 개발자 정보 조회 + 수정 + 상태코드 변경 가능
+// - Joy UI + ChatGPT 스타일 적용 (절제된 흰 배경 UI)
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
@@ -24,15 +25,18 @@ import {
 } from '@mui/joy';
 
 export default function DeveloperDetail() {
-    const { dno } = useParams();
-    const token = localStorage.getItem('token');
+    // =======================================================================================
+    // ✅ 상태 선언
+    // =======================================================================================
+    const { dno } = useParams();                                // 개발자 번호 추출 (URL 파라미터)
+    const token = localStorage.getItem('token');                // 인증 토큰
 
-    const [dev, setDev] = useState(null);         // ✅ 원본 개발자 정보
-    const [form, setForm] = useState({});         // ✅ 수정용 상태값
-    const [newState, setNewState] = useState();   // ✅ 상태코드 변경값
+    const [dev, setDev] = useState(null);                       // 원본 상세 정보
+    const [form, setForm] = useState({});                       // 입력 폼 상태
+    const [newState, setNewState] = useState();                 // 상태코드 변경값
 
     // =======================================================================================
-    // ✅ 개발자 상세 정보 조회
+    // ✅ 상세 조회 요청
     // =======================================================================================
     useEffect(() => {
         const fetchDetail = async () => {
@@ -42,7 +46,7 @@ export default function DeveloperDetail() {
                 setForm(res.data);
                 setNewState(res.data.dstate);
             } catch (err) {
-                console.error('개발자 상세 조회 실패', err);
+                console.error('❌ 개발자 상세 조회 실패', err);
                 alert('개발자 상세정보 조회 실패');
             }
         };
@@ -50,7 +54,7 @@ export default function DeveloperDetail() {
     }, [token, dno]);
 
     // =======================================================================================
-    // ✅ 입력 변경 핸들러
+    // ✅ 입력 필드 변경 핸들러
     // =======================================================================================
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -62,8 +66,9 @@ export default function DeveloperDetail() {
     const handleUpdate = async () => {
         try {
             const res = await updateDeveloper(token, form);
-            if (res.data) alert('정보 수정 완료');
+            if (res.data) alert('✅ 정보 수정 완료');
         } catch (err) {
+            console.error('❌ 수정 실패', err);
             alert('수정 실패');
         }
     };
@@ -77,8 +82,9 @@ export default function DeveloperDetail() {
                 dno: form.dno,
                 dstate: newState
             });
-            if (res.data) alert('상태코드 변경 완료');
+            if (res.data) alert('✅ 상태코드 변경 완료');
         } catch (err) {
+            console.error('❌ 상태 변경 실패', err);
             alert('상태 변경 실패');
         }
     };
@@ -86,7 +92,7 @@ export default function DeveloperDetail() {
     if (!dev) return <p style={{ color: '#666' }}>로딩 중...</p>;
 
     // =======================================================================================
-    // ✅ 컴포넌트 렌더링
+    // ✅ UI 렌더링
     // =======================================================================================
     return (
         <Box sx={{ px: 3, py: 3, bgcolor: '#fff', color: '#212529' }}>
@@ -111,21 +117,18 @@ export default function DeveloperDetail() {
                     boxShadow: 'sm'
                 }}
             >
-                {/* 이름 */}
                 <Input
                     name="dname"
                     value={form.dname || ''}
                     onChange={handleChange}
                     placeholder="이름"
                 />
-                {/* 이메일 */}
                 <Input
                     name="demail"
                     value={form.demail || ''}
                     onChange={handleChange}
                     placeholder="이메일"
                 />
-                {/* 전화번호 */}
                 <Input
                     name="dphone"
                     value={form.dphone || ''}
@@ -133,7 +136,7 @@ export default function DeveloperDetail() {
                     placeholder="전화번호"
                 />
 
-                {/* 상태코드 변경 */}
+                {/* ✅ 상태코드 셀렉트 */}
                 <Box>
                     <Typography level="body-sm" sx={{ mb: 1, color: '#495057' }}>
                         상태코드 변경
@@ -149,7 +152,7 @@ export default function DeveloperDetail() {
                     </Select>
                 </Box>
 
-                {/* 버튼 그룹 */}
+                {/* ✅ 버튼 그룹 */}
                 <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
                     <Button
                         onClick={handleUpdate}

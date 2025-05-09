@@ -1,11 +1,12 @@
 // =======================================================================================
-// adminApi.js | rw 25-05-02 최종 리팩토링
+// adminApi.js | rw 25-05-09 최종 리팩토링
 // [설명]
 // - 관리자(Admin) 관련 API 요청 함수 모음
 // - 모든 요청 URL은 axiosInstance.js의 baseURL(`/api`) 기준 상대경로로 작성됨
+// - 모든 기능은 관리자 권한으로만 접근 가능함
 // =======================================================================================
 
-import axios from './axiosInstance.js'; // ✅ 공통 Axios 인스턴스
+import axios from './axiosInstance'; // ✅ 공통 Axios 인스턴스
 
 // =======================================================================================
 // ✅ 1. 관리자 회원가입 요청
@@ -27,12 +28,12 @@ export const signupAdmin = (adminDto) => {
     - 요청 데이터: AdminLoginDto (RequestBody)
     - 응답 데이터: String (JWT 토큰)
 */
-export const adminLogin = (adminLoginDto) => {
-    return axios.post('/admin/login', adminLoginDto);
+export const loginAdmin = (loginDto) => {
+    return axios.post('/admin/login', loginDto);
 };
 
 // =======================================================================================
-// ✅ 3. 로그인 관리자 본인 정보 조회
+// ✅ 3. 로그인한 관리자 본인 정보 조회
 /*
     - 매핑 방식: GET
     - 요청 URL: /api/admin/info
@@ -41,12 +42,14 @@ export const adminLogin = (adminLoginDto) => {
 */
 export const getAdminInfo = (token) => {
     return axios.get('/admin/info', {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
     });
 };
 
 // =======================================================================================
-// ✅ 4. 관리자 전체 목록 조회
+// ✅ 4. 전체 관리자 목록 조회
 /*
     - 매핑 방식: GET
     - 요청 URL: /api/admin/allinfo
@@ -62,24 +65,23 @@ export const getAdminList = () => {
     - 매핑 방식: PUT
     - 요청 URL: /api/admin/update
     - 요청 헤더: Authorization: Bearer {token}
-    - 요청 데이터: FormData (adname, adphone 등)
+    - 요청 데이터: FormData(AdminDto)
     - 응답 데이터: Boolean
 */
 export const updateAdmin = (token, formData) => {
     return axios.put('/admin/update', formData, {
         headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-        },
+            'Content-Type': 'multipart/form-data'
+        }
     });
 };
 
 // =======================================================================================
-// ✅ 6. 관리자 삭제 요청
+// ✅ 6. 관리자 삭제 (※ REST 원칙 예외: PUT 방식 사용)
 /*
     - 매핑 방식: PUT
-    - 요청 URL: /api/admin/delete?adid=admin01
-    - 요청 파라미터: adid (String)
+    - 요청 URL: /api/admin/delete?adid=xxx
     - 응답 데이터: Boolean
 */
 export const deleteAdmin = (adid) => {
@@ -87,7 +89,7 @@ export const deleteAdmin = (adid) => {
 };
 
 // =======================================================================================
-// ✅ 7. 관리자 로그아웃 요청
+// ✅ 7. 관리자 로그아웃 처리
 /*
     - 매핑 방식: GET
     - 요청 URL: /api/admin/logout
@@ -96,7 +98,9 @@ export const deleteAdmin = (adid) => {
 */
 export const logoutAdmin = (token) => {
     return axios.get('/admin/logout', {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
     });
 };
 
