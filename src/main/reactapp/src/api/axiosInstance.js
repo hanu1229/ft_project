@@ -43,7 +43,26 @@ instance.interceptors.request.use(
 );
 
 // =======================================================================================
-// ✅ [4] Axios 인스턴스 export
+// ✅ [4] 응답 인터셉터 (401 처리 추가)
+/*
+    - 인증 실패(401) 발생 시: 토큰 삭제 → 로그인 페이지 강제 이동
+*/
+instance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            // 1. 토큰 제거
+            localStorage.removeItem('accessToken');
+
+            // 2. 로그인 페이지로 강제 이동
+            window.location.href = '/admin/login';
+        }
+        return Promise.reject(error);
+    }
+);
+
+// =======================================================================================
+// ✅ [5] Axios 인스턴스 export
 /*
     - 각 API 모듈에서 import 하여 공통 인스턴스 사용
     - ex) import axios from './axiosInstance';

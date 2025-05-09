@@ -20,7 +20,7 @@ import {
     Link
 } from '@mui/joy';
 
-import { adminLogin } from '../../api/adminApi.js';    // ✅ 로그인 API 요청
+import { loginAdmin } from '../../api/adminApi.js';   // ✅ 로그인 API 요청
 import { saveToken } from '../../utils/tokenUtil.js';  // ✅ JWT 토큰 저장 유틸
 
 export default function AdminLogin() {
@@ -35,7 +35,7 @@ export default function AdminLogin() {
     // 로그인 요청 처리
     const handleLogin = async () => {
         try {
-            const res = await adminLogin(form);
+            const res = await loginAdmin(form);
             const token = res.data;
             saveToken(token);                     // 토큰 저장
             navigate('/admin/dashboard');         // 로그인 성공 시 이동

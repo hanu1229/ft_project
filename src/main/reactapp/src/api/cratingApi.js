@@ -71,9 +71,9 @@ export const updateCratingState = (token, cratingDto) => {
     - 요청 헤더: Authorization: Bearer {token}
     - 응답 데이터: Boolean
 */
-export const deleteCratingState = (token, crno) => {
-    return axios.delete('/crating', {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { crno },
-    });
-};
+// export const deleteCratingState = (token, crno) => {
+//     return axios.delete('/crating', {
+//         headers: { Authorization: `Bearer ${token}` },
+//         params: { crno },
+//     });
+// };

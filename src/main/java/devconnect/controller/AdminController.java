@@ -7,6 +7,8 @@
 package devconnect.controller;
 
 // [A] 스프링 Web 관련 어노테이션
+import devconnect.model.dto.CompanyDto;
+import devconnect.service.CompanyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +34,7 @@ import java.util.Map;
 public class AdminController { // CS
 
     private final AdminService adminService; // [*] 서비스 계층 주입
+    private final CompanyService companyService; // [*] 서비스 계층 주입
 
     // =======================================================================================
     // [*] Bearer 토큰 제거 메서드
@@ -153,6 +156,16 @@ public class AdminController { // CS
     }
 
     // =======================================================================================
+    // ✅ 8. 관리자 기반 기업 상세조회
+    @GetMapping("/company/detail")
+    public ResponseEntity<CompanyDto> getCompanyDetail(@RequestHeader("Authorization") String token , @RequestParam int cno) {
+        AdminDto adminDto = adminService.adminFindById(extractToken(token));
+        if( adminDto == null ) return ResponseEntity.noContent().build();
+
+        CompanyDto companyDto = adminService.getCompanyDetail( cno );
+        return ( companyDto  != null ) ? ResponseEntity.ok( companyDto ) : ResponseEntity.noContent().build();
+    }
+    // =======================================================================================
     // ✅ 공통 에러 응답 생성기
     private Map<String, Object> errorResponse(int status, String message) {
         Map<String, Object> errorMap = new HashMap<>();
@@ -160,5 +173,10 @@ public class AdminController { // CS
         errorMap.put("message", message);
         return errorMap;
     }
+
+
+
+
+
 
 } // CE

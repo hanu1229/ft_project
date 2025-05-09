@@ -17,7 +17,7 @@ import axios from './axiosInstance.js'; // ✅ 공통 Axios 인스턴스
     - 응답 데이터: Page<CompanyDto>
 */
 export const getCompanyList = (token, { page = 0, size = 10, keyword = '' }) => {
-    return axios.get('/company', {
+    return axios.get('/company/findall', {
         headers: { Authorization: `Bearer ${token}` },
         params: { page, size, keyword },
     });
@@ -27,13 +27,13 @@ export const getCompanyList = (token, { page = 0, size = 10, keyword = '' }) => 
 // ✅ 2. 기업 상세 정보 조회
 /*
     - 매핑 방식: GET
-    - 요청 URL: /api/company/detail
+    - 요청 URL: /api/admin/company/detail
     - 요청 헤더: Authorization: Bearer {token}
     - 요청 파라미터: cno
     - 응답 데이터: CompanyDto
 */
 export const getCompanyDetail = (token, cno) => {
-    return axios.get('/company/detail', {
+    return axios.get('/admin/company/detail', {
         headers: { Authorization: `Bearer ${token}` },
         params: { cno },
     });

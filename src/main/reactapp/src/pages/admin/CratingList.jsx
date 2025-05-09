@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     getCratingList,
-    deleteCrating
+    //deleteCrating
 } from '../../api/cratingApi.js';
 
 import FilterSearchBar from '../../components/FilterSearchBar.jsx';
@@ -45,20 +45,20 @@ export default function CratingList() {
         fetchList();
     }, [filter, search]);
 
-    const handleDelete = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            const res = await deleteCrating(token, target);
-            if (res.data) {
-                setList((prev) => prev.filter((c) => c.crno !== target));
-                setOpen(false);
-                setTarget(null);
-            }
-        } catch (err) {
-            alert('❗ 삭제 실패');
-            console.error(err);
-        }
-    };
+    // const handleDelete = async () => {
+    //     try {
+    //         const token = localStorage.getItem('token');
+    //         const res = await deleteCrating(token, target);
+    //         if (res.data) {
+    //             setList((prev) => prev.filter((c) => c.crno !== target));
+    //             setOpen(false);
+    //             setTarget(null);
+    //         }
+    //     } catch (err) {
+    //         alert('❗ 삭제 실패');
+    //         console.error(err);
+    //     }
+    // };
 
     return (
         <Box sx={{ px: 3, py: 3, bgcolor: '#ffffff' }}>

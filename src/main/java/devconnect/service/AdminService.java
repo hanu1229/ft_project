@@ -8,11 +8,13 @@ package devconnect.service;
 
 // [A] DTO, Entity, Repository import
 import devconnect.model.dto.AdminDto;
+import devconnect.model.dto.CompanyDto;
 import devconnect.model.entity.AdminEntity;
 import devconnect.model.entity.CompanyEntity;
 import devconnect.model.entity.DeveloperEntity;
 import devconnect.model.entity.ProjectEntity;
 import devconnect.model.repository.AdminEntityRepository;
+import devconnect.model.repository.CompanyRepository;
 import devconnect.util.JwtUtil;
 
 // [B] 스프링 관련 import
@@ -20,6 +22,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,6 +40,9 @@ public class AdminService { // CS
     private final AdminEntityRepository adminEntityRepository;
     private final StringRedisTemplate stringRedisTemplate;
     private final JwtUtil jwtUtil;
+
+    @Autowired
+    private CompanyRepository companyRepository;
 
     @PersistenceContext
     private EntityManager em;
@@ -211,6 +217,16 @@ public class AdminService { // CS
     public int developerLoginCount() {
         Set<String> keys = stringRedisTemplate.keys("RESENT_LOGIN_DEVELOPER:*");
         return keys == null ? 0 : keys.size();
+    }
+
+
+    // =======================================================================================
+    // ✅ 관리자 기반 기업 상세조회 (cno 기반)
+    // =======================================================================================
+    public CompanyDto getCompanyDetail(int cno)  {
+        return companyRepository.findById(cno)
+                .map(CompanyEntity::toDto)
+                .orElse(null);
     }
 
 } // CE
