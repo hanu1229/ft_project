@@ -14,30 +14,19 @@ VALUES
 
 -- 기업 테이블 샘플 데이터 10개
 insert into company( cid, cpwd, cname, cphone, cadress, cemail, cbusiness, cprofile ,create_at , update_at)
-values( 'cmd1' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '크래프트(주)' , '02-2323-5343' , '서울 금천구 가산디지털1로 99' ,'craft@naver.com', '214-88-13306' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/logo_small.png' ,'2024-04-01 10:00:00', '2024-04-01 10:00:00')
-,( 'cmd2' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '이랑(주)' , '02-5345-2342' , '서울특별시 금천구 가산디지털2로 127-20' ,'irang@naver.com', '134-87-11626' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/logo_small.png' ,'2024-04-01 10:00:00', '2024-04-01 10:00:00')
-,( 'cmd3' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '파르티(주)' , '02-2344-2342' , '서울특별시 금천구 디지털로10길 9' ,'partia@naver.com', '312-33-14797' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/logo_small.png', '2024-04-01 10:00:00', '2024-04-01 10:00:00')
-,( 'cmd4' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '나르티아엔터' , '02-3653-3544' , '가산동 60-8' ,'nartia@naver.com', '398-21-01288' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/logo_small.png', '2024-04-01 10:00:00', '2024-04-01 10:00:00')
-,( 'cmd5' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '(주)넥서스테크' , '070-1111-2222' , '경기 성남시 분당구 대왕판교로 712' ,'nexustech@example.com', '123-45-67890' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/logo_small.png' ,'2024-04-01 10:00:00', '2024-04-01 10:00:00')
-, ( 'cmd6' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '데이터솔루션즈' , '070-3333-4444' , '서울 강남구 역삼로 165' ,'datasolutions@example.com', '987-65-43210' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/logo_small.png', '2024-04-01 10:00:00', '2024-04-01 10:00:00')
-, ( 'cmd7' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '(주)클라우드허브' , '070-5555-6666' , '서울 금천구 가산디지털1로 171' ,'cloudhub@example.com', '112-23-34455' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/logo_small.png', '2024-04-01 10:00:00', '2024-04-01 10:00:00')
-, ( 'cmd8' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , 'AI랩스 코리아' , '070-7777-8888' , '서울 구로구 디지털로 26길 111' ,'ailabskr@example.com', '667-78-89900' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/logo_small.png', '2024-04-01 10:00:00', '2024-04-01 10:00:00')
-, ( 'cmd9' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '(주)시스템게이트' , '070-9999-0000' , '경기 수원시 영통구 광교로 123' ,'systemgate@example.com', '334-45-56677' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/logo_small.png', '2024-04-01 10:00:00', '2024-04-01 10:00:00')
-, ( 'cmd10' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '이노텍 솔루션' , '070-1212-3434' , '서울 송파구 중대로 234' ,'inotechsol@example.com', '889-90-01122' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/logo_small.png', '2024-04-01 10:00:00', '2024-04-01 10:00:00');
+values( 'cmd1' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '크래프트(주)' , '02-2323-5343' , '서울 금천구 가산디지털1로 99' ,'craft@naver.com', '214-88-13306' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/%ED%81%AC%EB%9E%98%ED%94%84%ED%8A%B8(%EC%A3%BC).png' ,'2024-04-01 10:00:00', '2024-04-01 10:00:00')
+,( 'cmd2' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '이랑(주)' , '02-5345-2342' , '서울특별시 금천구 가산디지털2로 127-20' ,'irang@naver.com', '134-87-11626' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/%EC%9D%B4%EB%9E%91(%EC%A3%BC).png' ,'2024-04-01 10:00:00', '2024-04-01 10:00:00')
+,( 'cmd3' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '파르티(주)' , '02-2344-2342' , '서울특별시 금천구 디지털로10길 9' ,'partia@naver.com', '312-33-14797' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/%ED%8C%8C%EB%A5%B4%ED%8B%B0(%EC%A3%BC).png', '2024-04-01 10:00:00', '2024-04-01 10:00:00')
+,( 'cmd4' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '나르티아(주)' , '02-3653-3544' , '가산동 60-8' ,'nartia@naver.com', '398-21-01288' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/%EB%82%98%EB%A5%B4%ED%8B%B0%EC%95%84(%EC%A3%BC).png', '2024-04-01 10:00:00', '2024-04-01 10:00:00')
+,( 'cmd5' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '넥서스테크(주)' , '070-1111-2222' , '경기 성남시 분당구 대왕판교로 712' ,'nexustech@example.com', '123-45-67890' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/%EB%84%A5%EC%84%9C%EC%8A%A4%ED%85%8C%ED%81%AC(%EC%A3%BC).png' ,'2024-04-01 10:00:00', '2024-04-01 10:00:00')
+, ( 'cmd6' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '데이터솔루션즈' , '070-3333-4444' , '서울 강남구 역삼로 165' ,'datasolutions@example.com', '987-65-43210' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%86%94%EB%A3%A8%EC%85%98%EC%A6%88.png', '2024-04-01 10:00:00', '2024-04-01 10:00:00')
+, ( 'cmd7' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '프리허브(주)' , '070-5555-6666' , '서울 금천구 가산디지털1로 171' ,'cloudhub@example.com', '112-23-34455' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/%ED%94%84%EB%A6%AC%ED%97%88%EB%B8%8C(%EC%A3%BC).png', '2024-04-01 10:00:00', '2024-04-01 10:00:00')
+, ( 'cmd8' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '조선솔루션(주)' , '070-7777-8888' , '서울 구로구 디지털로 26길 111' ,'ailabskr@example.com', '667-78-89900' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/%EC%A1%B0%EC%84%A0%EC%86%94%EB%A3%A8%EC%85%98(%EC%A3%BC).png', '2024-04-01 10:00:00', '2024-04-01 10:00:00')
+, ( 'cmd9' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '시스템게이트(주)' , '070-9999-0000' , '경기 수원시 영통구 광교로 123' ,'systemgate@example.com', '334-45-56677' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/%EC%8B%9C%EC%8A%A4%ED%85%9C%EA%B2%8C%EC%9D%B4%ED%8A%B8(%EC%A3%BC).png', '2024-04-01 10:00:00', '2024-04-01 10:00:00')
+, ( 'cmd10' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '이노텍 솔루션' , '070-1212-3434' , '서울 송파구 중대로 234' ,'inotechsol@example.com', '889-90-01122' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/%EC%9D%B4%EB%85%B8%ED%85%8D%EC%86%94%EB%A3%A8%EC%85%98.png', '2024-04-01 10:00:00', '2024-04-01 10:00:00');
 
 INSERT INTO project(pname, pintro, ptype, pcomment, pcount, pstart, pend, recruit_pstart, recruit_pend, ppay, cno, create_at, update_at)
 VALUES
-('쇼핑몰 제작 [백엔드]', 'Spring Boot를 이용한 의류 쇼핑몰 홈페이지 제작', 1, '~~~', 2, '2024-11-11', '2025-03-10', '2024-10-10', '2024-11-10', 2500, 1, '2024-10-10', '2024-10-10'),
-('커뮤니티 제작 [백엔드]', 'Spring Boot를 이용한 커뮤니티 홈페이지 제작', 1, '~~~', 2, '2024-11-12', '2025-03-11', '2024-10-11', '2024-11-11', 2500, 2, '2024-10-11', '2024-10-11'),
-('자사 ERP 제작 [백엔드]', 'Spring Boot를 이용한 ERP 홈페이지 제작', 1, '~~~', 2, '2025-06-20', '2025-12-19', '2025-04-10', '2025-05-10', 2500, 3, '2025-04-10', '2025-04-10'),
-('대학교 홈페이지 리뉴얼 [백엔드]', 'Spring Boot를 이용한 대학교 홈페이지 리뉴얼', 1, '~~~', 2, '2025-06-23', '2025-12-20', '2025-04-12', '2025-05-11', 2500, 4, '2025-04-12', '2025-04-12'),
-('대학병원 홈페이지 제작 [백엔드]', 'Spring Boot를 이용한 홈페이지 제작', 1, '~~~', 2, '2025-06-25', '2025-12-21', '2025-04-14', '2025-05-14', 2500, 5, '2025-04-14', '2025-04-14'),
-('쇼핑몰 제작 [프론트]', 'React와 Flutter를 이용한 의류 쇼핑몰 홈페이지 제작', 2, '~~~', 1, '2024-11-11', '2025-03-10', '2024-10-10', '2024-11-10', 2000, 1, '2024-10-10', '2024-10-10'),
-('커뮤니티 제작 [프론트]', 'React와 Flutter를 이용한 커뮤니티 홈페이지 제작', 2, '~~~', 1, '2024-11-12', '2025-03-11', '2024-10-11', '2024-11-11', 2000, 2, '2024-10-11', '2024-10-11'),
-('자사 ERP 제작 [프론트]', 'React와 Flutter를 이용한 ERP 홈페이지 제작', 2, '~~~', 1, '2025-06-20', '2025-12-19', '2025-04-10', '2025-05-10', 2000, 3, '2025-04-10', '2025-04-10'),
-('대학교 홈페이지 리뉴얼 [프론트]', 'React와 Flutter를 이용한 대학교 홈페이지 리뉴얼', 2, '~~~', 1, '2025-06-23', '2025-12-20', '2025-04-12', '2025-05-11', 2000, 4, '2025-04-12', '2025-04-12'),
-('대학병원 홈페이지 제작 [프론트]', 'React와 Flutter를 이용한 홈페이지 제작', 2, '~~~', 1, '2025-06-25', '2025-12-21','2025-04-14', '2025-05-14', 2000, 5, '2025-04-14', '2025-04-14'),
-('[OO 대학원] 홈페이지 리뉴얼 모집 공고 [백엔드]', 'Spring Boot를 이용한 OO 홈페이지 제작', 1, 'OO 대학교의 공식 홈페이지를 전면 리뉴얼합니다.\n기존의 시스템은 폐기하고, 새로운 시스템을 처음부터 구축할 예정입니다.\n이에 따라 Spring Boot와 MySQL을 능숙하게 다룰 수 있는 숙련된 개발자를 찾고 있습니다.', 2, '2025-06-10', '2025-12-15', '2025-04-20', '2025-05-19', 2000, 1, '2025-03-20', '2025-03-20'),
 ('[서울 대학교] 홈페이지 리뉴얼 모집 공고 [백엔드]', 'Spring Boot를 이용한 서울 홈페이지 제작', 1, '서울 대학교의 공식 홈페이지를 전면 리뉴얼합니다.\n기존의 시스템은 폐기하고, 새로운 시스템을 처음부터 구축할 예정입니다.\n이에 따라 Spring Boot와 MySQL을 능숙하게 다룰 수 있는 숙련된 개발자를 찾고 있습니다.', 2, '2024-09-10', '2025-03-15', '2024-07-20', '2024-08-19', 2000, 1, '2024-07-10', '2024-07-10'),
 ('[서울 대학교] 홈페이지 리뉴얼 모집 공고 [프론트엔드]', 'Spring Boot를 이용한 서울 홈페이지 제작', 2, '서울 대학교의 공식 홈페이지를 전면 리뉴얼합니다.\n기존에 있던 홈페이지는 폐기하고, 새로운 홈페이지를 구축할 예정입니다.\n이에 따라 React를 능숙하게 다룰 수 있는 숙련된 개발자를 찾고 있습니다.', 2, '2024-09-10', '2025-03-15', '2024-07-20', '2024-08-19', 2000, 1, '2024-07-10', '2024-07-10'),
 ('[인하 대학교] 홈페이지 리뉴얼 모집 공고 [백엔드]', 'Spring Boot를 이용한 인하 홈페이지 제작', 1, '인하 대학교의 공식 홈페이지를 전면 리뉴얼합니다.\n기존의 시스템은 폐기하고, 새로운 시스템을 처음부터 구축할 예정입니다.\n이에 따라 Spring Boot와 MySQL을 능숙하게 다룰 수 있는 숙련된 개발자를 찾고 있습니다.', 2, '2024-09-10', '2025-03-15', '2024-07-20', '2024-08-19', 2000, 1, '2024-07-10', '2024-07-10'),
@@ -79,6 +68,68 @@ VALUES
 ('[수원 대학교] 홈페이지 리뉴얼 모집 공고 [백엔드]', 'Spring Boot를 이용한 수원 홈페이지 제작', 1, '수원 대학교의 공식 홈페이지를 전면 리뉴얼합니다.\n기존의 시스템은 폐기하고, 새로운 시스템을 처음부터 구축할 예정입니다.\n이에 따라 Spring Boot와 MySQL을 능숙하게 다룰 수 있는 숙련된 개발자를 찾고 있습니다.', 2, '2025-06-10', '2025-12-15', '2025-04-20', '2025-05-19', 2000, 10, '2025-04-10', '2025-04-10'),
 ('[수원 대학교] 홈페이지 리뉴얼 모집 공고 [프론트엔드]', 'Spring Boot를 이용한 수원 홈페이지 제작', 2, '수원 대학교의 공식 홈페이지를 전면 리뉴얼합니다.\n기존에 있던 홈페이지는 폐기하고, 새로운 홈페이지를 구축할 예정입니다.\n이에 따라 React를 능숙하게 다룰 수 있는 숙련된 개발자를 찾고 있습니다.', 2, '2025-06-10', '2025-12-15', '2025-04-20', '2025-05-19', 2000, 10, '2025-04-10', '2025-04-10');
 
+INSERT INTO project_image(pno, iname)
+VALUE
+-- 서울대
+(1, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%84%9C%EC%9A%B8%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(2, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%84%9C%EC%9A%B8%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 인하대
+(3, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%9D%B8%ED%95%98%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(4, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%9D%B8%ED%95%98%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 고려대
+(5, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B3%A0%EB%A0%A4%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(6, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B3%A0%EB%A0%A4%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 숭실대
+(7, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(8, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 연세대
+(9, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%97%B0%EC%84%B8%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(10, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%97%B0%EC%84%B8%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 세종대
+(11, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%84%B8%EC%A2%85%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(12, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%84%B8%EC%A2%85%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 서강대
+(13, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%84%9C%EA%B0%95%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(14, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%84%9C%EA%B0%95%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 단국대
+(15, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EB%8B%A8%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(16, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EB%8B%A8%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 중앙대
+(17, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%A4%91%EC%95%99%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(18, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%A4%91%EC%95%99%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 가천대
+(19, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B0%80%EC%B2%9C%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(20, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B0%80%EC%B2%9C%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 한양대
+(21, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(22, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 경기대
+(23, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B2%BD%EA%B8%B0%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(24, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B2%BD%EA%B8%B0%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 경희대
+(25, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(26, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 홍익대
+(27, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%ED%99%8D%EC%9D%B5%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(28, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%ED%99%8D%EC%9D%B5%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 건국대
+(29, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(30, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 광운대
+(31, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(32, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 동국대
+(33, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EB%8F%99%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(34, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EB%8F%99%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 인천대
+(35, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%9D%B8%EC%B2%9C%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(36, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%9D%B8%EC%B2%9C%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 아주대
+(37, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%95%84%EC%A3%BC%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(38, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%95%84%EC%A3%BC%EB%8C%80%ED%95%99%EA%B5%90.png'),
+-- 수원대
+(39, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%88%98%EC%9B%90%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(40, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%88%98%EC%9B%90%EB%8C%80%ED%95%99%EA%B5%90.png');
 
 INSERT INTO project_join(pjtype, pno, dno, create_at, update_at)
 VALUES
