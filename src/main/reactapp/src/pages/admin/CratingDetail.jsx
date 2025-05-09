@@ -8,8 +8,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     getCratingDetail,
-    updateCrating,
-    deleteCrating
+    // updateCrating,
+    // deleteCrating
 } from '../../api/cratingApi.js';
 import {
     Typography,

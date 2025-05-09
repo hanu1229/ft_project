@@ -11,6 +11,10 @@ import devconnect.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -117,6 +121,8 @@ public class DeveloperService {
 
         MultipartFile newFile = developerDto.getDfile();
         String preFile = developerEntity.getDprofile();
+
+        if( preFile == "default.jpg"){ return true; }
         if( newFile != null && !newFile.isEmpty() ){
             String saveFileName = fileUtil.fileUpload( developerDto.getDfile() );
             if( saveFileName == null ){ throw new RuntimeException("파일 업로드 오류 발생"); }
@@ -177,6 +183,15 @@ public class DeveloperService {
                     .collect(Collectors.toList());
         } // if end
         return null;
+    } // f end
+
+    // 8. 개발자 순위 조회
+    public Page<DeveloperDto> ranking(int page, int size, String keyword ){
+        Pageable pageable = PageRequest.of( page-1, size, Sort.by( Sort.Direction.DESC, "dno" ));
+
+        Page<DeveloperEntity> developerEntities = developerRepository.findBySearch( pageable );
+        Page<DeveloperDto> developerList = developerEntities.map( DeveloperEntity::toDto );
+        return developerList;
     } // f end
 
 }

@@ -1,86 +1,86 @@
-// dratingApi.js | rw 25-05-02 최종 리팩토링
+// =======================================================================================
+// dratingApi.js | rw 25-05-08 관리자 기준 리팩토링
 // [설명]
-// - 개발자 평가(Drating) 관련 API 요청 함수 모음
-// - 모든 요청 URL은 axiosInstance.js 기준(baseURL: /api) 하위 경로로 설정됨
+// - 관리자(Admin) 전용 개발자 평가(DRating) API 함수 모음
+// - 모든 요청은 인증 토큰(Authorization: Bearer {token}) 필요
+// =======================================================================================
 
-import axios from './axiosInstance.js'; // ✅ 공통 Axios 인스턴스 사용
+import axios from './axiosInstance.js'; // ✅ 공통 Axios 인스턴스
 
 // =======================================================================================
-// ✅ 1. 전체 개발자 평가 목록 조회 (회사/관리자 공용)
+// ✅ [1]. 전체 개발자 평가 목록 조회 (관리자 전용)
 /*
     - 매핑 방식: GET
-    - 요청 URL: /drating
-    - 요청 파라미터: page, size, keyword, dno (QueryParam)
+    - 요청 URL: /api/drating
+    - 요청 파라미터: page, size, keyword (QueryParam, optional)
     - 요청 헤더: Authorization: Bearer {token}
     - 응답 데이터: Page<DratingDto>
 */
-export const getDratingList = (token, { page = 1, size = 5, keyword = '', dno = 0 }) => {
-    const params = new URLSearchParams({ page, size, keyword, dno }).toString();
-    return axios.get(`/drating?${params}`, {
+export const getDratingList = (token, { page = 0, size = 10, keyword = '' }) => {
+    return axios.get('/drating', {
         headers: { Authorization: `Bearer ${token}` },
+        params: { page, size, keyword },
     });
 };
 
 // =======================================================================================
-// ✅ 2. 개발자 평가 상세 조회
+// ✅ [2]. 개발자 평가 상세 조회 (관리자 전용)
 /*
     - 매핑 방식: GET
-    - 요청 URL: /drating/view?drno={drno}
+    - 요청 URL: /api/drating/view
+    - 요청 파라미터: drno (QueryParam)
     - 요청 헤더: Authorization: Bearer {token}
     - 응답 데이터: DratingDto
 */
 export const getDratingDetail = (token, drno) => {
-    return axios.get(`/drating/view?drno=${drno}`, {
+    return axios.get('/drating/view', {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { drno },
+    });
+};
+
+// =======================================================================================
+// ✅ [3]. 개발자 평가 등록 (관리자 전용)
+/*
+    - 매핑 방식: POST
+    - 요청 URL: /api/drating
+    - 요청 데이터: DratingDto (RequestBody)
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: Boolean
+*/
+export const createDrating = (token, dto) => {
+    return axios.post('/drating', dto, {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
 
 // =======================================================================================
-// ✅ 3. 개발자 평가 등록
-/*
-    - 매핑 방식: POST
-    - 요청 URL: /drating
-    - 요청 헤더: Authorization: Bearer {token}
-    - 요청 데이터: DratingDto (drscore, pno, dno 등)
-    - 응답 데이터: Boolean
-*/
-export const createDrating = (token, dratingDto) => {
-    return axios.post('/drating', dratingDto, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        },
-    });
-};
-
-// =======================================================================================
-// ✅ 4. 개발자 평가 수정 요청
+// ✅ [4]. 개발자 평가 수정 (관리자 전용)
 /*
     - 매핑 방식: PUT
-    - 요청 URL: /drating
-    - 요청 헤더: Authorization: Bearer {token}, Content-Type: application/json
-    - 요청 데이터: DratingDto (drno, drscore 필수)
+    - 요청 URL: /api/drating
+    - 요청 데이터: DratingDto (RequestBody)
+    - 요청 헤더: Authorization: Bearer {token}
     - 응답 데이터: Boolean
 */
-export const updateDrating = (token, dratingDto) => {
-    return axios.put('/drating', dratingDto, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        },
+export const updateDrating = (token, dto) => {
+    return axios.put('/drating', dto, {
+        headers: { Authorization: `Bearer ${token}` },
     });
 };
 
 // =======================================================================================
-// ✅ 5. 개발자 평가 삭제 요청
+// ✅ [5]. 개발자 평가 삭제 (관리자 전용)
 /*
     - 매핑 방식: DELETE
-    - 요청 URL: /drating?drno={drno}
+    - 요청 URL: /api/drating?drno=#
+    - 요청 파라미터: drno (QueryParam)
     - 요청 헤더: Authorization: Bearer {token}
     - 응답 데이터: Boolean
 */
 export const deleteDrating = (token, drno) => {
-    return axios.delete(`/drating?drno=${drno}`, {
+    return axios.delete('/drating', {
         headers: { Authorization: `Bearer ${token}` },
+        params: { drno },
     });
 };

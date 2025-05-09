@@ -27,4 +27,7 @@ public interface ProjectJoinRepository extends JpaRepository<ProjectJoinEntity, 
             nativeQuery = true
     )
     Page<ProjectJoinEntity> findByPnoJoin(@Param("pno") int pno, Pageable pageable);
+
+    @Query("select pj.developerEntity.dno from ProjectJoinEntity pj where pj.projectEntity.pno = :pno")
+    List<Integer> findDnoByPno( @Param("pno") int pno );
 }

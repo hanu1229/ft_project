@@ -1,16 +1,16 @@
 // =======================================================================================
-// CompanyDetail.jsx | rw 25-05-02 최종 리팩토링 (ChatGPT 스타일 적용)
+// CompanyDetail.jsx | rw 25-05-08 관리자 전용 리팩토링
 // [설명]
-// - 관리자 전용 기업 상세조회, 수정, 상태코드 변경 화면
-// - Joy UI + 흰 배경 + 민트 포인트 테마
+// - 관리자만 접근 가능한 기업 상세 조회 및 수정/상태변경 화면
+// - API 연동: getCompanyDetail, updateCompanyState, changeCompanyState
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
     getCompanyDetail,
-    updateCompany,
-    updateCompanyState
+    updateCompanyState,
+    changeCompanyState,
 } from '../../api/companyApi.js';
 import {
     Typography,
@@ -19,24 +19,20 @@ import {
     Button,
     Divider,
     Select,
-    Option
+    Option,
 } from '@mui/joy';
 
 export default function CompanyDetail() {
-    const { cno } = useParams();
+    const { cno } = useParams(); // ✅ 기업 고유번호 URL 추출
     const token = localStorage.getItem('token');
 
-    const [company, setCompany] = useState(null);
-    const [form, setForm] = useState({
-        cname: '',
-        ceo: '',
-        cemail: '',
-        cphone: '',
-        cstate: 0
-    });
-    const [newState, setNewState] = useState(0);
+    const [company, setCompany] = useState(null); // ✅ 원본 데이터
+    const [form, setForm] = useState({}); // ✅ 수정용 상태값
+    const [newState, setNewState] = useState(0); // ✅ 상태 변경값
 
-    // ✅ 기업 상세 정보 로딩
+    // =======================================================================================
+    // ✅ 1. 기업 상세 조회
+    // =======================================================================================
     useEffect(() => {
         const fetchDetail = async () => {
             try {
@@ -45,43 +41,50 @@ export default function CompanyDetail() {
                 setForm(res.data);
                 setNewState(res.data.cstate);
             } catch (err) {
-                console.error(err);
-                alert('기업 상세 조회 실패');
+                console.error('❌ 기업 상세 조회 실패:', err);
+                alert('기업 정보를 불러오지 못했습니다.');
             }
         };
         fetchDetail();
     }, [token, cno]);
 
-    // ✅ 입력 필드 변경
+    // =======================================================================================
+    // ✅ 2. 입력 필드 핸들러
+    // =======================================================================================
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    // ✅ 기업 정보 수정
+    // =======================================================================================
+    // ✅ 3. 정보 수정 요청 (FormData 전송)
+    // =======================================================================================
     const handleUpdate = async () => {
         try {
-            const res = await updateCompany(token, form);
-            if (res.data) alert('✅ 정보 수정 완료');
+            const formData = new FormData();
+            for (const key in form) formData.append(key, form[key]);
+            const res = await updateCompanyState(token, formData);
+            if (res.data) alert('✅ 기업 정보 수정 완료');
         } catch (err) {
-            alert('❌ 정보 수정 실패');
+            console.error('❌ 수정 실패:', err);
+            alert('정보 수정 실패');
         }
     };
 
-    // ✅ 상태코드 변경
+    // =======================================================================================
+    // ✅ 4. 상태코드 변경 요청
+    // =======================================================================================
     const handleStateUpdate = async () => {
         try {
-            const res = await updateCompanyState(token, {
-                cno: form.cno,
-                cstate: newState
-            });
+            const dto = { cno: form.cno, cstate: newState };
+            const res = await changeCompanyState(token, dto);
             if (res.data) alert('✅ 상태코드 변경 완료');
         } catch (err) {
-            alert('❌ 상태 변경 실패');
+            console.error('❌ 상태 변경 실패:', err);
+            alert('상태 변경 실패');
         }
     };
 
-    // ✅ 로딩 중 표시
-    if (!company) return <p style={{ color: '#666' }}>로딩 중...</p>;
+    if (!company) return <Typography level="body-md">로딩 중...</Typography>;
 
     // =======================================================================================
     // ✅ 렌더링
@@ -89,7 +92,7 @@ export default function CompanyDetail() {
     return (
         <Box sx={{ bgcolor: '#fff', px: 3, py: 3, borderRadius: 'md' }}>
             <Typography level="h3" sx={{ mb: 2, color: '#12b886', fontWeight: 'bold' }}>
-                🏢 기업 상세
+                🏢 기업 상세 정보
             </Typography>
 
             <Divider sx={{ mb: 3, borderColor: '#ced4da' }} />
@@ -107,13 +110,11 @@ export default function CompanyDetail() {
                     boxShadow: 'sm',
                 }}
             >
-                {/* 기업 정보 입력 */}
-                <Input name="cname" value={form.cname} onChange={handleChange} placeholder="기업명" variant="soft" />
-                <Input name="ceo" value={form.ceo} onChange={handleChange} placeholder="대표자명" variant="soft" />
-                <Input name="cemail" value={form.cemail} onChange={handleChange} placeholder="이메일" variant="soft" />
-                <Input name="cphone" value={form.cphone} onChange={handleChange} placeholder="전화번호" variant="soft" />
+                <Input name="cname" value={form.cname || ''} onChange={handleChange} placeholder="기업명" variant="soft" />
+                <Input name="ceo" value={form.ceo || ''} onChange={handleChange} placeholder="대표자명" variant="soft" />
+                <Input name="cemail" value={form.cemail || ''} onChange={handleChange} placeholder="이메일" variant="soft" />
+                <Input name="cphone" value={form.cphone || ''} onChange={handleChange} placeholder="전화번호" variant="soft" />
 
-                {/* 상태코드 선택 */}
                 <Typography level="body-md" sx={{ mt: 2, color: '#495057' }}>
                     상태코드 변경
                 </Typography>
@@ -123,7 +124,6 @@ export default function CompanyDetail() {
                     <Option value={9}>삭제 (9)</Option>
                 </Select>
 
-                {/* 버튼 영역 */}
                 <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
                     <Button
                         onClick={handleUpdate}
@@ -133,10 +133,7 @@ export default function CompanyDetail() {
                             color: '#12b886',
                             borderColor: '#12b886',
                             fontWeight: 'bold',
-                            '&:hover': {
-                                bgcolor: '#12b886',
-                                color: '#fff'
-                            }
+                            '&:hover': { bgcolor: '#12b886', color: '#fff' },
                         }}
                     >
                         정보 수정
@@ -149,10 +146,7 @@ export default function CompanyDetail() {
                             color: '#12b886',
                             borderColor: '#12b886',
                             fontWeight: 'bold',
-                            '&:hover': {
-                                bgcolor: '#12b886',
-                                color: '#fff'
-                            }
+                            '&:hover': { bgcolor: '#12b886', color: '#fff' },
                         }}
                     >
                         상태 변경
