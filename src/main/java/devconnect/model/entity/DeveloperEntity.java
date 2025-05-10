@@ -77,6 +77,11 @@ public class DeveloperEntity extends BaseTime{
     @OneToMany( mappedBy = "developerEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
     @Builder.Default
     @ToString.Exclude
+    private List<CareerEntity> careerEntityList  = new ArrayList<>();
+
+    @OneToMany( mappedBy = "developerEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+    @Builder.Default
+    @ToString.Exclude
     private List<ProjectJoinEntity> projectJoinEntityList = new ArrayList<>();
 
     @OneToMany( mappedBy = "developerEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
