@@ -72,16 +72,24 @@ INSERT INTO project_image(pno, iname)
 VALUE
 -- 서울대
 (1, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%84%9C%EC%9A%B8%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(1, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%84%9C%EC%9A%B8%EB%8C%80%ED%95%99%EA%B5%90_%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80.png'),
 (2, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%84%9C%EC%9A%B8%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(2, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%84%9C%EC%9A%B8%EB%8C%80%ED%95%99%EA%B5%90_%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80.png'),
 -- 인하대
 (3, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%9D%B8%ED%95%98%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(3, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%9D%B8%ED%95%98%EB%8C%80%ED%95%99%EA%B5%90_%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80.png'),
 (4, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%9D%B8%ED%95%98%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(4, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%9D%B8%ED%95%98%EB%8C%80%ED%95%99%EA%B5%90_%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80.png'),
 -- 고려대
 (5, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B3%A0%EB%A0%A4%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(5, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B3%A0%EB%A0%A4%EB%8C%80%ED%95%99%EA%B5%90_%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80.png'),
 (6, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B3%A0%EB%A0%A4%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(6, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EA%B3%A0%EB%A0%A4%EB%8C%80%ED%95%99%EA%B5%90_%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80.png'),
 -- 숭실대
 (7, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(7, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90_%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80.png'),
 (8, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90.png'),
+(8, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90_%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80.png'),
 -- 연세대
 (9, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%97%B0%EC%84%B8%EB%8C%80%ED%95%99%EA%B5%90.png'),
 (10, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%97%B0%EC%84%B8%EB%8C%80%ED%95%99%EA%B5%90.png'),
