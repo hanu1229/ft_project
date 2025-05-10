@@ -1,19 +1,20 @@
-// projectApi.js | rw 25-05-02 최종 리팩토링
+// =======================================================================================
+// projectApi.js | rw 25-05-10 최종 리팩토링
 // [설명]
-// - 프로젝트(Project) 관련 관리자 및 기업 전용 API 요청 함수 모음
-// - 모든 요청 URL은 axiosInstance.js의 baseURL(/api)을 기준으로 작성됨
+// - 프로젝트(Project)는 기업이 등록한 과제이며, 관리자 권한으로만 접근 가능합니다.
+// - 전체 조회, 상세 조회, 수정, 삭제 API만 구현되었습니다.
+// - 모든 요청은 공통 인스턴스 axiosInstance.js(baseURL = '/api') 기준으로 구성됩니다.
+// =======================================================================================
 
-import axios from './axiosInstance.js'; // ✅ 공통 Axios 인스턴스 사용
-
-
+import axios from './axiosInstance.js'; // ✅ 공통 인스턴스 (baseURL = /api)
 
 // =======================================================================================
-// ✅ 프로젝트 전체조회 (관리자 전용)
+// ✅ 1. 프로젝트 전체 조회
 /*
-    - 매핑 방식: GET
-    - 요청 URL: /api/project
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: ProjectDto[] (전체 목록)
+- 매핑 방식: GET
+- 요청 URL: /project
+- 요청 헤더: Authorization: Bearer {token}
+- 응답 데이터: List<ProjectDto>
 */
 export const getProjectList = (token) => {
     return axios.get('/project', {
@@ -21,52 +22,48 @@ export const getProjectList = (token) => {
     });
 };
 
-
-
 // =======================================================================================
-// ✅ 프로젝트 상세 조회 (관리자 전용)
+// ✅ 2. 프로젝트 상세 조회
 /*
-    - 매핑 방식: GET
-    - 요청 URL: /admin/project/detail?pno={pno}
-    - 요청 파라미터: pno (QueryParam)
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: ProjectDto
+- 매핑 방식: GET
+- 요청 URL: /api/admin/project/detail?pno={pno}
+- 요청 헤더: Authorization: Bearer {token}
+- 응답 데이터: ProjectDto
 */
 export const getProjectDetail = (token, pno) => {
     return axios.get(`/admin/project/detail?pno=${pno}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
     });
 };
 
 // =======================================================================================
-// ✅ 6. 프로젝트 수정 요청 (기업 전용)
+// ✅ 3. 프로젝트 수정
 /*
-    - 매핑 방식: PUT
-    - 요청 URL: /api/project
-    - 요청 데이터: ProjectDto (RequestBody)
-    - 요청 헤더: Authorization: Bearer {token}, Content-Type: application/json
-    - 응답 데이터: Boolean
+- 매핑 방식: PUT
+- 요청 URL: /api/project/update
+- 요청 데이터: ProjectDto (FormData)
+- 요청 헤더: Authorization: Bearer {token}, Content-Type: multipart/form-data
+- 응답 데이터: Boolean
 */
-export const updateProject = (token, projectDto) => {
-    return axios.put('/project', projectDto, {
+export const updateProject = (token, formData) => {
+    return axios.put('/project/update', formData, {
         headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
         },
     });
 };
 
 // =======================================================================================
-// ✅ 7. 프로젝트 삭제 요청 (기업/관리자)
+// ✅ 4. 프로젝트 삭제
 /*
-    - 매핑 방식: DELETE
-    - 요청 URL: /api/project?pno={pno}
-    - 요청 파라미터: pno (QueryParam)
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: Boolean
+- 매핑 방식: DELETE (실제 삭제 방식)
+- 요청 URL: /api/admin/project/delete?pno={pno}
+- 요청 헤더: Authorization: Bearer {token}
+- 응답 데이터: Boolean
 */
 export const deleteProject = (token, pno) => {
-    return axios.delete('/project', {
+    return axios.delete(`/admin/project/delete`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { pno },
     });

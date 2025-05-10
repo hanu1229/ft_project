@@ -293,19 +293,153 @@ public class AdminService {
                 .orElse(null);
     }
 
-    // =======================================================================================
-// ✅ 7. 관리자 기반 프로젝트참여 전체 조회 서비스
+// =======================================================================================
+// ✅ 1. 관리자 기반 프로젝트참여 전체조회
 // =======================================================================================
 /*
-    - 설명: 프로젝트참여 전체 리스트를 가져옵니다.
-    - 반환: List<ProjectJoinDto>
+    - 설명: 프로젝트참여 전체 리스트를 조회하여 ProjectJoinDto 리스트로 반환합니다.
+    - 사용 위치: AdminController → /api/admin/project-join/alljoin
+    - 반환 조건:
+        • 프로젝트참여 테이블 전체 데이터를 조회하여 DTO 리스트로 변환
+        • 데이터가 없을 경우 빈 리스트([]) 반환
+    - 참고:
+        • .map(ProjectJoinEntity::toDto) : 엔티티를 DTO로 변환
+        • .collect(Collectors.toList()) : 변환된 DTO를 리스트로 수집
 */
+
     public List<ProjectJoinDto> getAllProjectJoins() {
         return projectJoinRepository.findAll().stream()
                 .map(ProjectJoinEntity::toDto)
                 .collect(Collectors.toList());
     }
 
+// =======================================================================================
+// ✅ 1. 관리자 기반 기업 삭제 (상태값 변경 방식)
+// =======================================================================================
+/*
+    - 설명: 관리자 권한으로 특정 기업의 상태(state)를 9로 변경하여 삭제 처리합니다.
+           실제 삭제는 하지 않고 상태값 변경을 통해 '삭제됨'으로 간주합니다.
+    - 사용 위치: AdminController → /api/admin/company/delete
+    - 반환 조건:
+        • 해당 기업번호(cno)가 존재하면 상태를 9로 수정하고 true 반환
+        • 존재하지 않으면 false 반환
+    - 참고:
+        • .map(entity -> { ... }) : Optional 내부 엔티티에 접근하여 수정
+        • entity.setState(9) : 상태값을 삭제 상태로 지정
+        • @Transactional이 선언되어 있다면 save 생략 가능
+*/
 
+    public boolean companyDelete(int cno) { // 1. 컨트롤러로부터 삭제(상태변경)할 기업 번호를 매개변수로 받는다.
+        // 2. 기업번호에 해당하는 엔티티(기업정보객체)를 찾아서 존재하면
+        return companyRepository.findById(cno).map(entity -> {
+            entity.setState(9); // 상태를 9로 수정(set)한다.
+            companyRepository.save(entity); // 수정한 정보를 반영(save) 한다. 서비스에서 @Transactional 사용 시 생략 가능.
+            return true; // 수정 성공 시 true 반환
+        }).orElse(false); // 기업번호에 해당하는 엔티티가 없으면 false 반환
+    }
+
+// =======================================================================================
+// ✅ 2. 관리자 기반 개발자 삭제 (boolean 상태값 기반)
+// =======================================================================================
+/*
+    - 설명: 관리자 권한으로 특정 개발자의 상태(dstate)를 false로 변경하여 삭제 처리합니다.
+           실제 삭제는 하지 않고 비활성화(true → false)로 간주합니다.
+    - 사용 위치: AdminController → /api/admin/developer/delete
+    - 반환 조건:
+        • 해당 개발자번호(dno)가 존재하면 상태를 false로 수정하고 true 반환
+        • 존재하지 않으면 false 반환
+*/
+
+    public boolean developerDelete(int dno) {
+        return developerRepository.findById(dno).map(entity -> {
+            entity.setDstate(false); // ✅ 상태를 false로 설정 → 삭제된 상태로 간주
+            developerRepository.save(entity);
+            return true;
+        }).orElse(false);
+    }
+
+// =======================================================================================
+// ✅ 3. 관리자 기반 기업평가 삭제 (상태값 변경 방식)
+// =======================================================================================
+/*
+    - 설명: 관리자 권한으로 특정 기업평가의 상태(crstate)를 9로 변경하여 삭제 처리합니다.
+           실제 삭제는 하지 않고 상태값 변경을 통해 '삭제됨'으로 간주합니다.
+    - 사용 위치: AdminController → /api/admin/crating/delete
+    - 반환 조건:
+        • 해당 평가번호(crno)가 존재하면 상태를 9로 수정하고 true 반환
+        • 존재하지 않으면 false 반환
+    - 참고:
+        • .map(entity -> { ... }) : Optional 내부 엔티티에 접근하여 수정
+        • entity.setCrstate(9) : 상태값을 삭제 상태로 지정
+        • @Transactional이 선언되어 있다면 save 생략 가능
+*/
+
+    public boolean cratingDelete(int crno) { // 1. 컨트롤러로부터 삭제(상태변경)할 기업평가 번호를 매개변수로 받는다.
+        // 2. 기업평가번호에 해당하는 엔티티(평가정보객체)를 찾아서 존재하면
+        return cratingRepository.findById(crno).map(entity -> {
+            entity.setCrstate(9); // 상태를 9로 수정(set)한다.
+            cratingRepository.save(entity); // 수정한 정보를 반영(save) 한다. 서비스에서 @Transactional 사용 시 생략 가능.
+            return true; // 수정 성공 시 true 반환
+        }).orElse(false); // 평가번호에 해당하는 엔티티가 없으면 false 반환
+    }
+
+// =======================================================================================
+// ✅ 4. 관리자 기반 개발자평가 삭제 (상태값 변경 방식)
+// =======================================================================================
+/*
+    - 설명: 관리자 권한으로 특정 개발자평가의 상태(drstate)를 9로 변경하여 삭제 처리합니다.
+           실제 삭제는 하지 않고 상태값 변경을 통해 '삭제됨'으로 간주합니다.
+    - 사용 위치: AdminController → /api/admin/drating/delete
+    - 반환 조건:
+        • 해당 평가번호(drno)가 존재하면 상태를 9로 수정하고 true 반환
+        • 존재하지 않으면 false 반환
+    - 참고:
+        • .map(entity -> { ... }) : Optional 내부 엔티티에 접근하여 수정
+        • entity.setDrstate(9) : 상태값을 삭제 상태로 지정
+        • @Transactional이 선언되어 있다면 save 생략 가능
+*/
+
+    public boolean dratingDelete(int drno) { // 1. 컨트롤러로부터 삭제(상태변경)할 개발자평가 번호를 매개변수로 받는다.
+        // 2. 개발자평가번호에 해당하는 엔티티(평가정보객체)를 찾아서 존재하면
+        return dratingRepository.findById(drno).map(entity -> {
+            entity.setDrstate(9); // 상태를 9로 수정(set)한다.
+            dratingRepository.save(entity); // 수정한 정보를 반영(save) 한다. 서비스에서 @Transactional 사용 시 생략 가능.
+            return true; // 수정 성공 시 true 반환
+        }).orElse(false); // 평가번호에 해당하는 엔티티가 없으면 false 반환
+    }
+
+// =======================================================================================
+// ✅ 5. 관리자 기반 프로젝트 삭제 서비스 (물리 삭제)
+// =======================================================================================
+/*
+    - 설명: 실제 DB에서 프로젝트를 삭제합니다.
+    - 사용 위치: AdminController → /api/admin/project/delete
+    - 반환 조건:
+        • 해당 프로젝트가 존재하면 삭제 후 true 반환
+        • 존재하지 않으면 false 반환
+*/
+
+    public boolean deleteProjectPhysically(int pno) {
+        if (!projectRepository.existsById(pno)) return false; // 존재하지 않으면 실패
+        projectRepository.deleteById(pno); // ✅ 실제 삭제 수행
+        return true;
+    }
+
+// =======================================================================================
+// ✅ 6. 관리자 기반 프로젝트참여 삭제 서비스 (물리 삭제)
+// =======================================================================================
+/*
+    - 설명: 실제 DB에서 프로젝트참여 데이터를 삭제합니다.
+    - 사용 위치: AdminController → /api/admin/project-join/delete
+    - 반환 조건:
+        • 해당 프로젝트참여가 존재하면 삭제 후 true 반환
+        • 존재하지 않으면 false 반환
+*/
+
+    public boolean deleteProjectJoinPhysically(int pjno) {
+        if (!projectJoinRepository.existsById(pjno)) return false; // 존재하지 않으면 실패
+        projectJoinRepository.deleteById(pjno); // ✅ 실제 삭제
+        return true;
+    }
 
 } // CE

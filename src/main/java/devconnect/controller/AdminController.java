@@ -8,6 +8,8 @@ package devconnect.controller;
 
 import devconnect.model.dto.*;
 import devconnect.model.dto.developer.DeveloperDto;
+import devconnect.model.repository.CratingRepository;
+import devconnect.model.repository.DratingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,8 @@ import java.util.Map;
 public class AdminController { // CS
 
     private final AdminService adminService; // [*] 서비스 계층 주입
+    private final CratingRepository cratingRepository;
+    private final DratingRepository dratingRepository;
 
     // =======================================================================================
     // [*] Bearer 토큰 제거 메서드
@@ -345,7 +349,7 @@ public class AdminController { // CS
 
 
 // =======================================================================================
-   // ✅ 7. 관리자 기반 프로젝트참여(개발자) 전체조회 API
+   // ✅ 1. 관리자 기반 프로젝트참여(개발자) 전체조회 API
 // =======================================================================================
 /*
     - 매핑 방식: GET
@@ -364,6 +368,159 @@ public class AdminController { // CS
         if (list == null || list.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(list);
     }
+// =======================================================================================
+// ✅ 1. 관리자 기반 기업 삭제 API (상태값 변경 방식)
+// =======================================================================================
+/*
+    - 매핑 방식: PUT (물리적 삭제가 아닌 상태 변경 방식)
+    - 요청 URL: /api/admin/company/delete
+    - 요청 파라미터: cno (Query Param, 기업 식별번호)
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: Boolean (true: 성공, false: 실패)
+*/
+
+    @PutMapping("/company/delete") // (1) 상태수정 라서  @PutMapping
+    public ResponseEntity<?> companyDelete(
+            // 2. 수정할 기업번호  와 관리자토큰 매개변수로 가져오기.
+            @RequestParam int cno , @RequestHeader("Authorization") String token ) {
+        // 3. 관리자 토큰 확인
+        AdminDto admin = adminService.adminFindById(extractToken(token));
+        if (admin == null) return ResponseEntity.status(403).build();
+        // 4. 토큰 확인 이후 서비스에게 삭제(상태변경) 요청
+        return adminService.companyDelete(cno)
+                ? ResponseEntity.ok(true)
+                : ResponseEntity.status(400).body(errorResponse(400, "기업 삭제 실패"));
+    }
+
+    // =======================================================================================
+// ✅ 2. 관리자 기반 개발자 삭제 API (상태값 변경 방식)
+// =======================================================================================
+/*
+    - 매핑 방식: PUT (물리적 삭제가 아닌 상태 변경 방식)
+    - 요청 URL: /api/admin/developer/delete
+    - 요청 파라미터: dno (Query Param, 개발자 식별번호)
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: Boolean (true: 성공, false: 실패)
+*/
+
+    @PutMapping("/developer/delete") // ✅ 상태수정 방식이므로 PUT 사용
+    public ResponseEntity<?> developerDelete(
+            @RequestParam int dno,
+            @RequestHeader("Authorization") String token
+    ) {
+        // 1. 관리자 토큰 검증
+        AdminDto admin = adminService.adminFindById(extractToken(token));
+        if (admin == null) return ResponseEntity.status(403).build(); // 인증 실패 시 403
+
+        // 2. 서비스 계층에 삭제(상태변경) 요청
+        return adminService.developerDelete(dno)
+                ? ResponseEntity.ok(true)
+                : ResponseEntity.status(400).body(errorResponse(400, "개발자 삭제 실패"));
+    }
+
+// =======================================================================================
+// ✅ 3. 관리자 기반 기업평가 삭제 API (상태값 변경 방식)
+// =======================================================================================
+/*
+    - 매핑 방식: PUT (물리적 삭제가 아닌 상태 변경 방식)
+    - 요청 URL: /api/admin/crating/delete
+    - 요청 파라미터: crno (Query Param, 기업평가 식별번호)
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: Boolean (true: 성공, false: 실패)
+*/
+
+    @PutMapping("/crating/delete") // ✅ 상태수정 방식이므로 PUT 사용
+    public ResponseEntity<?> cratingDelete(
+            @RequestParam int crno,
+            @RequestHeader("Authorization") String token
+    ) {
+        // 1. 관리자 토큰 검증
+        AdminDto admin = adminService.adminFindById(extractToken(token));
+        if (admin == null) return ResponseEntity.status(403).build(); // 인증 실패 시 403
+
+        // 2. 서비스 계층에 삭제(상태변경) 요청
+        return adminService.cratingDelete(crno)
+                ? ResponseEntity.ok(true)
+                : ResponseEntity.status(400).body(errorResponse(400, "기업평가 삭제 실패"));
+    }
+
+// =======================================================================================
+// ✅ 4. 관리자 기반 개발자평가 삭제 API (상태값 변경 방식)
+// =======================================================================================
+/*
+    - 매핑 방식: PUT (물리적 삭제가 아닌 상태 변경 방식)
+    - 요청 URL: /api/admin/drating/delete
+    - 요청 파라미터: drno (Query Param, 개발자평가 식별번호)
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: Boolean (true: 성공, false: 실패)
+*/
+
+    @PutMapping("/drating/delete") // ✅ 상태수정 방식이므로 PUT 사용
+    public ResponseEntity<?> dratingDelete(
+            @RequestParam int drno,
+            @RequestHeader("Authorization") String token
+    ) {
+        // 1. 관리자 토큰 검증
+        AdminDto admin = adminService.adminFindById(extractToken(token));
+        if (admin == null) return ResponseEntity.status(403).build(); // 인증 실패 시 403
+
+        // 2. 서비스 계층에 삭제(상태변경) 요청
+        return adminService.dratingDelete(drno)
+                ? ResponseEntity.ok(true)
+                : ResponseEntity.status(400).body(errorResponse(400, "개발자평가 삭제 실패"));
+    }
+
+// =======================================================================================
+// ✅ 5. 관리자 기반 프로젝트 삭제 API (물리적 삭제 방식)
+// =======================================================================================
+/*
+    - 매핑 방식: DELETE (실제 DB에서 프로젝트 데이터를 제거)
+    - 요청 URL: /api/admin/project/delete
+    - 요청 파라미터: pno (Query Param, 프로젝트 식별번호)
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: Boolean (true: 성공, false: 실패)
+*/
+
+    @DeleteMapping("/project/delete") // ✅ 실제 삭제 → HTTP DELETE 사용
+    public ResponseEntity<?> projectDelete(
+            @RequestParam int pno,
+            @RequestHeader("Authorization") String token
+    ) {
+        // 1. 관리자 토큰 검증
+        AdminDto admin = adminService.adminFindById(extractToken(token));
+        if (admin == null) return ResponseEntity.status(403).build(); // 인증 실패 시 403 반환
+
+        // 2. 서비스 계층에 실제 삭제 요청
+        return adminService.deleteProjectPhysically(pno)
+                ? ResponseEntity.ok(true)
+                : ResponseEntity.status(400).body(errorResponse(400, "프로젝트 삭제 실패"));
+    }
+
+// =======================================================================================
+// ✅ 6. 관리자 기반 프로젝트참여 삭제 API (물리적 삭제 방식)
+// =======================================================================================
+/*
+    - 매핑 방식: DELETE (실제 DB에서 프로젝트참여 데이터를 제거)
+    - 요청 URL: /api/admin/project-join/delete
+    - 요청 파라미터: pjno (Query Param, 프로젝트참여 식별번호)
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: Boolean (true: 성공, false: 실패)
+*/
+
+    @DeleteMapping("/project-join/delete") // ✅ 실제 삭제 → HTTP DELETE 사용
+    public ResponseEntity<?> projectJoinDelete(
+            @RequestParam int pjno,
+            @RequestHeader("Authorization") String token
+    ) {
+        // 1. 관리자 토큰 검증
+        AdminDto admin = adminService.adminFindById(extractToken(token));
+        if (admin == null) return ResponseEntity.status(403).build(); // 인증 실패 시 403
+
+        // 2. 서비스 계층에 실제 삭제 요청
+        return adminService.deleteProjectJoinPhysically(pjno)
+                ? ResponseEntity.ok(true)
+                : ResponseEntity.status(400).body(errorResponse(400, "프로젝트참여 삭제 실패"));
+    }
 
     // =======================================================================================
     // [X] 공통 오류 응답 메서드
@@ -373,5 +530,7 @@ public class AdminController { // CS
         errorMap.put("message", message);
         return errorMap;
     }
+
+
 
 } // CE

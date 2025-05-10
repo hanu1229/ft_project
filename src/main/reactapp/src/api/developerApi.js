@@ -1,19 +1,21 @@
 // =======================================================================================
 // developerApi.js | rw 25-05-09 최종 리팩토링
 // [설명]
-// - 관리자(Admin) 전용 개발자(Developer) API 요청 함수 모음
-// - 모든 요청은 axiosInstance.js의 baseURL(`/api`) 기준 상대경로로 구성됨
+// - 관리자(Admin) 권한으로 개발자(Developer) 정보를 조회, 수정, 삭제할 수 있는 API 함수 모음
+// - 모든 요청은 공통 인스턴스(axiosInstance.js)의 baseURL(`/api`)를 기준으로 상대경로 작성됨
 // =======================================================================================
 
-import axios from './axiosInstance.js'; // ✅ 공통 Axios 인스턴스 import
+import axios from './axiosInstance.js'; // ✅ 공통 인스턴스 기반 요청 (baseURL = /api)
+
 
 // =======================================================================================
-// ✅ 1. 전체 개발자 목록 조회 (관리자 전용)
+// ✅ 1. 관리자 기반 개발자 전체 조회
 /*
-    - 매핑 방식: GET
-    - 요청 URL: /api/admin/developer
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: List<DeveloperDto>
+- 매핑 방식: GET
+- 요청 URL: /api/developer/findall
+- 요청 데이터: 없음
+- 요청 헤더: Authorization: Bearer {token}
+- 응답 데이터: List<DeveloperDto>
 */
 export const getDeveloperList = (token) => {
     return axios.get('/developer/findall', {
@@ -23,29 +25,29 @@ export const getDeveloperList = (token) => {
 
 
 // =======================================================================================
-// ✅ 2. 개발자 상세 조회 (관리자 전용)
+// ✅ 2. 관리자 기반 개발자 상세 조회
 /*
-    - 매핑 방식: GET
-    - 요청 URL: /api/admin/developer/detail?dno={dno}
-    - 요청 파라미터: dno (Query Param)
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: DeveloperDto
+- 매핑 방식: GET
+- 요청 URL: /api/admin/developer/detail?dno={dno}
+- 요청 파라미터: dno (Query Param)
+- 요청 헤더: Authorization: Bearer {token}
+- 응답 데이터: DeveloperDto
 */
-// 올바른 버전 (token 포함)
 export const getDeveloperDetail = (token, dno) => {
     return axios.get(`/admin/developer/detail?dno=${dno}`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
 
+
 // =======================================================================================
-// ✅ 3. 개발자 정보 수정 (개인 또는 관리자)
+// ✅ 3. 관리자 기반 개발자 정보 수정
 /*
-    - 매핑 방식: PUT
-    - 요청 URL: /api/developer/update
-    - 요청 데이터: DeveloperDto (FormData)
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: Boolean
+- 매핑 방식: PUT
+- 요청 URL: /api/developer/update
+- 요청 데이터: DeveloperDto (FormData)
+- 요청 헤더: Authorization: Bearer {token}, Content-Type: multipart/form-data
+- 응답 데이터: Boolean
 */
 export const updateDeveloper = (token, formData) => {
     return axios.put('/developer/update', formData, {
@@ -56,37 +58,18 @@ export const updateDeveloper = (token, formData) => {
     });
 };
 
-// =======================================================================================
-// ✅ 4. 개발자 상태코드 수정 (관리자 전용)
-/*
-    - 매핑 방식: PUT
-    - 요청 URL: /api/developer/delete
-    - 요청 데이터: DeveloperDto (RequestBody - dno, dstate)
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: Boolean
-*/
-export const updateDeveloperState = (token, dto) => {
-    return axios.put('/developer/delete', dto, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        },
-    });
-};
 
 // =======================================================================================
-// ✅ 5. 개발자 삭제 요청 (관리자 전용)
+// ✅ 4. 관리자 기반 개발자 삭제 (상태값 변경 방식)
 /*
-    - 매핑 방식: DELETE
-    - 요청 URL: /api/developer?dno={dno}
-    - 요청 파라미터: dno (Query Param)
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: Boolean
+- 매핑 방식: PUT (논리 삭제 방식)
+- 요청 URL: /admin/developer/delete?dno={dno}
+- 요청 파라미터: dno (Query Param)
+- 요청 헤더: Authorization: Bearer {token}
+- 응답 데이터: Boolean (true: 성공, false: 실패)
 */
 export const deleteDeveloper = (dno, token) => {
-    return axios.delete(`/developer?dno=${dno}`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
+    return axios.put(`/admin/developer/delete?dno=${dno}`, {
+        headers: { Authorization: `Bearer ${token}` },
     });
 };

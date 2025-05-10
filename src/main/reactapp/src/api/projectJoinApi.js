@@ -1,89 +1,66 @@
 // =======================================================================================
-// projectJoinApi.js | rw 25-05-09 요청 주석 스타일 통일 최종본
+// projectJoinApi.js | rw 25-05-10 최종 리팩토링
 // [설명]
-// - 프로젝트 신청(ProjectJoin) 관련 관리자 및 기업/개발자 전용 API 요청 함수 모음
-// - 모든 요청은 공통 axiosInstance + tokenUtil 기반으로 처리됨
+// - 프로젝트참여(ProjectJoin)는 개발자가 프로젝트에 지원한 내역입니다.
+// - 관리자 권한으로 전체조회, 상세조회, 수정, 삭제만 수행합니다.
 // =======================================================================================
 
-import axios from './axiosInstance.js';
-import { getToken } from '../utils/tokenUtil';
+import axios from './axiosInstance.js'; // ✅ 공통 인스턴스 (baseURL = /api)
 
 // =======================================================================================
-// ✅ 1. 프로젝트참여 전체조회 (관리자 전용)
+// ✅ 1. 프로젝트참여 전체 조회
 /*
-    - 매핑 방식: GET
-    - 요청 URL: /admin/project-join/alljoin
-    - 요청 파라미터: (없음)
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: ProjectJoinDto[]
+- 매핑 방식: GET
+- 요청 URL: /admin/project-join/alljoin
+- 요청 헤더: Authorization: Bearer {token}
+- 응답 데이터: List<ProjectJoinDto>
 */
-export const getProjectJoinList = () => {
+export const getAllProjectJoins = (token) => {
     return axios.get('/admin/project-join/alljoin', {
-        headers: { Authorization: `Bearer ${getToken()}` }
+        headers: { Authorization: `Bearer ${token}` }
     });
 };
 
 // =======================================================================================
-// ✅ 2. 프로젝트참여 상세조회 (관리자 전용)
+// ✅ 2. 프로젝트참여 상세 조회
 /*
-    - 매핑 방식: GET
-    - 요청 URL: /admin/project-join/detail?pjno={pjno}
-    - 요청 파라미터: pjno (QueryParam)
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: ProjectJoinDto
+- 매핑 방식: GET
+- 요청 URL: /api/admin/project-join/detail?pjno={pjno}
+- 요청 헤더: Authorization: Bearer {token}
+- 응답 데이터: ProjectJoinDto
 */
-export const getProjectJoinDetail = (pjno) => {
+export const getProjectJoinDetail = (token, pjno) => {
     return axios.get(`/admin/project-join/detail?pjno=${pjno}`, {
-        headers: { Authorization: `Bearer ${getToken()}` }
+        headers: { Authorization: `Bearer ${token}` },
     });
 };
 
 // =======================================================================================
-// ✅ 3. 프로젝트 신청 상태 수정 (기업)
+// ✅ 3. 프로젝트참여 수정
 /*
-    - 매핑 방식: PUT
-    - 요청 URL: /project-join
-    - 요청 파라미터: (없음) - body에 ProjectJoinDto 포함
-    - 요청 헤더: Authorization: Bearer {token}, Content-Type: application/json
-    - 응답 데이터: Boolean
+- 매핑 방식: PUT
+- 요청 URL: /api/project-join/update
+- 요청 데이터: ProjectJoinDto (FormData 또는 JSON)
+- 요청 헤더: Authorization: Bearer {token}
+- 응답 데이터: Boolean
 */
-export const updateProjectJoin = (projectJoinDto) => {
-    return axios.put('/project-join', projectJoinDto, {
-        headers: {
-            Authorization: `Bearer ${getToken()}`,
-            'Content-Type': 'application/json',
-        },
+export const updateProjectJoin = (token, data) => {
+    return axios.put('/project-join/update', data, {
+        headers: { Authorization: `Bearer ${token}` },
     });
 };
 
 // =======================================================================================
-// ✅ 4. 프로젝트 신청 삭제 (관리자)
+// ✅ 4. 프로젝트참여 삭제
 /*
-    - 매핑 방식: DELETE
-    - 요청 URL: /project-join?pjno={pjno}
-    - 요청 파라미터: pjno (QueryParam)
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: Boolean
+- 매핑 방식: DELETE
+- 요청 URL: /api/admin/project-join/delete?pjno={pjno}
+- 요청 헤더: Authorization: Bearer {token}
+- 응답 데이터: Boolean
 */
-export const deleteProjectJoin = (pjno) => {
-    return axios.delete('/project-join', {
-        headers: { Authorization: `Bearer ${getToken()}` },
+export const deleteProjectJoin = (token, pjno) => {
+    return axios.delete('/admin/project-join/delete', {
+        headers: { Authorization: `Bearer ${token}` },
         params: { pjno },
-    });
-};
-
-// =======================================================================================
-// ✅ 5. 개발자 본인의 프로젝트 신청 내역 조회 (개발자)
-/*
-    - 매핑 방식: GET
-    - 요청 URL: /project-join/findall
-    - 요청 파라미터: pno, page, size, keyword (QueryParam, optional)
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: Page<ProjectJoinDto>
-*/
-export const getMyProjectJoins = ({ pno, page = 1, size = 5, keyword = '' }) => {
-    return axios.get('/project-join/findall', {
-        headers: { Authorization: `Bearer ${getToken()}` },
-        params: { pno, page, size, keyword },
     });
 };
