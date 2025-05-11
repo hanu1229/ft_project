@@ -62,13 +62,14 @@ public class ProjectController {
     @GetMapping("/paging")
     public ResponseEntity<List<ProjectDto>> findPagingProject(
             @RequestParam(name = "ptype", defaultValue = "0") int ptype,
+            @RequestParam(name = "rstatus", defaultValue = "0") int recruitment_status,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "5") int size
     ) {
         System.out.println("ProjectController.findPagingProject");
-        System.out.println("ptype = " + ptype + ", page = " + page + ", size = " + size);
-        Pageable pageable = PageRequest.of(page, size);
-        List<ProjectDto> result = projectService.findPagingProject(ptype, pageable);
+        System.out.println("ptype = " + ptype + " ,recruitment_status = " + recruitment_status + ", page = " + page + ", size = " + size);
+
+        List<ProjectDto> result = projectService.findPagingProject(ptype, recruitment_status, page, size);
         if(result == null || result.isEmpty()) { return ResponseEntity.status(404).body(null); }
         return ResponseEntity.status(200).body(result);
     }
