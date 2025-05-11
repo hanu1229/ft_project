@@ -36,17 +36,22 @@ export const getProjectJoinDetail = (token, pjno) => {
 };
 
 // =======================================================================================
-// ✅ 3. 프로젝트참여 수정
+// ✅ 3. 관리자 기반 프로젝트참여 수정 API (@RequestBody 방식)
+// =======================================================================================
 /*
 - 매핑 방식: PUT
-- 요청 URL: /api/project-join/update
-- 요청 데이터: ProjectJoinDto (FormData 또는 JSON)
+- 요청 URL: /api/admin/project-join/update
+- 요청 데이터: ProjectJoinDto (JSON)
 - 요청 헤더: Authorization: Bearer {token}
 - 응답 데이터: Boolean
 */
+
 export const updateProjectJoin = (token, data) => {
-    return axios.put('/project-join/update', data, {
-        headers: { Authorization: `Bearer ${token}` },
+    return axios.put('/admin/project-join/update', data, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
     });
 };
 

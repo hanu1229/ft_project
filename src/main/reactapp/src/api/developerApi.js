@@ -41,16 +41,22 @@ export const getDeveloperDetail = (token, dno) => {
 
 
 // =======================================================================================
-// ✅ 3. 관리자 기반 개발자 정보 수정
+// ✅ 3. 관리자 기반 개발자 정보 수정 요청 (FormData 전송 방식)
+// =======================================================================================
 /*
 - 매핑 방식: PUT
-- 요청 URL: /api/developer/update
-- 요청 데이터: DeveloperDto (FormData)
+- 요청 URL: /api/admin/developer/update
+- 요청 데이터: DeveloperDto (FormData → multipart/form-data)
 - 요청 헤더: Authorization: Bearer {token}, Content-Type: multipart/form-data
-- 응답 데이터: Boolean
+- 응답 데이터: Boolean (true = 성공, false = 실패)
+- 설명:
+    • 관리자 권한으로 개발자 정보를 수정합니다.
+    • 수정 가능한 항목: 이름, 연락처, 주소, 이메일, 레벨, 경험치, 비밀번호, 프로필 이미지 등
+    • dfile(MultipartFile)이 존재하면 파일 업로드 수행
+    • dno(PK)는 필수이며, 수정일(updateAt)은 서버에서 자동 설정됩니다.
 */
 export const updateDeveloper = (token, formData) => {
-    return axios.put('/developer/update', formData, {
+    return axios.put('/admin/developer/update', formData, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',

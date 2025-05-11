@@ -39,16 +39,21 @@ export const getCratingDetail = (token, crno) => {
 };
 
 // =======================================================================================
-// ✅ 3. 관리자 기반 기업 평가 수정
+// ✅ 3. 관리자 기반 기업 평가 수정 요청 (JSON 전송 방식)
+// =======================================================================================
 /*
 - 매핑 방식: PUT
-- 요청 URL: /api/crating
-- 요청 데이터: CratingDto (JSON)
+- 요청 URL: /api/admin/crating/update
+- 요청 데이터: CratingDto (application/json 형식)
 - 요청 헤더: Authorization: Bearer {token}, Content-Type: application/json
-- 응답 데이터: Boolean
+- 응답 데이터: Boolean (true = 성공, false = 실패)
+- 설명:
+    • 관리자 권한으로 기업 평가(crating)를 수정합니다.
+    • 수정 가능한 항목: 제목(ctitle), 내용(ccontent), 점수(crscore), 상태코드(crstate)
+    • 평가 번호(crno)는 필수이며, FK 정보(pno, dno)는 수정되지 않습니다.
 */
 export const updateCrating = (token, cratingDto) => {
-    return axios.put('/crating', cratingDto, {
+    return axios.put('/admin/crating/update', cratingDto, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',

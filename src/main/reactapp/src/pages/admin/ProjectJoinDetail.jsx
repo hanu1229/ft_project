@@ -1,11 +1,14 @@
 // =======================================================================================
-// ProjectJoinDetail.jsx | rw 25-05-10 최종 리팩토링
+// ProjectJoinDetail.jsx | rw 25-05-11 최종 안정화 (Select 도입, 관리자 전용 API 기준)
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getProjectJoinDetail, updateProjectJoin, deleteProjectJoin } from '../../api/projectJoinApi.js';
-import { Typography, Box, Input, Button, Divider, Modal, ModalDialog, ModalClose } from '@mui/joy';
+import { getProjectJoinDetail, updateProjectJoin, deleteProjectJoin } from '../../api/projectJoinApi';
+import {
+    Typography, Box, Button, Divider, Modal,
+    ModalDialog, ModalClose, Select, Option
+} from '@mui/joy';
 
 export default function ProjectJoinDetail() {
     const { pjno } = useParams();
@@ -14,31 +17,33 @@ export default function ProjectJoinDetail() {
     const [form, setForm] = useState(null);
     const [open, setOpen] = useState(false);
 
+    // ✅ 상세 조회
     useEffect(() => {
         const fetch = async () => {
             try {
                 const res = await getProjectJoinDetail(token, pjno);
                 setForm(res.data);
             } catch {
-                alert('상세 조회 실패');
+                alert('프로젝트참여 상세 조회 실패');
             }
         };
         fetch();
     }, [pjno, token]);
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
-
+    // ✅ 상태코드 변경 처리
     const handleUpdate = async () => {
         try {
-            const res = await updateProjectJoin(token, form);
+            const res = await updateProjectJoin(token, {
+                pjno: form.pjno,
+                pjtype: parseInt(form.pjtype, 10),
+            });
             if (res.data) alert('수정 완료');
         } catch {
             alert('수정 실패');
         }
     };
 
+    // ✅ 삭제 처리
     const handleDelete = async () => {
         try {
             const res = await deleteProjectJoin(token, pjno);
@@ -63,8 +68,15 @@ export default function ProjectJoinDetail() {
             <Divider sx={{ mb: 3 }} />
 
             <Box sx={{ maxWidth: 500, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Input name="pjcomment" value={form.pjcomment || ''} onChange={handleChange} placeholder="신청 메모" />
-                <Input name="pjstate" value={form.pjstate || ''} onChange={handleChange} placeholder="상태코드" />
+                <Select
+                    name="pjtype"
+                    value={form.pjtype?.toString() ?? ''}
+                    onChange={(e, value) => setForm({ ...form, pjtype: parseInt(value) })}
+                    placeholder="참여 상태 선택"
+                >
+                    <Option value="0">🚨 신고 접수됨</Option>
+                    <Option value="2">✅ 문제 없음 (반려 처리)</Option>
+                </Select>
 
                 <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
                     <Button onClick={handleUpdate} variant="outlined" sx={{ borderColor: '#12b886', color: '#12b886' }}>

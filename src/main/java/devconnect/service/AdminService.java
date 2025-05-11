@@ -10,6 +10,7 @@ import devconnect.model.dto.*;
 import devconnect.model.dto.developer.DeveloperDto;
 import devconnect.model.entity.*;
 import devconnect.model.repository.*;
+import devconnect.util.FileUtil;
 import devconnect.util.JwtUtil;
 
 import jakarta.persistence.EntityManager;
@@ -19,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -38,6 +41,7 @@ public class AdminService {
     private final DratingRepository dratingRepository;
     private final ProjectRepository projectRepository;
     private final ProjectJoinRepository projectJoinRepository;
+    private final FileUtil fileUtil;
 
     @PersistenceContext
     private EntityManager em;
@@ -441,5 +445,267 @@ public class AdminService {
         projectJoinRepository.deleteById(pjno); // ✅ 실제 삭제
         return true;
     }
+
+// =======================================================================================
+// ✅ 1. 관리자 기반 기업 수정  (@ModelAttribute 방식)
+// =======================================================================================
+/*
+    - 설명: 관리자가 기업 정보를 수정하는 기능입니다. 수정 가능한 항목은 기업명, 전화번호,
+            이메일, 주소, 사업자번호, 비밀번호(선택), 프로필 이미지(선택)입니다.
+    - 사용 위치: AdminController.updateCompany()
+    - 반환 조건:
+        • 기업이 존재하면 → 정보 수정 후 true 반환
+        • 기업이 존재하지 않거나 예외 발생 시 → false 반환
+    - 참고:
+        • MultipartFile이 존재하면 파일 업로드 후 기존 이미지 변경
+        • 비밀번호는 upcpwd로 전달되며, null이 아닌 경우에만 덮어씀
+        • 수정일(updateAt) 갱신 포함
+*/
+
+    public boolean updateCompany(CompanyDto dto) {
+        Optional<CompanyEntity> optional = companyRepository.findById(dto.getCno());
+
+        if (optional.isPresent()) {
+            CompanyEntity company = optional.get();
+
+            // 기본 정보 수정
+            company.setCname(dto.getCname());
+            company.setCphone(dto.getCphone());
+            company.setCadress(dto.getCadress());
+            company.setCemail(dto.getCemail());
+            company.setCbusiness(dto.getCbusiness());
+            company.setUpdateAt(LocalDateTime.now());
+
+            // 비밀번호 변경 (선택)
+            if (dto.getUpcpwd() != null && !dto.getUpcpwd().isEmpty()) {
+                company.setCpwd(dto.getUpcpwd());
+            }
+
+            // 프로필 이미지 업로드 (선택)
+            if (dto.getFile() != null && !dto.getFile().isEmpty()) {
+                String fileName = fileUtil.fileUpload(dto.getFile());  // ✅ 메서드명 일치
+                company.setCprofile("/upload/" + fileName);            // ✅ 접두어 추가
+            }
+
+            companyRepository.save(company);
+            return true;
+        }
+
+        return false;
+    }
+
+// =======================================================================================
+// ✅ 2. 관리자 기반 개발자 수정  (@ModelAttribute 방식)
+// =======================================================================================
+/*
+    - 설명: 관리자가 개발자 정보를 수정하는 기능입니다. 수정 가능한 항목은 이름, 연락처,
+            주소, 이메일, 레벨, 경험치, 프로필 이미지(선택) 등입니다.
+    - 사용 위치: AdminController.updateDeveloper()
+    - 반환 조건:
+        • 개발자가 존재하면 → 정보 수정 후 true 반환
+        • 개발자가 존재하지 않거나 예외 발생 시 → false 반환
+    - 참고:
+        • MultipartFile(dfile)이 존재하면 파일 업로드 후 기존 이미지 변경
+        • 수정일(updateAt) 갱신 포함
+*/
+
+    public boolean updateDeveloper(DeveloperDto dto) {
+        Optional<DeveloperEntity> optional = developerRepository.findById(dto.getDno());
+
+        if (optional.isPresent()) {
+            DeveloperEntity developer = optional.get();
+
+            // 1. 기본 정보 수정
+            developer.setDname(dto.getDname());
+            developer.setDphone(dto.getDphone());
+            developer.setDaddress(dto.getDaddress());
+            developer.setDemail(dto.getDemail());
+            developer.setDlevel(dto.getDlevel());
+            developer.setDcurrentExp(dto.getDcurrentExp());
+            developer.setDtotalExp(dto.getDtotalExp());
+            developer.setUpdateAt(LocalDateTime.now());
+
+            // 2. 비밀번호 수정 (선택)
+            if (dto.getDpwd() != null && !dto.getDpwd().isEmpty()) {
+                developer.setDpwd(dto.getDpwd()); // ⚠️ 필요 시 암호화
+            }
+
+            // 3. 프로필 이미지 수정 (선택)
+            if (dto.getDfile() != null && !dto.getDfile().isEmpty()) {
+                String fileName = fileUtil.fileUpload(dto.getDfile());
+                developer.setDprofile("/upload/" + fileName);
+            }
+
+            developerRepository.save(developer);
+            return true;
+        }
+
+        return false;
+    }
+
+// =======================================================================================
+// ✅ 3. 관리자 기반 기업평가 수정 (@RequestBody 방식)
+// =======================================================================================
+/*
+    - 설명: 관리자가 기업평가 내용을 수정하는 기능입니다.
+    - 사용 위치: AdminController.updateCrating()
+    - 반환 조건:
+        • 평가가 존재하면 → 항목 수정 후 true 반환
+        • 평가가 존재하지 않거나 예외 발생 시 → false 반환
+    - 참고:
+        • 수정 대상: 제목, 내용, 점수, 상태코드
+        • 프로젝트번호(pno), 개발자번호(dno)는 FK 관계상 수정하지 않음
+        • 수정일(updateAt) 수동 갱신 포함
+*/
+
+    public boolean updateCrating(CratingDto dto) {
+        Optional<CratingEntity> optional = cratingRepository.findById(dto.getCrno());
+
+        if (optional.isPresent()) {
+            CratingEntity crating = optional.get();
+
+            // 수정 필드 설정
+            crating.setCtitle(dto.getCtitle());
+            crating.setCcontent(dto.getCcontent());
+            crating.setCrscore(dto.getCrscore());
+            crating.setCrstate(dto.getCrstate());
+            crating.setUpdateAt(LocalDateTime.now());
+
+            cratingRepository.save(crating);
+            return true;
+        }
+
+        return false;
+    }
+
+// =======================================================================================
+// ✅ 4. 관리자 기반 개발자평가 수정 (@RequestBody 방식)
+// =======================================================================================
+/*
+    - 설명: 관리자가 개발자평가 내용을 수정하는 기능입니다.
+    - 사용 위치: AdminController.updateDrating()
+    - 반환 조건:
+        • 평가가 존재하면 → 항목 수정 후 true 반환
+        • 평가가 존재하지 않거나 예외 발생 시 → false 반환
+    - 참고:
+        • 수정 대상: 제목, 내용, 점수, 상태코드
+        • 프로젝트번호(pno), 개발자번호(dno)는 FK 관계상 수정하지 않음
+        • 수정일(updateAt) 수동 갱신 포함
+*/
+
+    public boolean updateDrating(DratingDto dto) {
+        Optional<DratingEntity> optional = dratingRepository.findById(dto.getDrno());
+
+        if (optional.isPresent()) {
+            DratingEntity drating = optional.get();
+
+            // 수정 대상 필드
+            drating.setDtitle(dto.getDtitle());
+            drating.setDcontent(dto.getDcontent());
+            drating.setDrscore(dto.getDrscore());
+            drating.setDrstate(dto.getDrstate());
+            drating.setUpdateAt(LocalDateTime.now());
+
+            dratingRepository.save(drating);
+            return true;
+        }
+
+        return false;
+    }
+
+// =======================================================================================
+// ✅ 5. 관리자 기반 프로젝트 수정 API (@ModelAttribute 방식)
+// =======================================================================================
+/*
+    - 설명: 관리자가 프로젝트 정보를 수정하는 기능입니다.
+    - 사용 위치: AdminController.updateProject()
+    - 반환 조건:
+        • 프로젝트가 존재하면 → 수정 후 true 반환
+        • 프로젝트가 존재하지 않거나 예외 발생 시 → false 반환
+    - 참고:
+        • 파일이 존재하면 업로드 후 기존 이미지 초기화 후 재등록
+        • 기업 연관 객체(companyEntity) 필요
+        • 수정일(updateAt) 수동 반영
+*/
+
+    public boolean updateProject(ProjectDto dto) {
+        Optional<ProjectEntity> optional = projectRepository.findById(dto.getPno());
+
+        if (optional.isPresent()) {
+            ProjectEntity project = optional.get();
+
+            // 1. 기업 객체 조회
+            CompanyEntity company = companyRepository.findById(dto.getCno()).orElse(null);
+            if (company == null) return false;
+
+            // 2. 기본 정보 수정
+            project.setPname(dto.getPname());
+            project.setPintro(dto.getPintro());
+            project.setPtype(dto.getPtype());
+            project.setPcomment(dto.getPcomment());
+            project.setPcount(dto.getPcount());
+            project.setPstart(dto.getPstart());
+            project.setPend(dto.getPend());
+            project.setRecruit_pstart(dto.getRecruit_pstart());
+            project.setRecruit_pend(dto.getRecruit_pend());
+            project.setPpay(dto.getPpay());
+            project.setCompanyEntity(company);
+            project.setUpdateAt(LocalDateTime.now());
+
+            // 3. 기존 이미지 삭제
+            project.getProjectImageEntityList().clear();
+
+            // 4. 새 이미지 저장 (있는 경우만)
+            if (dto.getFiles() != null && !dto.getFiles().isEmpty()) {
+                for (MultipartFile file : dto.getFiles()) {
+                    if (file != null && !file.isEmpty()) {
+                        String fileName = fileUtil.fileUploadProjectImage(file);
+                        ProjectImageEntity image = ProjectImageEntity.builder()
+                                .iname("/upload/project_image/" + fileName)
+                                .projectEntity(project)
+                                .build();
+                        project.getProjectImageEntityList().add(image);
+                    }
+                }
+            }
+
+            projectRepository.save(project);
+            return true;
+        }
+
+        return false;
+    }
+
+// =======================================================================================
+// ✅ 6. 관리자 기반 프로젝트참여 수정 API (@RequestBody 방식)
+// =======================================================================================
+/*
+    - 설명: 관리자가 프로젝트참여 상태(pjtype)를 수정하는 기능입니다.
+    - 사용 위치: AdminController.updateProjectJoin()
+    - 반환 조건:
+        • 신청 엔티티가 존재하면 → 상태 및 수정일 변경 후 true 반환
+        • 존재하지 않으면 false 반환
+    - 참고:
+        • 상태(pjtype)는 승인/대기/거절 등 상태코드로 해석
+        • 프로젝트 및 개발자 정보는 수정하지 않음
+        • 수정일 updateAt 수동 갱신
+*/
+
+    public boolean updateProjectJoin(ProjectJoinDto dto) {
+        Optional<ProjectJoinEntity> optional = projectJoinRepository.findById(dto.getPjno());
+
+        if (optional.isPresent()) {
+            ProjectJoinEntity join = optional.get();
+
+            join.setPjtype(dto.getPjtype());
+            join.setUpdateAt(LocalDateTime.now());
+
+            projectJoinRepository.save(join);
+            return true;
+        }
+
+        return false;
+    }
+
 
 } // CE

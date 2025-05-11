@@ -522,6 +522,169 @@ public class AdminController { // CS
                 : ResponseEntity.status(400).body(errorResponse(400, "프로젝트참여 삭제 실패"));
     }
 
+// =======================================================================================
+// ✅ 1. 관리자 기반 기업 수정 API (@ModelAttribute 방식)
+// =======================================================================================
+/*
+    - 매핑 방식: PUT
+    - 요청 URL: /api/admin/company/update
+    - 요청 데이터: CompanyDto (FormData → @ModelAttribute)
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: Boolean (true: 성공, false: 실패)
+*/
+
+    @PutMapping("/company/update")
+    public ResponseEntity<?> updateCompany(
+            @ModelAttribute CompanyDto dto,
+            @RequestHeader("Authorization") String token
+    ) {
+        // 1. 관리자 인증
+        AdminDto admin = adminService.adminFindById(extractToken(token));
+        if (admin == null) return ResponseEntity.status(403).build();
+
+        // 2. 서비스 호출 (수정 로직 포함)
+        boolean result = adminService.updateCompany(dto);
+
+        return result
+                ? ResponseEntity.ok(true)
+                : ResponseEntity.status(400).body(errorResponse(400, "기업 정보 수정 실패"));
+    }
+
+// =======================================================================================
+// ✅ 2. 관리자 기반 개발자 수정 API (@ModelAttribute 방식)
+// =======================================================================================
+/*
+    - 매핑 방식: PUT
+    - 요청 URL: /api/admin/developer/update
+    - 요청 데이터: DeveloperDto (FormData → @ModelAttribute)
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: Boolean (true: 성공, false: 실패)
+*/
+
+    @PutMapping("/developer/update")
+    public ResponseEntity<?> updateDeveloper(
+            @ModelAttribute DeveloperDto dto,
+            @RequestHeader("Authorization") String token
+    ) {
+        // 1. 관리자 인증
+        AdminDto admin = adminService.adminFindById(extractToken(token));
+        if (admin == null) return ResponseEntity.status(403).build();
+
+        // 2. 서비스 호출
+        boolean result = adminService.updateDeveloper(dto);
+
+        return result
+                ? ResponseEntity.ok(true)
+                : ResponseEntity.status(400).body(errorResponse(400, "개발자 정보 수정 실패"));
+    }
+
+// =======================================================================================
+// ✅ 3. 관리자 기반 기업평가 수정 API (@RequestBody 방식)
+// =======================================================================================
+/*
+    - 매핑 방식: PUT
+    - 요청 URL: /api/admin/crating/update
+    - 요청 데이터: CratingDto (JSON → @RequestBody)
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: Boolean (true: 성공, false: 실패)
+*/
+
+    @PutMapping("/crating/update")
+    public ResponseEntity<?> updateCrating(
+            @RequestBody CratingDto dto,
+            @RequestHeader("Authorization") String token
+    ) {
+        // 1. 관리자 인증
+        AdminDto admin = adminService.adminFindById(extractToken(token));
+        if (admin == null) return ResponseEntity.status(403).build();
+
+        // 2. 수정 요청
+        boolean result = adminService.updateCrating(dto);
+
+        return result
+                ? ResponseEntity.ok(true)
+                : ResponseEntity.status(400).body(errorResponse(400, "기업평가 수정 실패"));
+    }
+
+
+// =======================================================================================
+// ✅ 4. 관리자 기반 개발자평가 수정 API (@RequestBody 방식)
+// =======================================================================================
+/*
+    - 매핑 방식: PUT
+    - 요청 URL: /api/admin/drating/update
+    - 요청 데이터: DratingDto (JSON → @RequestBody)
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: Boolean (true: 성공, false: 실패)
+*/
+
+    @PutMapping("/drating/update")
+    public ResponseEntity<?> updateDrating(
+            @RequestBody DratingDto dto,
+            @RequestHeader("Authorization") String token
+    ) {
+        // 1. 관리자 인증
+        AdminDto admin = adminService.adminFindById(extractToken(token));
+        if (admin == null) return ResponseEntity.status(403).build();
+
+        // 2. 서비스 호출
+        boolean result = adminService.updateDrating(dto);
+
+        return result
+                ? ResponseEntity.ok(true)
+                : ResponseEntity.status(400).body(errorResponse(400, "개발자평가 수정 실패"));
+    }
+
+// =======================================================================================
+// ✅ 5. 관리자 기반 프로젝트 수정 API (@ModelAttribute 방식)
+// =======================================================================================
+/*
+    - 매핑 방식: PUT
+    - 요청 URL: /api/admin/project/update
+    - 요청 데이터: ProjectDto (FormData → @ModelAttribute)
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: Boolean (true: 성공, false: 실패)
+*/
+
+    @PutMapping("/project/update")
+    public ResponseEntity<?> updateProject(
+            @ModelAttribute ProjectDto dto,
+            @RequestHeader("Authorization") String token
+    ) {
+        AdminDto admin = adminService.adminFindById(extractToken(token));
+        if (admin == null) return ResponseEntity.status(403).build();
+
+        boolean result = adminService.updateProject(dto);
+        return result
+                ? ResponseEntity.ok(true)
+                : ResponseEntity.status(400).body(errorResponse(400, "프로젝트 수정 실패"));
+    }
+
+// =======================================================================================
+// ✅ 6. 관리자 기반 프로젝트참여 수정 API (@RequestBody 방식)
+// =======================================================================================
+/*
+    - 매핑 방식: PUT
+    - 요청 URL: /api/admin/project-join/update
+    - 요청 데이터: ProjectJoinDto (JSON → @RequestBody)
+    - 요청 헤더: Authorization: Bearer {token}
+    - 응답 데이터: Boolean (true: 성공, false: 실패)
+*/
+
+    @PutMapping("/project-join/update")
+    public ResponseEntity<?> updateProjectJoin(
+            @RequestBody ProjectJoinDto dto,
+            @RequestHeader("Authorization") String token
+    ) {
+        AdminDto admin = adminService.adminFindById(extractToken(token));
+        if (admin == null) return ResponseEntity.status(403).build();
+
+        boolean result = adminService.updateProjectJoin(dto);
+        return result
+                ? ResponseEntity.ok(true)
+                : ResponseEntity.status(400).body(errorResponse(400, "프로젝트 참여정보 수정 실패"));
+    }
+
     // =======================================================================================
     // [X] 공통 오류 응답 메서드
     private Map<String, Object> errorResponse(int status, String message) {
@@ -530,6 +693,8 @@ public class AdminController { // CS
         errorMap.put("message", message);
         return errorMap;
     }
+
+
 
 
 
