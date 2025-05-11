@@ -188,4 +188,16 @@ public class ProjectJoinService {
         } // if end
     } // f end
 
+    // 05-11 이민진 코드 추가
+    // 프로젝트에 참여한 개발자 조회(기업입장)
+    public Integer getCno( int pno ){
+        System.out.println("ProjectJoinService.getCno");
+        System.out.println("pno = " + pno);
+        if( projectRepository.existsById(pno)){
+            return projectJoinRepository.findCnoByPno( pno );
+        }else{
+            return null;
+        } // if end
+    } // f end
+
 }

@@ -1,5 +1,6 @@
 package devconnect.service;
 
+import devconnect.model.dto.CompanyDto;
 import devconnect.model.dto.developer.DeveloperDeleteDto;
 import devconnect.model.dto.developer.DeveloperDto;
 import devconnect.model.dto.developer.DeveloperPwdUpdateDto;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -192,6 +194,21 @@ public class DeveloperService {
         Page<DeveloperEntity> developerEntities = developerRepository.findBySearch( pageable );
         Page<DeveloperDto> developerList = developerEntities.map( DeveloperEntity::toDto );
         return developerList;
+    } // f end
+
+    // dno를 DeveloperDto로 변환
+    public List<DeveloperDto> findByDnoList(List<Integer> dnoList) {
+        List<Object[]> resultList = developerRepository.findDnoAndDnameByDnoList(dnoList);
+        List<DeveloperDto> dtoList = new ArrayList<>();
+        for (Object[] obj : resultList) {
+            int dno = (int) obj[0];
+            String dname = (String) obj[1];
+            DeveloperDto dto = new DeveloperDto();
+            dto.setDno(dno);
+            dto.setDname(dname);
+            dtoList.add(dto);
+        }
+        return dtoList;
     } // f end
 
 }
