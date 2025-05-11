@@ -270,8 +270,9 @@ public class ProjectService {
             LocalDateTime today = LocalDateTime.now();
             // 현재 날짜가 모집 시작일보다 클 때 수정 할 수 없도록 false 반환
             if(today.isAfter(projectEntity.getRecruit_pstart())) { return false; }
-            if(companyEntity.getCno() == projectEntity.getCompanyEntity().getCno()) {
-                projectRepository.deleteById(pno);
+            if(companyEntity.getCno() == projectEntity.getCompanyEntity().getCno() || projectEntity.getDelete_state() == 0) {
+                projectEntity.setDelete_state(1);
+                // projectRepository.deleteById(pno);
                 return true;
             }
         }

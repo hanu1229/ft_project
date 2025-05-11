@@ -1,7 +1,9 @@
 package devconnect.model.dto;
 
 import devconnect.model.entity.ProjectEntity;
+import jakarta.persistence.Column;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -37,6 +39,8 @@ public class ProjectDto {
     private int ppay;
     // 현재 모집 상태
     private int recruitment_status;
+    // 삭제 상태 | 1이면 삭제
+    private int delete_state;
     // 기업 번호(FK)
     private int cno;
     // 기업명

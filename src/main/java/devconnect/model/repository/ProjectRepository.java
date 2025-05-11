@@ -13,9 +13,6 @@ import java.util.List;
 @Repository
 public interface ProjectRepository extends JpaRepository<ProjectEntity, Integer> {
 
-    /// ● 직무에 따른 페이징
-   
-
     /// ● 기업별 프로젝트 출력을 위한 함수
     List<ProjectEntity> findAllByCompanyEntity_cno(int cno);
 
