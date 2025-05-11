@@ -35,6 +35,8 @@ public class ProjectDto {
     private LocalDateTime recruit_pend;
     // 페이
     private int ppay;
+    // 현재 모집 상태
+    private int recruitment_status;
     // 기업 번호(FK)
     private int cno;
     // 기업명

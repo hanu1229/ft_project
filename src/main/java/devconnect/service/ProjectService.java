@@ -21,6 +21,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -108,9 +111,13 @@ public class ProjectService {
         List<ProjectEntity> projectEntityList = projectRepository.findAllByCompanyEntity_cno(cno);
         List<ProjectDto> projectDtoList = new ArrayList<>();
         if(!projectEntityList.isEmpty()) {
+            LocalDateTime today = LocalDateTime.now();
             for(int index = 0; index < projectEntityList.size(); index++) {
                 ProjectEntity projectEntity = projectEntityList.get(index);
                 ProjectDto projectDto = projectEntity.toDto();
+                if(today.isAfter(projectDto.getRecruit_pstart())) {
+                    projectDto.setRecruitment_status(2);
+                }
                 projectDto.setCno(projectEntity.getCompanyEntity().getCno());
                 projectDtoList.add(projectDto);
             }
@@ -121,30 +128,46 @@ public class ProjectService {
     /// | 프로젝트 전체조회 - 페이징 | <br/>
     /// ● 모든 프로젝트를 조회
     // http://localhost:8080/api/project/paging?ptype=0&page=0&size=0
-    public List<ProjectDto> findPagingProject(int ptype, Pageable pageable) {
+    public List<ProjectDto> findPagingProject(int ptype, int recruitment_status, int page, int size) {
         System.out.println("ProjectService.findPagingProject");
         Page<ProjectEntity> projectEntityPageList;
         List<ProjectEntity> projectEntityList;
-        if(ptype >= 1) {
-            projectEntityPageList = projectRepository.findByPtype(ptype, pageable);
+        Pageable pageable = PageRequest.of(page, size);
+        // 현재 날짜 및 시간
+        LocalDateTime ldt = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+        String today = ldt.format(formatter);
+        String typeMsg = (ptype == 0) ? "직무 : 전체" : ptype == 1 ? "직무 : 백엔드" : ptype == 2 ? "직무 : 프론트엔드" : "직무 : 없음";
+        if(recruitment_status == 0) {
+            System.out.println(">> 모집기간 : 전체, " + typeMsg);
+            projectEntityPageList = (ptype == 0) ? projectRepository.findAll(pageable) : projectRepository.findByPtype(ptype, pageable);
+        } else if(recruitment_status == 1) {
+            System.out.println(">> 모집기간 : 모집 전, " + typeMsg);
+            projectEntityPageList = (ptype == 0) ? projectRepository.findByBefore(today, pageable) : projectRepository.findByBefore(ptype, today, pageable);
+        } else if(recruitment_status == 2) {
+            System.out.println(">> 모집기간 : 모집 중, " + typeMsg);
+            projectEntityPageList = (ptype == 0) ? projectRepository.findByIng(today, pageable) : projectRepository.findByIng(ptype, today, pageable);
+        } else if(recruitment_status == 3) {
+            System.out.println(">> 모집기간 : 모집 후, " + typeMsg);
+            projectEntityPageList = (ptype == 0) ? projectRepository.findByAfter(today, pageable) : projectRepository.findByAfter(ptype, today, pageable);
         } else {
-            projectEntityPageList = projectRepository.findAll(pageable);
+            projectEntityPageList = null;
         }
-        // Page<ProjectEntity> projectEntityPageList = projectRepository.findAll(pageable);
+
+        if(projectEntityPageList == null) { return null; }
         projectEntityList = projectEntityPageList.getContent();
         int totalPages = projectEntityPageList.getTotalPages();
         long totalData = projectEntityPageList.getTotalElements();
         System.out.println("totalPage = " + totalPages + ", totalData = " + totalData);
         List<ProjectDto> projectDtoList = new ArrayList<>();
-        System.out.println(">> " + projectEntityList);
+        System.out.println(">> projectEntityList = " + projectEntityList);
         if(!projectEntityList.isEmpty()) {
             for(int index = 0; index < projectEntityList.size(); index++) {
                 ProjectEntity projectEntity = projectEntityList.get(index);
                 ProjectDto projectDto = projectEntity.toDto();
                 projectDto.setCno(projectEntity.getCompanyEntity().getCno());
-                // 추가
                 projectDto.setCprofile(projectEntity.getCompanyEntity().getCprofile());
-                System.out.println(">> " + projectDto.getCprofile());
+                //System.out.println(">> projectDto.getCprofile() = " + projectDto.getCprofile());
                 projectDtoList.add(projectDto);
             }
         }
@@ -159,6 +182,7 @@ public class ProjectService {
         // 토큰의 데이터에 있는 회사가 있는지 확인하는 부분
         String id = jwtUtil.valnoateToken(token);
         String code = jwtUtil.returnCode(id);
+        LocalDateTime today = LocalDateTime.now();
         if(code.equals("Company")) {
             Optional<ProjectEntity> optional = projectRepository.findById(pno);
             if(optional.isPresent()) {
@@ -178,6 +202,13 @@ public class ProjectService {
                 if(companyEntity == null) { return null; }
                 projectDto.setCname(companyEntity.getCname());
                 projectDto.setCprofile(companyEntity.getCprofile());
+                if(today.isAfter(projectDto.getRecruit_pend())) {
+                    projectDto.setRecruitment_status(3);
+                }else if(!today.isBefore(projectDto.getRecruit_pstart()) && !today.isAfter(projectDto.getRecruit_pend())) {
+                    projectDto.setRecruitment_status(2);
+                } else if(today.isBefore(projectDto.getRecruit_pstart())) {
+                    projectDto.setRecruitment_status(1);
+                }
                 System.out.println("projectDto = " + projectDto);
                 return projectDto;
             }
@@ -204,6 +235,9 @@ public class ProjectService {
         Optional<ProjectEntity> optional = projectRepository.findById(projectDto.getPno());
         if(optional.isPresent()) {
             ProjectEntity projectEntity = optional.get();
+            LocalDateTime today = LocalDateTime.now();
+            // 현재 날짜가 모집 시작일보다 클 때 수정 할 수 없도록 false 반환
+            if(today.isAfter(projectEntity.getRecruit_pstart())) { return false; }
             if(companyEntity.getCno() == projectEntity.getCompanyEntity().getCno()) {
                 if(!projectEntity.getPname().equals(projectDto.getPname())) { projectEntity.setPname(projectDto.getPname()); }
                 if(!projectEntity.getPintro().equals(projectDto.getPintro())) { projectEntity.setPintro(projectDto.getPintro()); }
@@ -233,6 +267,9 @@ public class ProjectService {
         Optional<ProjectEntity> optional = projectRepository.findById(pno);
         if(optional.isPresent()) {
             ProjectEntity projectEntity = optional.get();
+            LocalDateTime today = LocalDateTime.now();
+            // 현재 날짜가 모집 시작일보다 클 때 수정 할 수 없도록 false 반환
+            if(today.isAfter(projectEntity.getRecruit_pstart())) { return false; }
             if(companyEntity.getCno() == projectEntity.getCompanyEntity().getCno()) {
                 projectRepository.deleteById(pno);
                 return true;
