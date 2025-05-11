@@ -1,89 +1,69 @@
 // =======================================================================================
-// projectApi.js | rw 25-05-08 관리자 전용 구조로 리팩토링
+// projectApi.js | rw 25-05-10 최종 리팩토링
 // [설명]
-// - 프로젝트(Project) 관련 API 요청 함수 모음 (관리자 전용)
-// - 모든 요청은 관리자 토큰 기반 인증이 필요하며 CRUD 기능 지원
+// - 프로젝트(Project)는 기업이 등록한 과제이며, 관리자 권한으로만 접근 가능합니다.
+// - 전체 조회, 상세 조회, 수정, 삭제 API만 구현되었습니다.
+// - 모든 요청은 공통 인스턴스 axiosInstance.js(baseURL = '/api') 기준으로 구성됩니다.
 // =======================================================================================
 
-import axios from './axiosInstance.js'; // ✅ 공통 Axios 인스턴스 사용
+import axios from './axiosInstance.js'; // ✅ 공통 인스턴스 (baseURL = /api)
 
 // =======================================================================================
-// ✅ 1. 전체 프로젝트 목록 조회 (관리자 전용)
+// ✅ 1. 프로젝트 전체 조회
 /*
-    - 매핑 방식: GET
-    - 요청 URL: /api/project/all
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: List<ProjectDto>
+- 매핑 방식: GET
+- 요청 URL: /project
+- 요청 헤더: Authorization: Bearer {token}
+- 응답 데이터: List<ProjectDto>
 */
 export const getProjectList = (token) => {
-    return axios.get('/project/all', {
+    return axios.get('/project', {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+};
+
+// =======================================================================================
+// ✅ 2. 프로젝트 상세 조회
+/*
+- 매핑 방식: GET
+- 요청 URL: /api/admin/project/detail?pno={pno}
+- 요청 헤더: Authorization: Bearer {token}
+- 응답 데이터: ProjectDto
+*/
+export const getProjectDetail = (token, pno) => {
+    return axios.get(`/admin/project/detail?pno=${pno}`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
 
 // =======================================================================================
-// ✅ 2. 프로젝트 상세 조회 (관리자 전용)
+// ✅ 3. 프로젝트 수정
 /*
-    - 매핑 방식: GET
-    - 요청 URL: /api/project/detail?pno=#
-    - 요청 파라미터: pno (QueryParam)
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: ProjectDto
+- 매핑 방식: PUT
+- 요청 URL: /api/project/update
+- 요청 데이터: ProjectDto (FormData)
+- 요청 헤더: Authorization: Bearer {token}, Content-Type: multipart/form-data
+- 응답 데이터: Boolean
 */
-export const getProjectDetail = (pno, token) => {
-    return axios.get(`/project/detail`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { pno },
-    });
-};
-
-// =======================================================================================
-// ✅ 3. 프로젝트 등록 (관리자 전용)
-/*
-    - 매핑 방식: POST
-    - 요청 URL: /api/project
-    - 요청 데이터: ProjectDto (JSON)
-    - 요청 헤더: Authorization: Bearer {token}, Content-Type: application/json
-    - 응답 데이터: Boolean
-*/
-export const createProject = (token, dto) => {
-    return axios.post('/project', dto, {
+export const updateProject = (token, formData) => {
+    return axios.put('/project/update', formData, {
         headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'multipart/form-data',
         },
     });
 };
 
 // =======================================================================================
-// ✅ 4. 프로젝트 수정 (관리자 전용)
+// ✅ 4. 프로젝트 삭제
 /*
-    - 매핑 방식: PUT
-    - 요청 URL: /api/project
-    - 요청 데이터: ProjectDto (JSON)
-    - 요청 헤더: Authorization: Bearer {token}, Content-Type: application/json
-    - 응답 데이터: Boolean
+- 매핑 방식: DELETE (실제 삭제 방식)
+- 요청 URL: /api/admin/project/delete?pno={pno}
+- 요청 헤더: Authorization: Bearer {token}
+- 응답 데이터: Boolean
 */
-export const updateProject = (token, dto) => {
-    return axios.put('/project', dto, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
-    });
-};
-
-// =======================================================================================
-// ✅ 5. 프로젝트 삭제 (관리자 전용)
-/*
-    - 매핑 방식: DELETE
-    - 요청 URL: /api/project/delete?pno=#
-    - 요청 파라미터: pno (QueryParam)
-    - 요청 헤더: Authorization: Bearer {token}
-    - 응답 데이터: Boolean
-*/
-export const deleteProject = (pno, token) => {
-    return axios.delete(`/project/delete`, {
+export const deleteProject = (token, pno) => {
+    return axios.delete(`/admin/project/delete`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { pno },
     });

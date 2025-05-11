@@ -1,120 +1,91 @@
 // =======================================================================================
-// DeveloperList.jsx | rw 25-05-08 리팩토링 - 공통 컴포넌트 적용
-// [설명]
-// - 관리자 전용 개발자 목록 페이지
-// - 필터 + 검색 + 삭제 + 상세 이동 포함
+// DeveloperList.jsx | rw 25-05-10 최종 리팩토링
+// [설명] 관리자 전용 개발자 목록 + 삭제 기능
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getDeveloperList, deleteDeveloper } from '../../api/developerApi.js';
 import {
-    getDeveloperList,
-    deleteDeveloper
-} from '../../api/developerApi';
-import FilterSearchBar from '../../components/FilterSearchBar';
-import ConfirmDeleteModal from '../../components/ConfirmDeleteModal';
-import EntityCard from '../../components/EntityCard';
-
-import { Box, Typography, Grid } from '@mui/joy';
+    Typography, Grid, Card, Box, Button, Modal, ModalDialog, ModalClose
+} from '@mui/joy';
 
 export default function DeveloperList() {
+    const [list, setList] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [deleteTarget, setDeleteTarget] = useState(null);
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
 
-    const [list, setList] = useState([]);
-    const [filter, setFilter] = useState('all');
-    const [search, setSearch] = useState('');
-    const [deleteTarget, setDeleteTarget] = useState(null);
-    const [open, setOpen] = useState(false);
-
-    // =======================================================================================
-    // ✅ 목록 불러오기
-    // =======================================================================================
+    // ✅ 개발자 목록 조회
     useEffect(() => {
-        const fetchList = async () => {
+        const fetch = async () => {
             try {
                 const res = await getDeveloperList(token);
-                setList(res.data || []);
-            } catch (err) {
-                console.error(err);
+                setList(res.data);
+            } catch {
                 alert('개발자 목록 조회 실패');
             }
         };
-        fetchList();
+        fetch();
     }, [token]);
 
-    // =======================================================================================
-    // ✅ 필터 및 검색 적용된 목록 필터링
-    // =======================================================================================
-    const filteredList = list.filter((item) => {
-        const matchesFilter = filter === 'all' || String(item.dstate) === filter;
-        const matchesSearch =
-            item.dname?.includes(search) || item.demail?.includes(search);
-        return matchesFilter && matchesSearch;
-    });
-
-    // =======================================================================================
     // ✅ 삭제 처리
-    // =======================================================================================
     const handleDelete = async () => {
         try {
-            const res = await deleteDeveloper(token, deleteTarget);
+            const res = await deleteDeveloper(deleteTarget, token);
             if (res.data) {
-                setList((prev) => prev.filter((d) => d.dno !== deleteTarget));
-                setOpen(false);
-                setDeleteTarget(null);
+                alert('삭제 완료');
+                setList(prev => prev.filter(d => d.dno !== deleteTarget));
             }
-        } catch (err) {
+        } catch {
             alert('삭제 실패');
+        } finally {
+            setOpen(false);
+            setDeleteTarget(null);
         }
     };
 
     return (
-        <Box sx={{ px: 3, py: 3, bgcolor: '#fff' }}>
-            <Typography level="h3" sx={{ mb: 3, color: '#087f5b', fontWeight: 'bold' }}>
-                👨‍💻 개발자 목록
+        <Box sx={{ px: 3, py: 3 }}>
+            <Typography level="h3" sx={{ mb: 3, color: '#12b886', fontWeight: 'bold' }}>
+                개발자 목록
             </Typography>
 
-            <FilterSearchBar
-                filter={filter}
-                setFilter={setFilter}
-                search={search}
-                setSearch={setSearch}
-                filterOptions={[
-                    { value: 'all', label: '전체' },
-                    { value: '0', label: '대기' },
-                    { value: '1', label: '승인' },
-                    { value: '9', label: '삭제' },
-                ]}
-            />
-
             <Grid container spacing={2}>
-                {filteredList.map((dev) => (
-                    <Grid key={dev.dno} xs={12} md={6} lg={4}>
-                        <EntityCard
-                            title={`개발자번호: ${dev.dno}`}
-                            statusCode={dev.dstate}
-                            statusType="developer"
-                            info={[
-                                { label: '이름', value: dev.dname },
-                                { label: '이메일', value: dev.demail },
-                                { label: '전화번호', value: dev.dphone },
-                            ]}
-                            onDetail={() => navigate(`/admin/developer/${dev.dno}`)}
-                            onDelete={() => {
-                                setDeleteTarget(dev.dno);
-                                setOpen(true);
-                            }}
-                        />
+                {list.map(d => (
+                    <Grid key={d.dno} xs={12} sm={6} md={4}>
+                        <Card>
+                            <Typography level="title-md" sx={{ color: '#12b886', fontWeight: 'bold' }}>
+                                {d.dname}
+                            </Typography>
+                            <Box sx={{ fontSize: 14, mt: 1 }}>
+                                <p><strong>번호:</strong> {d.dno}</p>
+                                <p><strong>이메일:</strong> {d.demail}</p>
+                                <p><strong>상태:</strong> {d.dstate ? '정상' : '비활성'}</p>
+                            </Box>
+                            <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+                                <Button onClick={() => navigate(`/admin/developer/${d.dno}`)}>상세</Button>
+                                <Button color="danger" onClick={() => { setDeleteTarget(d.dno); setOpen(true); }}>
+                                    삭제
+                                </Button>
+                            </Box>
+                        </Card>
                     </Grid>
                 ))}
             </Grid>
 
-            <ConfirmDeleteModal
-                open={open}
-                onClose={() => setOpen(false)}
-                onConfirm={handleDelete}
-            />
+            <Modal open={open} onClose={() => setOpen(false)}>
+                <ModalDialog variant="outlined">
+                    <ModalClose />
+                    <Typography level="h4">정말 삭제하시겠습니까?</Typography>
+                    <Typography level="body-sm">이 작업은 되돌릴 수 없습니다.</Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                        <Button variant="soft" onClick={() => setOpen(false)}>취소</Button>
+                        <Button color="danger" onClick={handleDelete}>삭제</Button>
+                    </Box>
+                </ModalDialog>
+            </Modal>
         </Box>
     );
 }
