@@ -1,10 +1,10 @@
 // =======================================================================================
-// ProjectJoinList.jsx | rw 25-05-10 최종 리팩토링
+// ProjectJoinList.jsx | rw 25-05-11 관리자 전용 API 기반 리팩토링
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllProjectJoins } from '../../api/projectJoinApi.js';
+import { getAllProjectJoins } from '../../api/projectJoinApi';
 import { Typography, Grid, Card, Box, Divider, Button } from '@mui/joy';
 
 export default function ProjectJoinList() {

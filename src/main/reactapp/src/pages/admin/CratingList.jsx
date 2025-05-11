@@ -1,11 +1,10 @@
 // =======================================================================================
-// CratingList.jsx | rw 25-05-10 최종 리팩토링
-// [설명] 관리자 전용 기업 평가 전체 목록 + 상세 이동
+// CratingList.jsx | rw 25-05-11 최종 안정화 (관리자 전용 기업평가 목록)
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCratingList } from '../../api/cratingApi.js';
+import { getCratingList } from '../../api/cratingApi';
 import {
     Typography, Grid, Card, Box, Divider, Button
 } from '@mui/joy';
@@ -14,7 +13,6 @@ export default function CratingList() {
     const [list, setList] = useState([]);
     const navigate = useNavigate();
 
-    // ✅ 평가 목록 조회
     useEffect(() => {
         const fetch = async () => {
             try {
@@ -22,7 +20,7 @@ export default function CratingList() {
                 const res = await getCratingList(token, { page: 1, size: 100 });
                 setList(res.data.content || []);
             } catch {
-                alert('목록 조회 실패');
+                alert('기업평가 목록 조회 실패');
             }
         };
         fetch();
@@ -43,7 +41,7 @@ export default function CratingList() {
                             </Typography>
                             <Divider sx={{ my: 1 }} />
                             <Box sx={{ fontSize: 14 }}>
-                                <p><strong>기업번호:</strong> {cr.cno}</p>
+                                <p><strong>개발자번호:</strong> {cr.dno}</p>
                                 <p><strong>점수:</strong> {cr.crscore}</p>
                                 <p><strong>상태:</strong> {cr.crstate}</p>
                             </Box>

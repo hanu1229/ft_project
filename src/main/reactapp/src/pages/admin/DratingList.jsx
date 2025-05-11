@@ -1,11 +1,10 @@
 // =======================================================================================
-// DratingList.jsx | rw 25-05-10 최종 리팩토링
-// [설명] 관리자 전용 개발자 평가 목록 + 상세 이동
+// DratingList.jsx | rw 25-05-11 최종 안정화 (관리자 전용 개발자 평가 목록)
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDratingList } from '../../api/dratingApi.js';
+import { getDratingList } from '../../api/dratingApi';
 import {
     Typography, Grid, Card, Box, Divider, Button
 } from '@mui/joy';
@@ -21,7 +20,7 @@ export default function DratingList() {
                 const res = await getDratingList(token, { page: 1, size: 100 });
                 setList(res.data.content || []);
             } catch {
-                alert('목록 조회 실패');
+                alert('개발자 평가 목록 조회 실패');
             }
         };
         fetch();

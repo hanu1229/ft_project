@@ -37,16 +37,23 @@ export const getCompanyDetail = (token, cno) => {
 };
 
 // =======================================================================================
-// ✅ 3. 관리자 기반 기업 수정
+// ✅ 3. 관리자 기반 기업 정보 수정 요청 (FormData 전송 방식)
+// =======================================================================================
 /*
 - 매핑 방식: PUT
-- 요청 URL: /api/company/update
-- 요청 데이터: CompanyDto (FormData)
+- 요청 URL: /api/admin/company/update
+- 요청 데이터: CompanyDto (multipart/form-data 형식)
 - 요청 헤더: Authorization: Bearer {token}, Content-Type: multipart/form-data
-- 응답 데이터: Boolean
+- 응답 데이터: Boolean (true = 성공, false = 실패)
+
+- 설명:
+• 관리자 권한으로 기업 정보를 수정하는 요청을 보냅니다.
+• 수정 가능한 필드: cname, cphone, cadress, cemail, cbusiness
+• 선택적 수정 항목: 비밀번호(upcpwd), 프로필 이미지(file)
+• 파일이 있을 경우 서버에서 이미지 업로드 수행
 */
 export const updateCompany = (token, formData) => {
-    return axios.put('/company/update', formData, {
+    return axios.put('/admin/company/update', formData, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',

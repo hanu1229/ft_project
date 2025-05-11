@@ -169,7 +169,7 @@ export default function CompanyList() {
                 ))}
             </Grid>
 
-            {/* ✅ 삭제 확인 모달 */}
+            {/* ✅ 삭제 확인 모델 */}
             <Modal open={open} onClose={() => setOpen(false)}>
                 <ModalDialog variant="outlined" sx={{ bgcolor: '#fff', color: '#000' }}>
                     <ModalClose />
@@ -177,7 +177,7 @@ export default function CompanyList() {
                         정말 삭제하시겠습니까?
                     </Typography>
                     <Typography level="body-sm" sx={{ my: 1 }}>
-                        이 작업은 되돌릴 수 없습니다.
+                        이 작업은 도보를 수 없습니다.
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
                         <Button variant="soft" onClick={() => setOpen(false)}>취소</Button>
