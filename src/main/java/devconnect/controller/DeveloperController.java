@@ -1,7 +1,12 @@
 package devconnect.controller;
 
+import devconnect.model.dto.ProjectDto;
 import devconnect.model.dto.developer.DeveloperDto;
 import devconnect.model.dto.developer.DeveloperPwdUpdateDto;
+import devconnect.model.entity.DeveloperEntity;
+import devconnect.model.entity.DratingEntity;
+import devconnect.model.entity.ProjectEntity;
+import devconnect.model.entity.ProjectJoinEntity;
 import devconnect.service.DeveloperService;
 import devconnect.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/developer")
@@ -117,6 +124,21 @@ public class DeveloperController {
         Page< DeveloperDto > result = developerService.ranking( page, size, keyword );
         return ResponseEntity.status( 200 ).body( result );
 
+    } // f end
+
+    // 9. 개발자 기술 스택, 기업 평가 기반 전체 프로젝트 정렬 알고리즘
+    @GetMapping("/sortproject")
+    public ResponseEntity< Page<ProjectDto> > sortProjectByDno(
+            @RequestHeader("Authorization") String token,
+            @RequestParam( defaultValue = "1" ) int page,
+            @RequestParam( defaultValue = "5" ) int size ){
+        int logInDno;
+        try{ logInDno = developerService.info( token ).getDno();
+        }catch( Exception e ){ return ResponseEntity.status( 401 ).body( null ); }
+
+        Page<ProjectDto> result = developerService.sortProjectByDno( logInDno, page, size );
+        if( result != null ){ return ResponseEntity.status( 200 ).body( result ); }
+        else{ return ResponseEntity.status( 403 ).build(); }
     } // f end
 
 }

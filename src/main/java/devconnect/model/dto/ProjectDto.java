@@ -51,6 +51,8 @@ public class ProjectDto {
     private List<MultipartFile> files = new ArrayList<>();
     // 이미지명
     private List<String> images = new ArrayList<>();
+    // 정렬 점수
+    private double pscore;
 
     /// Dto --> Entity
     public ProjectEntity toEntity() {
@@ -58,6 +60,29 @@ public class ProjectDto {
                 .pno(this.pno).pname(this.pname).pintro(this.pintro).ptype(this.ptype)
                 .pcomment(this.pcomment).pcount(this.pcount).pstart(this.pstart).pend(this.pend)
                 .recruit_pstart(this.recruit_pstart).recruit_pend(this.recruit_pend).ppay(this.ppay)
+                .build();
+    }
+
+    public static ProjectDto toEntryDto( ProjectEntity entity, double pscore ) {
+        return ProjectDto.builder()
+                .pno( entity.getPno() )
+                .pname( entity.getPname() )
+                .pintro( entity.getPintro() )
+                .ptype( entity.getPtype() )
+                .pcomment( entity.getPcomment() )
+                .pcount( entity.getPcount() )
+                .pstart( entity.getPstart() )
+                .pend( entity.getPend() )
+                .recruit_pstart( entity.getRecruit_pstart() )
+                .recruit_pend( entity.getRecruit_pend() )
+                .ppay( entity.getPpay() )
+                .recruitment_status( entity.toDto().getRecruitment_status() )
+                .cno( entity.getCompanyEntity().getCno() )
+                .cname( entity.getCompanyEntity().getCname() )
+                .createAt( entity.getCreateAt() )
+                .updateAt (entity.getUpdateAt() )
+                .cprofile( entity.getCompanyEntity().getCprofile() )
+                .pscore( pscore )
                 .build();
     }
 

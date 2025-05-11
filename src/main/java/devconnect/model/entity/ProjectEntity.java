@@ -73,6 +73,11 @@ public class ProjectEntity extends BaseTime {
     @Builder.Default @ToString.Exclude
     private List<ProjectImageEntity> projectImageEntityList = new ArrayList<>();
 
+    // 프로젝트 기술스택 조인
+    @OneToMany(mappedBy = "projectEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default @ToString.Exclude
+    private List<ProjectTechStackEntity> projectTechStackList = new ArrayList<>();
+
     /// Entity --> Dto
     public ProjectDto toDto() {
         return ProjectDto.builder()
