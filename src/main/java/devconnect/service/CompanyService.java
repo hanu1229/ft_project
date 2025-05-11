@@ -1,6 +1,7 @@
 package devconnect.service;
 
 import devconnect.model.dto.CompanyDto;
+import devconnect.model.dto.developer.DeveloperDto;
 import devconnect.model.entity.CompanyEntity;
 import devconnect.model.repository.CompanyRepository;
 import devconnect.util.FileUtil;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -233,6 +235,11 @@ public class CompanyService {
         String newHashedPassword = pwdEncoder.encode(companyDto.getUpcpwd()); //새 비밀번호 암호화
         companyEntity.setCpwd(newHashedPassword);
         return true; //성공시 true 반환
+    }
+
+    public CompanyDto findByCno(int cno) {
+        CompanyEntity company = companyRepository.findById(cno).orElseThrow(() -> new RuntimeException("Company not found"));
+        return company.toDto();
     }
 
 }

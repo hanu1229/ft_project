@@ -30,4 +30,7 @@ public interface ProjectJoinRepository extends JpaRepository<ProjectJoinEntity, 
 
     @Query("select pj.developerEntity.dno from ProjectJoinEntity pj where pj.projectEntity.pno = :pno")
     List<Integer> findDnoByPno( @Param("pno") int pno );
+
+    @Query("select pj.projectEntity.companyEntity.cno from ProjectJoinEntity pj where pj.projectEntity.pno = :pno")
+    Integer findCnoByPno(@Param("pno") int pno);
 }
