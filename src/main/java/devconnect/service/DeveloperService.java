@@ -236,7 +236,8 @@ public class DeveloperService {
                             .count();
 
                     // 기술 스택 적합도 (0~10점)
-                    double matchScore = totalRequiredStacks == 0 ? 0.0 : ( (double) matchCount / totalRequiredStacks ) * 10;
+                    double matchScore = totalRequiredStacks == 0 ? 0.0 :
+                            ( (double) matchCount / totalRequiredStacks ) * 10;
 
                     // 해당 프로젝트가 평가한 개발자들의 평균 점수 (0~5점)
                     List<CratingEntity> cratingEntityList = project.getCratingEntityList();
@@ -303,7 +304,7 @@ public class DeveloperService {
                             dratings.stream().mapToInt(DratingEntity::getDrscore).average().orElse(0.0);
 
                     // 최종 종합 점수
-                    double totalScore = matchScore + avgRating;
+                    double totalScore = matchScore + avgRating * 2;
 
                     return Map.entry(dev, totalScore);
                 })

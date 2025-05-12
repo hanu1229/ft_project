@@ -7,8 +7,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface TechStackListRepository extends JpaRepository<TechStackListEntity, Integer> {
     // 1. 로그인된 기술스택 삭제
     void deleteByDeveloperEntity_Dno( int dno );
+
+    // 2.
+    List<TechStackListEntity> findByDeveloperEntity_Dno(int dno );
 }
