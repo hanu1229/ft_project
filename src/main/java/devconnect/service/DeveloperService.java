@@ -1,21 +1,20 @@
 package devconnect.service;
 
 import devconnect.model.dto.CompanyDto;
+import devconnect.model.dto.ProjectDto;
 import devconnect.model.dto.developer.DeveloperDeleteDto;
 import devconnect.model.dto.developer.DeveloperDto;
 import devconnect.model.dto.developer.DeveloperPwdUpdateDto;
-import devconnect.model.entity.DeveloperEntity;
+import devconnect.model.entity.*;
 import devconnect.model.repository.DeveloperRepository;
+import devconnect.model.repository.ProjectRepository;
 import devconnect.util.ApiResponse;
 import devconnect.util.FileUtil;
 import devconnect.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DeveloperService {
     private final DeveloperRepository developerRepository;
+    private final ProjectRepository projectRepository;
     private final JwtUtil jwtUtil;
     private final FileUtil fileUtil;
     @Autowired
@@ -65,7 +66,6 @@ public class DeveloperService {
 
         return true;
     } // f end
-
 
     // 2. 로그인
     public ApiResponse<String> logIn( DeveloperDto developerDto ){
@@ -210,5 +210,106 @@ public class DeveloperService {
         }
         return dtoList;
     } // f end
+
+    // 9. 개발자 기술 스택, 기업 평가 기반 전체 프로젝트 정렬 알고리즘
+    public Page<ProjectDto> sortProjectByDno( int logInDno, int page, int size ) {
+        if( logInDno < 0 ){ return null; }
+        DeveloperEntity developer = developerRepository.findByDno( logInDno );
+
+        // 개발자 보유 스택 tsno 리스트
+        List<Integer> tsnList = developer.getTechStackListEntityList().stream()
+                .map( ( tsl ) -> tsl.getTechStackEntity().getTsno() )
+                .collect(Collectors.toList());
+
+        List<ProjectEntity> allProjectEntityList = projectRepository.findAll();
+
+        List<ProjectDto> projectDtoList = allProjectEntityList.stream()
+                .map(project -> {
+                    // 프로젝트 요구 스택 tsno 리스트
+                    List<Integer> ptsList = project.getProjectTechStackList().stream()
+                            .map( ( pts ) -> pts.getTechStackEntity().getTsno() )
+                            .collect( Collectors.toList() );
+
+                    int totalRequiredStacks = ptsList.size();
+                    long matchCount = tsnList.stream()
+                            .filter( ptsList::contains ) // ptsList에 포함되는 것만 필터링
+                            .count();
+
+                    // 기술 스택 적합도 (0~10점)
+                    double matchScore = totalRequiredStacks == 0 ? 0.0 : ( (double) matchCount / totalRequiredStacks ) * 10;
+
+                    // 해당 프로젝트가 평가한 개발자들의 평균 점수 (0~5점)
+                    List<CratingEntity> cratingEntityList = project.getCratingEntityList();
+                    double avgCrating = cratingEntityList.isEmpty() ? 0.0 :
+                            cratingEntityList.stream()
+                                    .mapToDouble( CratingEntity::getCrscore )
+                                    .average()
+                                    .orElse( 0.0 );
+
+                    // 총점: 가중치 조정 가능
+                    double totalScore = matchScore + avgCrating;
+
+                    return Map.entry( project, totalScore );
+                })
+                .sorted( ( a, b ) ->
+                        Double.compare( b.getValue(), a.getValue() ) )
+                .map( ( entry ) -> {
+                    ProjectEntity project = entry.getKey();
+                    double score = entry.getValue();
+                    return ProjectDto.toEntryDto( project, score );
+                })
+                .collect( Collectors.toList() );
+
+        // 페이징 처리
+        int start = page * size;
+        int end = Math.min(start + size, projectDtoList.size());
+        if ( start >= projectDtoList.size() ) {
+            return Page.empty();
+        }
+
+        List<ProjectDto> pagedList = projectDtoList.subList( start, end );
+        return new PageImpl<>( pagedList, PageRequest.of( page, size ), projectDtoList.size() );
+    } // f end
+
+    // 10. 기술 스택, 평가 점수 적합도 기반 정렬
+    public List<DeveloperEntity> sortApplicantsByMatchAndRating( ProjectEntity project ) {
+        List<Integer> tsnoList = project.getProjectTechStackList().stream()
+                .map(pts -> pts.getTechStackEntity().getTsno() )
+                .collect( Collectors.toList() );
+
+        List<DeveloperEntity> developerEntityList = project.getProjectJoinEntityList().stream()
+                .map( ProjectJoinEntity::getDeveloperEntity )
+                .distinct()
+                .collect( Collectors.toList() );
+
+        int totalRequiredStacks = tsnoList.size();
+
+        return developerEntityList.stream()
+                .map(dev -> {
+                    List<Integer> devTsnos = dev.getTechStackListEntityList().stream()
+                            .map(tsl -> tsl.getTechStackEntity().getTsno())
+                            .collect(Collectors.toList());
+
+                    long matchCount = devTsnos.stream()
+                            .filter( tsnoList::contains )
+                            .count();
+
+                    // 기술 스택 적합도 점수 (0~10)
+                    double matchScore = totalRequiredStacks == 0 ? 0.0 : ((double) matchCount / totalRequiredStacks) * 10.0;
+
+                    // 평균 평가 점수 (drating 평균, 0~5)
+                    List<DratingEntity> dratings = dev.getDratingEntityList();
+                    double avgRating = dratings.isEmpty() ? 0.0 :
+                            dratings.stream().mapToInt(DratingEntity::getDrscore).average().orElse(0.0);
+
+                    // 최종 종합 점수
+                    double totalScore = matchScore + avgRating;
+
+                    return Map.entry(dev, totalScore);
+                })
+                .sorted((a, b) -> Double.compare(b.getValue(), a.getValue())) // 내림차순 정렬
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
 
 }

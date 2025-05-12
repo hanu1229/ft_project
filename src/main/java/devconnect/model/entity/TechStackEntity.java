@@ -26,6 +26,11 @@ public class TechStackEntity extends BaseTime{
     @ToString.Exclude
     private List<TechStackListEntity> techStackListEntityList = new ArrayList<>();
 
+    // 프로젝트 기술스택 조인
+    @OneToMany(mappedBy = "techStackEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default @ToString.Exclude
+    private List<ProjectTechStackEntity> projectTechStackList = new ArrayList<>();
+
     public TechStackDto toDto(){
         return TechStackDto.builder()
                 .tsno( this.tsno )

@@ -46,7 +46,7 @@ public class ProjectService {
 
     /// | 프로젝트 등록 | <br/>
     /// <b>회사</b>가 프로젝트를 등록<br/>
-    public boolean writeProject(String token, ProjectDto projectDto) {
+    public int writeProject(String token, ProjectDto projectDto) {
         System.out.println("ProjectService.writeProject");
         System.out.println("token = " + token + "\nprojectDto = " + projectDto);
         // 토큰의 데이터에 있는 회사가 있는지 확인하는 부분
@@ -74,10 +74,10 @@ public class ProjectService {
                          projectImageRepository.save(projectImageEntity);
                      }
                  }
-                return true;
+                return projectEntity.getPno();
             }
         }
-        return false;
+        return 0;
     }
 
     /// | 프로젝트 전체조회 | <br/>

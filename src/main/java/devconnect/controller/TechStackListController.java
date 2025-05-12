@@ -4,7 +4,6 @@ import devconnect.model.dto.TechStack.TechStackListViewDto;
 import devconnect.model.dto.TechStack.TeckStackListWriteDto;
 import devconnect.service.DeveloperService;
 import devconnect.service.TechStackListService;
-import devconnect.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
