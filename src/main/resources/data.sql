@@ -11,7 +11,7 @@ VALUES
 ( 'taehwan', '$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '김태환', '010-6743-2211', '광주광역시 서구 쌍촌동', 'taehwan@kakao.com', 'default.jpg', 2, 90, 180, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
 ( 'leesunwoo', '$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '이선우', '010-3939-2929', '부산광역시 해운대구 우동', 'sunwoo.lee@gmail.com', 'default.jpg', 3, 130, 260, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
 ( 'qwe123', '$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '테스트', '010-7777-8888', '울산광역시 남구 무거동', 'jangminho@outlook.com', 'default.jpg', 5, 300, 600, '2024-04-01 10:00:00', '2024-04-01 10:00:00' );
--- ( 'hanu1229', '$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '한웅재', '010-4640-7877', '인천시 연수구 연수1동', 'hanu1229@gmail.com', 'default.jpg', 2, 0, 200, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
+
 
 -- 기술스택 샘플 데이터 10개
 INSERT INTO techstack( tsname, tsexp )

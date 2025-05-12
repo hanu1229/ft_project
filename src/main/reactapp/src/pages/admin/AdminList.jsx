@@ -16,7 +16,7 @@ import {
 } from '@mui/joy';
 import { FaTrash } from 'react-icons/fa';
 import StatusBadge from '../../components/StatusBadge.jsx';       // ✅ 상태 뱃지
-import ConfirmDeleteModal from '../../components/ConfirmDeleteModal.jsx'; // ✅ 공용 삭제 모달
+// import ConfirmDeleteModal from '../../components/ConfirmDeleteModal.jsx'; // ✅ 공용 삭제 모달
 
 export default function AdminList() {
     const [adminList, setAdminList] = useState([]);
@@ -130,13 +130,13 @@ export default function AdminList() {
             </Box>
 
             {/* ✅ 삭제 확인 모달 */}
-            <ConfirmDeleteModal
+            {/* <ConfirmDeleteModal
                 open={open}
                 onClose={() => setOpen(false)}
                 onConfirm={handleDelete}
                 title="관리자 삭제"
                 description="삭제된 관리자는 복구할 수 없습니다."
-            />
+            /> */}
         </Box>
     );
 }
