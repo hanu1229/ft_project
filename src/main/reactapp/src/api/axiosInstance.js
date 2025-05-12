@@ -19,7 +19,7 @@ import { getToken } from '../utils/tokenUtil.js';  // JWT 토큰 추출 유틸
              각 api/*.js 파일에서 상대 경로만 덧붙이도록 구성
 */
 const instance = axios.create({
-    baseURL: 'http://localhost:8080/api',  // 모든 요청은 /api 하위에서 전송됨
+    baseURL: 'http://springflutter-env.eba-wcmytm7g.ap-northeast-2.elasticbeanstalk.com/api',  // 모든 요청은 /api 하위에서 전송됨
     headers: {
         'Content-Type': 'application/json',  // 기본 JSON 전송 형식
     },

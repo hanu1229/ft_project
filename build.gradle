@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.4'
     id 'io.spring.dependency-management' version '1.1.7'
+    // Node Gradle 플러그인 추가
+    id "com.github.node-gradle.node" version "7.0.1" // 최신 호환 버전 확인 권장
 }
 
 group = 'org.example'
@@ -37,8 +39,69 @@ dependencies {
 
     // Validation (유효성 검사용) | Admin 25-04-26
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // 8. AWS S3
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.1.1'
+
+
 }
 
 test {
     useJUnitPlatform()
 }
+
+// ===================================================
+// Node Gradle 플러그인 설정
+node {
+    version = '18.17.0' // 프로젝트에 맞는 Node.js 버전 지정
+    download = true
+    npmWorkDir = file("${project.projectDir}/src/main/reactapp") // React 프로젝트 경로
+}
+
+
+// --- React 빌드 관련 Task 정의 (이전과 동일) ---
+
+// 1. npm install 실행 Task (React 의존성 설치)
+task npmInstallReact(type: NpmTask) {
+    description = "Install Node.js dependencies from package.json"
+    workingDir = file("${project.projectDir}/src/main/reactapp") // <<<--- 작업 디렉토리 명시적 지정
+    args = ['install']
+    // dependsOn npmCacheClean // 이전 오류 라인 (필요시 복구/수정)
+    inputs.file("src/main/reactapp/package.json")
+    inputs.file("src/main/reactapp/package-lock.json") // 또는 yarn.lock
+    outputs.dir("src/main/reactapp/node_modules")
+}
+
+// 2. npm run build 실행 Task (React 앱 빌드)
+task npmBuildReact(type: NpmTask) {
+    description = "Build the React application using npm run build"
+    dependsOn npmInstallReact
+    workingDir = file("${project.projectDir}/src/main/reactapp") // <<<--- 작업 디렉토리 명시적 지정
+    args = ['run', 'build']
+    inputs.dir("src/main/reactapp/src")
+    inputs.dir("src/main/reactapp/public")
+    inputs.file("src/main/reactapp/package.json")
+    // *** 사용하는 React 빌드 도구에 맞춰 'dist' 또는 'build'로 수정하세요! ***
+    outputs.dir("src/main/reactapp/dist")
+}
+
+task copyReactBuild(type: Copy) {
+    description = "Copy React build output to Spring Boot static resources"
+    dependsOn npmBuildReact
+    // *** 사용하는 React 빌드 도구에 맞춰 'dist' 또는 'build'로 수정! ***
+    from "${project.projectDir}/src/main/reactapp/dist"
+    into "${project.buildDir}/resources/main/static"
+}
+
+// --- Task 의존성 설정 (이전과 동일) ---
+processResources {
+    dependsOn copyReactBuild
+}
+
+// --- Clean Task (이전과 동일) ---
+clean {
+    delete file("${project.projectDir}/src/main/reactapp/node_modules")
+    // *** 사용하는 React 빌드 도구에 맞춰 'dist' 또는 'build'로 수정! ***
+    delete file("${project.projectDir}/src/main/reactapp/dist")
+}
+
