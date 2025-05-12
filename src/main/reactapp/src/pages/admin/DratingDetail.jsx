@@ -1,11 +1,10 @@
 // =======================================================================================
-// DratingDetail.jsx | rw 25-05-10 최종 리팩토링
-// [설명] 관리자 전용 개발자 평가 상세조회 + 수정 + 삭제
+// DratingDetail.jsx | rw 25-05-11 최종 안정화 (관리자 전용 개발자 평가 상세/수정/삭제)
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getDratingDetail, updateDrating, deleteDrating } from '../../api/dratingApi.js';
+import { getDratingDetail, updateDrating, deleteDrating } from '../../api/dratingApi';
 import {
     Typography, Box, Input, Button, Divider,
     Modal, ModalDialog, ModalClose
@@ -15,7 +14,6 @@ export default function DratingDetail() {
     const { drno } = useParams();
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
-
     const [form, setForm] = useState(null);
     const [open, setOpen] = useState(false); // 삭제 모달
 
@@ -70,8 +68,8 @@ export default function DratingDetail() {
             <Divider sx={{ mb: 3 }} />
 
             <Box sx={{ maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Input name="drtitle" value={form.drtitle || ''} onChange={handleChange} placeholder="제목" />
-                <Input name="drcontent" value={form.drcontent || ''} onChange={handleChange} placeholder="내용" />
+                <Input name="dtitle" value={form.dtitle || ''} onChange={handleChange} placeholder="제목" />
+                <Input name="dcontent" value={form.dcontent || ''} onChange={handleChange} placeholder="내용" />
                 <Input name="drscore" type="number" value={form.drscore || ''} onChange={handleChange} placeholder="점수" />
                 <Input name="drstate" value={form.drstate || ''} onChange={handleChange} placeholder="상태코드" />
 
@@ -79,9 +77,7 @@ export default function DratingDetail() {
                     <Button onClick={handleUpdate} variant="outlined" sx={{ borderColor: '#12b886', color: '#12b886' }}>
                         수정
                     </Button>
-                    <Button color="danger" onClick={() => setOpen(true)}>
-                        삭제
-                    </Button>
+                    <Button color="danger" onClick={() => setOpen(true)}>삭제</Button>
                 </Box>
             </Box>
 

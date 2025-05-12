@@ -1,25 +1,22 @@
 // =======================================================================================
-// CratingDetail.jsx | rw 25-05-10 최종 리팩토링
-// [설명] 관리자 전용 기업 평가 상세조회 + 수정 + 삭제
+// CratingDetail.jsx | rw 25-05-11 최종 안정화 (관리자 전용 기업평가 상세/수정/삭제)
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getCratingDetail, updateCrating, deleteCrating } from '../../api/cratingApi.js';
+import { getCratingDetail, updateCrating, deleteCrating } from '../../api/cratingApi';
 import {
-    Typography, Box, Input, Button, Divider,
-    Modal, ModalDialog, ModalClose
+    Typography, Box, Input, Button, Divider, Modal,
+    ModalDialog, ModalClose, Select, Option
 } from '@mui/joy';
 
 export default function CratingDetail() {
     const { crno } = useParams();
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
-
     const [form, setForm] = useState(null);
-    const [open, setOpen] = useState(false); // 삭제 모달 상태
+    const [open, setOpen] = useState(false);
 
-    // ✅ 기업 평가 상세 조회
     useEffect(() => {
         const fetch = async () => {
             try {
@@ -70,22 +67,29 @@ export default function CratingDetail() {
             <Divider sx={{ mb: 3 }} />
 
             <Box sx={{ maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Input name="crtitle" value={form.crtitle || ''} onChange={handleChange} placeholder="제목" />
-                <Input name="crcontent" value={form.crcontent || ''} onChange={handleChange} placeholder="내용" />
+                <Input name="ctitle" value={form.ctitle || ''} onChange={handleChange} placeholder="제목" />
+                <Input name="ccontent" value={form.ccontent || ''} onChange={handleChange} placeholder="내용" />
                 <Input name="crscore" type="number" value={form.crscore || ''} onChange={handleChange} placeholder="점수" />
-                <Input name="crstate" value={form.crstate || ''} onChange={handleChange} placeholder="상태코드" />
+
+                <Select
+                    name="crstate"
+                    value={form.crstate?.toString() ?? ''}
+                    onChange={(e, value) => setForm({ ...form, crstate: parseInt(value) })}
+                    placeholder="상태 선택"
+                >
+                    <Option value="0">📥 대기</Option>
+                    <Option value="1">✅ 승인</Option>
+                    <Option value="2">❌ 반려</Option>
+                </Select>
 
                 <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
                     <Button onClick={handleUpdate} variant="outlined" sx={{ borderColor: '#12b886', color: '#12b886' }}>
                         수정
                     </Button>
-                    <Button color="danger" onClick={() => setOpen(true)}>
-                        삭제
-                    </Button>
+                    <Button color="danger" onClick={() => setOpen(true)}>삭제</Button>
                 </Box>
             </Box>
 
-            {/* 삭제 확인 모달 */}
             <Modal open={open} onClose={() => setOpen(false)}>
                 <ModalDialog variant="outlined" sx={{ bgcolor: '#fff' }}>
                     <ModalClose />

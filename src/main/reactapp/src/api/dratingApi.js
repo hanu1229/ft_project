@@ -39,16 +39,21 @@ export const getDratingDetail = (token, drno) => {
 };
 
 // =======================================================================================
-// ✅ 3. 관리자 기반 개발자 평가 수정
+// ✅ 3. 관리자 기반 개발자 평가 수정 요청 (JSON 전송 방식)
+// =======================================================================================
 /*
 - 매핑 방식: PUT
-- 요청 URL: /api/drating
-- 요청 데이터: DratingDto (JSON)
+- 요청 URL: /api/admin/drating/update
+- 요청 데이터: DratingDto (application/json 형식)
 - 요청 헤더: Authorization: Bearer {token}, Content-Type: application/json
-- 응답 데이터: Boolean
+- 응답 데이터: Boolean (true = 성공, false = 실패)
+- 설명:
+    • 관리자 권한으로 개발자 평가(drating)를 수정합니다.
+    • 수정 가능한 항목: 제목(dtitle), 내용(dcontent), 점수(drscore), 상태코드(drstate)
+    • 평가 번호(drno)는 필수이며, FK 정보(pno, dno)는 수정되지 않습니다.
 */
 export const updateDrating = (token, dratingDto) => {
-    return axios.put('/drating', dratingDto, {
+    return axios.put('/admin/drating/update', dratingDto, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
