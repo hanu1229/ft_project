@@ -34,4 +34,16 @@ public class BaseTime {
         this.updateAt = updateAt;
     }
 
+// =======================================================================================
+    // 3 [수동 시간 수정용] updateAt 값 수동 설정 메서드 | adim 25-05-11
+// =======================================================================================
+/*
+    - 목적: Spring JPA Auditing의 @LastModifiedDate는 자동 주입만 지원함.
+            특정 상황에서 updateAt을 직접 설정하려면 수동 setter가 필요함.
+    - 사용 위치: 서비스 또는 컨트롤러 레벨에서 수동 시간 지정 시 사용
+    - 주의: Auditing 기능은 유지되며, 해당 메서드는 강제 시간 수정용 보조 수단임
+*/
+    public void setUpdateAt(LocalDateTime updateAt) {
+        this.updateAt = updateAt;
+    }
 }
