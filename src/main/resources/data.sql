@@ -12,6 +12,29 @@ VALUES
 ( 'leesunwoo', '$2a$10$/$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '이선우', '010-3939-2929', '부산광역시 해운대구 우동', 'sunwoo.lee@gmail.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 3, 130, 260, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
 ( 'qwe123', '$2a$10$/$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '테스트', '010-7777-8888', '울산광역시 남구 무거동', 'jangminho@outlook.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 5, 300, 600, '2024-04-01 10:00:00', '2024-04-01 10:00:00' );
 
+-- 기술스택 샘플 데이터 10개
+INSERT INTO techstack( tsname, tsexp )
+VALUES
+('Java', 200),
+('Spring', 300),
+('SpringBoot', 300),
+('JSP', 200),
+('Flutter', 200),
+('React', 300),
+('HTML', 100),
+('JavaScript', 100),
+('CSS', 100),
+('MySQL', 200),
+('ORACLE', 200),
+('MariaDB', 200);
+
+-- 개발자 기술 스택 리스트 샘플 10개
+INSERT INTO techstacklist( dno, tsno )
+VALUES
+( 1, 1 ), ( 1, 2 ), ( 1, 3 ), ( 1, 4 ), ( 1, 5 ), ( 1, 10 ),
+( 2, 4 ), ( 2, 5 ), ( 2, 6 ), ( 2, 7 ), ( 2, 8 ), ( 2, 9 ), ( 2, 11 ),
+( 10, 1 ), ( 10, 2 ), ( 10, 3 ), ( 10, 4 ), ( 10, 5 ), ( 10, 10 );
+
 -- 기업 테이블 샘플 데이터 10개
 insert into company( cid, cpwd, cname, cphone, cadress, cemail, cbusiness, cprofile ,create_at , update_at)
 values( 'cmd1' , '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a' , '크래프트(주)' , '02-2323-5343' , '서울 금천구 가산디지털1로 99' ,'craft@naver.com', '214-88-13306' , 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/%ED%81%AC%EB%9E%98%ED%94%84%ED%8A%B8(%EC%A3%BC).png' ,'2024-04-01 10:00:00', '2024-04-01 10:00:00'),
