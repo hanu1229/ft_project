@@ -77,6 +77,7 @@ public class CratingService {
         if (optional.isPresent()) {
             // 값을 Entity객체에 대입
             CratingEntity cratingEntity = optional.get();
+            if( cratingEntity.getCrstate() != 1 ) { return null; }
             // Dto로 변환
             CratingDto cratingDto = cratingEntity.toDto();
             // dto 반환

@@ -79,6 +79,7 @@ public class DratingService {
         if (dOptional.isPresent()) {
             // 값을 Entity객체에 대입
             DratingEntity dratingEntity = dOptional.get();
+            if( dratingEntity.getDrstate() != 1){ return null; }
             // dto로 변환
             DratingDto dratingDto = dratingEntity.toDto();
             return dratingDto;
