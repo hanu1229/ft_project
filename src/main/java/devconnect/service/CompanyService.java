@@ -160,17 +160,15 @@ public class CompanyService {
         // 2. 데이터베이스에서 회사 엔티티 조회
         Optional<CompanyEntity> companyEntityOptional = companyRepository.findById(loginCno);
         if (companyEntityOptional.isEmpty()){
-            return false; // 회사 정보 없음
+            return false;
         }
         CompanyEntity companyEntity = companyEntityOptional.get();
 
         // 3. 비밀번호 확인 (현재 비밀번호가 맞는지 검증)
-        // companyDto.getCpwd()는 사용자가 입력한 '현재 비밀번호'여야 합니다.
         BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
         boolean passwordMatches = pwdEncoder.matches(companyDto.getCpwd() , companyEntity.getCpwd());
 
         if (!passwordMatches){
-            // 비밀번호 불일치 시 업데이트 거부
             return false;
         }
 
@@ -181,10 +179,10 @@ public class CompanyService {
         companyEntity.setCadress(companyDto.getCadress());
 
         // 5. 프로필 이미지 파일 처리 로직 개선
-        String oldProfileFileName = companyEntity.getCprofile(); // 현재 엔티티에 저장된 기존 파일 이름
-        MultipartFile newProfileFile = companyDto.getFile();    // CompanyDto를 통해 넘어온 새로운 파일
+        String oldProfileFileName = companyEntity.getCprofile();
+        MultipartFile newProfileFile = companyDto.getFile();
 
-        // 새 프로필 파일이 존재하고 (null이 아니고) 비어있지 않다면 (사용자가 새 파일을 업로드했다면)
+
         if (newProfileFile != null && !newProfileFile.isEmpty()){
             // 5-1. 새 파일 업로드 시도
             String newSavedFileName = fileUtil.fileUpload(newProfileFile);
@@ -196,18 +194,11 @@ public class CompanyService {
             // 5-2. 엔티티의 프로필 파일 이름을 새로 업로드된 파일 이름으로 설정
             companyEntity.setCprofile(newSavedFileName);
 
-            // 5-3. 기존 프로필 파일이 있고, 새로운 파일로 교체된 경우에만 기존 파일 삭제
-            //      (oldProfileFileName이 null이 아니거나 비어있지 않다면)
+
             if (oldProfileFileName != null && !oldProfileFileName.isEmpty()){
                 fileUtil.fileDelete(oldProfileFileName);
             }
         }
-        // else (새 파일이 없거나 비어있다면):
-        //   companyEntity.getCprofile()는 기존 값을 그대로 유지합니다.
-        //   따라서 기존 파일을 삭제할 필요가 없습니다.
-
-        // 6. 변경된 엔티티를 데이터베이스에 저장 (JPA/Hibernate는 트랜잭션 범위 내에서 자동 저장될 수도 있지만, 명시적 호출)
-        // CompanyRepository가 JpaRepository를 상속받았다면 save 메서드를 통해 변경사항이 반영됩니다.
         companyRepository.save(companyEntity);
 
         return true; // 업데이트 성공
