@@ -60,8 +60,8 @@ public class CareerController {
     // 4. 경력 삭제
     @DeleteMapping("/delete")
     public ResponseEntity< Boolean > onDelete(
-            @RequestHeader String token,
-            @RequestBody int cano ){
+            @RequestHeader("Authorization") String token,
+            @RequestParam int cano ){
         int logInDno = 0;
         try{ logInDno = developerService.info( token ).getDno();
         }catch ( Exception e ){ return ResponseEntity.status( 401 ).body( false ); }
