@@ -27,10 +27,6 @@ public class TechStackListController {
         try{ logInDno = developerService.info( token ).getDno();
         }catch (Exception e){ return ResponseEntity.status( 401 ).body( false ); }
 
-        if( teckStackListWriteDto.getTslno() != null ){
-            techStackListService.onDelete( logInDno );
-        }
-
         boolean result = techStackListService.onWrite( teckStackListWriteDto, logInDno );
         if( result ){ return ResponseEntity.status( 200 ).body( true ); }
         else{ return ResponseEntity.status( 400 ).body( false ); }
