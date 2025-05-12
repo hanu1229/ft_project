@@ -107,7 +107,7 @@ public class DratingService {
                 dratingEntity.setDtitle(dratingDto.getDtitle());
                 dratingEntity.setDcontent(dratingDto.getDcontent());
                 dratingEntity.setDrscore(dratingDto.getDrscore());
-                dratingEntity.setDrstate(dratingDto.getDrstate());
+                dratingEntity.setDrstate(0);
                 // 값 수정후 true 반환
                 return true;
             } // if end

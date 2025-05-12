@@ -117,14 +117,11 @@ public class ProjectJoinController {
             @RequestParam( "pno" ) int pno ){
         System.out.println("ProjectJoinController.getDno");
         int loginCno;
-        try{
-            loginCno = companyService.info(token).getCno();
+        try{ loginCno = companyService.info(token).getCno();
         }catch (Exception e ) { return ResponseEntity.status(401).body(null); }
-        System.out.println("loginCno = " + loginCno);
         if( loginCno >= 1) {
             List<Integer> dnoList = projectJoinService.getDno( pno );
             if( dnoList != null ){
-                System.out.println("dnoList = " + dnoList);
                 List<DeveloperDto> developerDtoList = developerService.findByDnoList(dnoList);
                 return ResponseEntity.ok( developerDtoList );
             } // if end

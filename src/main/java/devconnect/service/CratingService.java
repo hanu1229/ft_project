@@ -107,7 +107,7 @@ public class CratingService {
                 cratingEntity.setCtitle(cratingDto.getCtitle());
                 cratingEntity.setCcontent(cratingDto.getCcontent());
                 cratingEntity.setCrscore(cratingDto.getCrscore());
-                cratingEntity.setCrstate(cratingDto.getCrstate());
+                cratingEntity.setCrstate(0);
                 // 값 수정후 true 반환
                 return true;
             } // if end

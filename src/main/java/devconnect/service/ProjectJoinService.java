@@ -180,12 +180,9 @@ public class ProjectJoinService {
     // 프로젝트에 참여한 개발자 조회(기업입장)
     public List<Integer> getDno( int pno ){
         System.out.println("ProjectJoinService.getDno");
-        System.out.println("pno = " + pno);
-        if( projectRepository.existsById(pno)){
+        if( projectRepository.existsById(pno) ){
             return projectJoinRepository.findDnoByPno( pno );
-        }else{
-            return null;
-        } // if end
+        }else{ return null; } // if end
     } // f end
 
     // 05-11 이민진 코드 추가
