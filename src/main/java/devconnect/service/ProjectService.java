@@ -137,19 +137,26 @@ public class ProjectService {
         LocalDateTime ldt = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
         String today = ldt.format(formatter);
-        String typeMsg = (ptype == 0) ? "직무 : 전체" : ptype == 1 ? "직무 : 백엔드" : ptype == 2 ? "직무 : 프론트엔드" : "직무 : 없음";
+        String typeMsg = (ptype == 0) ?
+                "직무 : 전체" : ptype == 1 ?
+                "직무 : 백엔드" : ptype == 2 ?
+                "직무 : 프론트엔드" : "직무 : 없음";
         if(recruitment_status == 0) {
             System.out.println(">> 모집기간 : 전체, " + typeMsg);
-            projectEntityPageList = (ptype == 0) ? projectRepository.findAll(pageable) : projectRepository.findByPtype(ptype, pageable);
+            projectEntityPageList = (ptype == 0) ?
+                    projectRepository.findAll(pageable) : projectRepository.findByPtype(ptype, pageable);
         } else if(recruitment_status == 1) {
             System.out.println(">> 모집기간 : 모집 전, " + typeMsg);
-            projectEntityPageList = (ptype == 0) ? projectRepository.findByBefore(today, pageable) : projectRepository.findByBefore(ptype, today, pageable);
+            projectEntityPageList = (ptype == 0) ?
+                    projectRepository.findByBefore(today, pageable) : projectRepository.findByBefore(ptype, today, pageable);
         } else if(recruitment_status == 2) {
             System.out.println(">> 모집기간 : 모집 중, " + typeMsg);
-            projectEntityPageList = (ptype == 0) ? projectRepository.findByIng(today, pageable) : projectRepository.findByIng(ptype, today, pageable);
+            projectEntityPageList = (ptype == 0) ?
+                    projectRepository.findByIng(today, pageable) : projectRepository.findByIng(ptype, today, pageable);
         } else if(recruitment_status == 3) {
             System.out.println(">> 모집기간 : 모집 후, " + typeMsg);
-            projectEntityPageList = (ptype == 0) ? projectRepository.findByAfter(today, pageable) : projectRepository.findByAfter(ptype, today, pageable);
+            projectEntityPageList = (ptype == 0) ?
+                    projectRepository.findByAfter(today, pageable) : projectRepository.findByAfter(ptype, today, pageable);
         } else {
             projectEntityPageList = null;
         }
@@ -194,7 +201,8 @@ public class ProjectService {
                 System.out.println("projectDto = " + projectDto);
                 return projectDto;
             }
-        } else if(code.equals("Developer")) {
+        }
+        else if(code.equals("Developer")) {
             Optional<ProjectEntity> optional = projectRepository.findById(pno);
             if(optional.isPresent()) {
                 ProjectDto projectDto = optional.get().toDto();
@@ -202,9 +210,11 @@ public class ProjectService {
                 if(companyEntity == null) { return null; }
                 projectDto.setCname(companyEntity.getCname());
                 projectDto.setCprofile(companyEntity.getCprofile());
+
                 if(today.isAfter(projectDto.getRecruit_pend())) {
                     projectDto.setRecruitment_status(3);
-                }else if(!today.isBefore(projectDto.getRecruit_pstart()) && !today.isAfter(projectDto.getRecruit_pend())) {
+                }else if(!today.isBefore(projectDto.getRecruit_pstart()) &&
+                        !today.isAfter(projectDto.getRecruit_pend())) {
                     projectDto.setRecruitment_status(2);
                 } else if(today.isBefore(projectDto.getRecruit_pstart())) {
                     projectDto.setRecruitment_status(1);
