@@ -1,6 +1,7 @@
 package devconnect.service;
 
 import devconnect.model.dto.CompanyDto;
+import devconnect.model.dto.developer.DeveloperDto;
 import devconnect.model.entity.CompanyEntity;
 import devconnect.model.repository.CompanyRepository;
 import devconnect.util.FileUtil;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -149,38 +151,58 @@ public class CompanyService {
         return true;
     }
 
-    // 7. 회원정보 수정
     public boolean onUpdate(CompanyDto companyDto, int loginCno){
-       if (loginCno <= 0){return false;}
-       Optional<CompanyEntity> companyEntityOptional = companyRepository.findById(loginCno);
-       if (companyEntityOptional.isEmpty()){return false;}
-       CompanyEntity companyEntity = companyEntityOptional.get();
+        // 1. 로그인된 회사 ID 유효성 검사
+        if (loginCno <= 0){
+            return false;
+        }
 
-       BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
-       boolean result = pwdEncoder.matches(companyDto.getCpwd() , companyEntity.getCpwd());
+        // 2. 데이터베이스에서 회사 엔티티 조회
+        Optional<CompanyEntity> companyEntityOptional = companyRepository.findById(loginCno);
+        if (companyEntityOptional.isEmpty()){
+            return false;
+        }
+        CompanyEntity companyEntity = companyEntityOptional.get();
 
-       // 비밀번호 확인
-        if (!result){return false;}
+        // 3. 비밀번호 확인 (현재 비밀번호가 맞는지 검증)
+        BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
+        boolean passwordMatches = pwdEncoder.matches(companyDto.getCpwd() , companyEntity.getCpwd());
 
+        if (!passwordMatches){
+            return false;
+        }
+
+        // 4. 텍스트 기반 필드 업데이트
         companyEntity.setCname(companyDto.getCname());
         companyEntity.setCphone(companyDto.getCphone());
         companyEntity.setCemail(companyDto.getCemail());
         companyEntity.setCadress(companyDto.getCadress());
 
-        MultipartFile newFile = companyDto.getFile();
-        String file = companyEntity.getCprofile();
-        if (newFile != null && !newFile.isEmpty()){
-            String saveFilename = fileUtil.fileUpload(companyDto.getFile());
-            if (saveFilename == null){throw  new RuntimeException("파일 업로드 오류");}
-            companyEntity.setCprofile(saveFilename);
+        // 5. 프로필 이미지 파일 처리 로직 개선
+        String oldProfileFileName = companyEntity.getCprofile();
+        MultipartFile newProfileFile = companyDto.getFile();
+
+
+        if (newProfileFile != null && !newProfileFile.isEmpty()){
+            // 5-1. 새 파일 업로드 시도
+            String newSavedFileName = fileUtil.fileUpload(newProfileFile);
+            if (newSavedFileName == null){
+                // 파일 업로드 실패 시 런타임 예외 발생 (또는 다른 오류 처리)
+                throw  new RuntimeException("파일 업로드 오류: 새 프로필 이미지 저장 실패");
+            }
+
+            // 5-2. 엔티티의 프로필 파일 이름을 새로 업로드된 파일 이름으로 설정
+            companyEntity.setCprofile(newSavedFileName);
+
+
+            if (oldProfileFileName != null && !oldProfileFileName.isEmpty()){
+                fileUtil.fileDelete(oldProfileFileName);
+            }
         }
+        companyRepository.save(companyEntity);
 
-        // 바뀐 이미지 삭제 // 여기 수정 필요
-        fileUtil.fileDelete(file);
-
-        return true;
-
-    } // f end
+        return true; // 업데이트 성공
+    }
 
 //    //8 기업 정보 삭제
 //    public boolean deleteProduct(String token , CompanyDto companyDto){
@@ -233,6 +255,11 @@ public class CompanyService {
         String newHashedPassword = pwdEncoder.encode(companyDto.getUpcpwd()); //새 비밀번호 암호화
         companyEntity.setCpwd(newHashedPassword);
         return true; //성공시 true 반환
+    }
+
+    public CompanyDto findByCno(int cno) {
+        CompanyEntity company = companyRepository.findById(cno).orElseThrow(() -> new RuntimeException("Company not found"));
+        return company.toDto();
     }
 
 }

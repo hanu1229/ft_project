@@ -1,107 +1,67 @@
 // =======================================================================================
-// DratingList.jsx | rw 25-05-08 리팩토링 - 공통 컴포넌트 기반 적용
-// [설명] 관리자 전용 개발자 평가 리스트 화면 (검색 + 상태필터 + 삭제)
+// DratingList.jsx | rw 25-05-11 최종 안정화 (관리자 전용 개발자 평가 목록)
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDratingList, deleteDrating } from '../../api/dratingApi';
-import FilterSearchBar from '../../components/FilterSearchBar';
-import ConfirmDeleteModal from '../../components/ConfirmDeleteModal';
-import EntityCard from '../../components/EntityCard';
+import { getDratingList } from '../../api/dratingApi';
+import {
+    Typography, Grid, Card, Box, Divider, Button
+} from '@mui/joy';
 
 export default function DratingList() {
-    const navigate = useNavigate();
     const [list, setList] = useState([]);
-    const [filter, setFilter] = useState('all');
-    const [search, setSearch] = useState('');
-    const [open, setOpen] = useState(false);
-    const [deleteTarget, setDeleteTarget] = useState(null);
-
-    const token = localStorage.getItem('token');
-
-    // ✅ 목록 조회
-    const fetchList = async () => {
-        try {
-            const res = await getDratingList(token, {
-                page: 0,
-                size: 100,
-                keyword: search
-            });
-            setList(res.data.content || []);
-        } catch (err) {
-            console.error('개발자 평가 조회 실패', err);
-            alert('❗ 평가 조회 실패');
-        }
-    };
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetchList();
-    }, [search]);
-
-    // ✅ 삭제 실행
-    const handleDelete = async () => {
-        try {
-            const res = await deleteDrating(token, deleteTarget);
-            if (res.data) {
-                setList((prev) => prev.filter(item => item.drno !== deleteTarget));
-                setOpen(false);
+        const fetch = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await getDratingList(token, { page: 1, size: 100 });
+                setList(res.data.content || []);
+            } catch {
+                alert('개발자 평가 목록 조회 실패');
             }
-        } catch (err) {
-            alert('❗ 삭제 실패');
-        }
-    };
-
-    // ✅ 필터링된 리스트
-    const filteredList = list.filter(item =>
-        filter === 'all' ? true : item.drstate.toString() === filter
-    );
+        };
+        fetch();
+    }, []);
 
     return (
-        <div>
-            <h2 style={{ color: '#087f5b', fontWeight: 'bold', marginBottom: 16 }}>⭐ 개발자 평가 목록</h2>
+        <Box sx={{ px: 3, py: 3, bgcolor: '#fff' }}>
+            <Typography level="h3" sx={{ mb: 3, fontWeight: 'bold', color: '#12b886' }}>
+                🧾 개발자 평가 목록
+            </Typography>
 
-            <FilterSearchBar
-                filter={filter}
-                setFilter={setFilter}
-                search={search}
-                setSearch={setSearch}
-                filterOptions={[
-                    { value: 'all', label: '전체' },
-                    { value: '0', label: '승인대기' },
-                    { value: '1', label: '승인완료' },
-                    { value: '2', label: '반려' }
-                ]}
-            />
-
-            {/* ✅ 리스트 렌더링 */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
-                {filteredList.map(item => (
-                    <EntityCard
-                        key={item.drno}
-                        title={`평가번호: ${item.drno}`}
-                        fields={[
-                            { label: '개발자번호', value: item.dno },
-                            { label: '프로젝트번호', value: item.pno },
-                            { label: '점수', value: item.drscore },
-                        ]}
-                        statusCode={item.drstate}
-                        statusType="rating"
-                        onDetailClick={() => navigate(`/admin/drating/${item.drno}`)}
-                        onDeleteClick={() => {
-                            setDeleteTarget(item.drno);
-                            setOpen(true);
-                        }}
-                    />
+            <Grid container spacing={2}>
+                {list.map((dr) => (
+                    <Grid key={dr.drno} xs={12} sm={6} md={4}>
+                        <Card variant="outlined" sx={{ bgcolor: '#f8f9fa', p: 2 }}>
+                            <Typography level="title-md" sx={{ fontWeight: 'bold', color: '#12b886' }}>
+                                평가번호: {dr.drno}
+                            </Typography>
+                            <Divider sx={{ my: 1 }} />
+                            <Box sx={{ fontSize: 14 }}>
+                                <p><strong>개발자번호:</strong> {dr.dno}</p>
+                                <p><strong>점수:</strong> {dr.drscore}</p>
+                                <p><strong>상태:</strong> {dr.drstate}</p>
+                            </Box>
+                            <Button
+                                onClick={() => navigate(`/admin/drating/${dr.drno}`)}
+                                variant="outlined"
+                                sx={{
+                                    mt: 2,
+                                    borderColor: '#12b886',
+                                    color: '#12b886',
+                                    fontWeight: 'bold',
+                                    '&:hover': { bgcolor: '#12b886', color: '#fff' }
+                                }}
+                            >
+                                상세보기
+                            </Button>
+                        </Card>
+                    </Grid>
                 ))}
-            </div>
-
-            {/* ✅ 삭제 확인 모달 */}
-            <ConfirmDeleteModal
-                open={open}
-                onClose={() => setOpen(false)}
-                onConfirm={handleDelete}
-            />
-        </div>
+            </Grid>
+        </Box>
     );
 }

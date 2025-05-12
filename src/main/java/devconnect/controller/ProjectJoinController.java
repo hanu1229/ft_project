@@ -1,7 +1,9 @@
 package devconnect.controller;
 
+import devconnect.model.dto.CompanyDto;
 import devconnect.model.dto.ProjectDto;
 import devconnect.model.dto.ProjectJoinDto;
+import devconnect.model.dto.developer.DeveloperDto;
 import devconnect.service.CompanyService;
 import devconnect.service.DeveloperService;
 import devconnect.service.ProjectJoinService;
@@ -110,7 +112,7 @@ public class ProjectJoinController {
     // 05-08 이민진 코드 추가
     // 프로젝트에 참여한 개발자 조회(기업입장)
     @GetMapping("/getdno")
-    public ResponseEntity<List<Integer>> getDno(
+    public ResponseEntity<List<DeveloperDto>> getDno(
             @RequestHeader("Authorization") String token,
             @RequestParam( "pno" ) int pno ){
         System.out.println("ProjectJoinController.getDno");
@@ -123,9 +125,33 @@ public class ProjectJoinController {
             List<Integer> dnoList = projectJoinService.getDno( pno );
             if( dnoList != null ){
                 System.out.println("dnoList = " + dnoList);
-                return ResponseEntity.ok( dnoList );
+                List<DeveloperDto> developerDtoList = developerService.findByDnoList(dnoList);
+                return ResponseEntity.ok( developerDtoList );
             } // if end
         } // if end
         return ResponseEntity.status(401).body(null);
     } // f  end
+    
+    // 05-11 이민진 코드 추가
+    // 개발자가 참여한 프로젝트의 기업 조회(개발자입장)
+    @GetMapping("getcno")
+    public ResponseEntity<CompanyDto> getCno(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("pno") int pno ){
+        System.out.println("ProjectJoinController.getCno");
+        int loginDno;
+        try{
+            loginDno = developerService.info(token).getDno();
+        }catch (Exception e){ return ResponseEntity.status(401).body(null); }
+        System.out.println("loginDno = " + loginDno);
+        if( loginDno >= 1 ){
+            Integer cno = projectJoinService.getCno( pno );
+            if( cno != null ){
+                System.out.println("cno = " + cno);
+                CompanyDto companyDto = companyService.findByCno(cno);
+                return ResponseEntity.ok( companyDto );
+            } // if end
+        } // if end
+        return ResponseEntity.status(401).body(null);
+    } // f end
 }

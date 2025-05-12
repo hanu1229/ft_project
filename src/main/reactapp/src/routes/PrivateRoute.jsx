@@ -16,7 +16,7 @@ import { Navigate } from 'react-router-dom'; // ✅ 리디렉션 처리
  * @returns {JSX.Element}
  */
 export default function PrivateRoute({ children }) {
-    const token = localStorage.getItem('token'); // ✅ JWT 토큰 가져오기
+    const token = localStorage.getItem('accessToken'); // ✅ JWT 토큰 가져오기
 
     // ❌ 토큰이 없으면 로그인 화면으로 이동
     if (!token) {

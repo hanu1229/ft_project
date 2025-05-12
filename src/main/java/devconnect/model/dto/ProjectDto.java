@@ -1,7 +1,9 @@
 package devconnect.model.dto;
 
 import devconnect.model.entity.ProjectEntity;
+import jakarta.persistence.Column;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -35,6 +37,10 @@ public class ProjectDto {
     private LocalDateTime recruit_pend;
     // 페이
     private int ppay;
+    // 현재 모집 상태
+    private int recruitment_status;
+    // 삭제 상태 | 1이면 삭제
+    private int delete_state;
     // 기업 번호(FK)
     private int cno;
     // 기업명
@@ -49,6 +55,8 @@ public class ProjectDto {
     private List<MultipartFile> files = new ArrayList<>();
     // 이미지명
     private List<String> images = new ArrayList<>();
+    // 정렬 점수
+    private double pscore;
 
     /// Dto --> Entity
     public ProjectEntity toEntity() {
@@ -56,6 +64,29 @@ public class ProjectDto {
                 .pno(this.pno).pname(this.pname).pintro(this.pintro).ptype(this.ptype)
                 .pcomment(this.pcomment).pcount(this.pcount).pstart(this.pstart).pend(this.pend)
                 .recruit_pstart(this.recruit_pstart).recruit_pend(this.recruit_pend).ppay(this.ppay)
+                .build();
+    }
+
+    public static ProjectDto toEntryDto( ProjectEntity entity, double pscore ) {
+        return ProjectDto.builder()
+                .pno( entity.getPno() )
+                .pname( entity.getPname() )
+                .pintro( entity.getPintro() )
+                .ptype( entity.getPtype() )
+                .pcomment( entity.getPcomment() )
+                .pcount( entity.getPcount() )
+                .pstart( entity.getPstart() )
+                .pend( entity.getPend() )
+                .recruit_pstart( entity.getRecruit_pstart() )
+                .recruit_pend( entity.getRecruit_pend() )
+                .ppay( entity.getPpay() )
+                .recruitment_status( entity.toDto().getRecruitment_status() )
+                .cno( entity.getCompanyEntity().getCno() )
+                .cname( entity.getCompanyEntity().getCname() )
+                .createAt( entity.getCreateAt() )
+                .updateAt (entity.getUpdateAt() )
+                .cprofile( entity.getCompanyEntity().getCprofile() )
+                .pscore( pscore )
                 .build();
     }
 

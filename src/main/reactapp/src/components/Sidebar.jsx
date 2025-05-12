@@ -75,7 +75,7 @@ export default function Sidebar() {
                 {menu.map((item, idx) => {
                     const isActive = location.pathname.startsWith(item.path);
                     return (
-                        <ListItem key={idx} disablePadding>
+                        <ListItem key={idx}>
                             <ListItemButton
                                 onClick={() => navigate(item.path)}
                                 selected={isActive}

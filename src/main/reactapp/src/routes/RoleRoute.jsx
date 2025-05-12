@@ -17,7 +17,7 @@ import { jwtDecode } from 'jwt-decode';            // ✅ JWT 디코더
  * @returns {JSX.Element}
  */
 export default function RoleRoute({ children }) {
-    const token = localStorage.getItem('token');   // ✅ 저장된 JWT 토큰 확인
+    const token = localStorage.getItem('accessToken');   // ✅ 저장된 JWT 토큰 확인
 
     // [1] 토큰 없음 → 로그인 페이지로 이동
     if (!token) {

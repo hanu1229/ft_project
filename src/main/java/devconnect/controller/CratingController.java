@@ -42,7 +42,7 @@ public class CratingController {
         // 토큰으로 dno 추출
         try{
             loginDno = developerService.info(token).getDno();
-        }catch (Exception e ){ return ResponseEntity.status(201).body(false); }
+        }catch (Exception e ){ return ResponseEntity.status(401).body(false); }
         // 입력한 값들과 추출한 dno를 서비스로 보내서 결과 반환 받기
         boolean result = cratingService.cratingWrite( cratingDto , loginDno );
         if( result ){

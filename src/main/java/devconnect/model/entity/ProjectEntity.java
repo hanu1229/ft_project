@@ -4,6 +4,7 @@ package devconnect.model.entity;
 import devconnect.model.dto.ProjectDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,6 +53,10 @@ public class ProjectEntity extends BaseTime {
     // 페이
     @Column(nullable = false)
     private int ppay;
+    // 삭제 상태 | 1이면 삭제
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private int delete_state;
     // 기업 번호(FK)
     @ManyToOne
     @JoinColumn(name = "cno")
@@ -73,6 +78,11 @@ public class ProjectEntity extends BaseTime {
     @Builder.Default @ToString.Exclude
     private List<ProjectImageEntity> projectImageEntityList = new ArrayList<>();
 
+    // 프로젝트 기술스택 조인
+    @OneToMany(mappedBy = "projectEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default @ToString.Exclude
+    private List<ProjectTechStackEntity> projectTechStackList = new ArrayList<>();
+
     /// Entity --> Dto
     public ProjectDto toDto() {
         return ProjectDto.builder()
@@ -80,6 +90,7 @@ public class ProjectEntity extends BaseTime {
                 .pcomment(this.pcomment).pcount(this.pcount).pstart(this.pstart).pend(this.pend)
                 .recruit_pstart(this.recruit_pstart).recruit_pend(this.recruit_pend).ppay(this.ppay).cno(companyEntity.getCno())
                 .images(projectImageEntityList.stream().map(ProjectImageEntity::getIname).collect(Collectors.toList()))
+                .delete_state(delete_state)
                 .createAt(getCreateAt()).updateAt(getUpdateAt())
                 .build();
     }

@@ -1,107 +1,67 @@
 // =======================================================================================
-// CratingList.jsx | rw 25-05-08 리팩토링 - 공통 컴포넌트 적용
-// [설명] 관리자 전용 기업 평가 리스트 페이지 (검색 + 상태 필터링 + 삭제 + 상세이동)
+// CratingList.jsx | rw 25-05-11 최종 안정화 (관리자 전용 기업평가 목록)
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getCratingList } from '../../api/cratingApi';
 import {
-    getCratingList,
-    //deleteCrating
-} from '../../api/cratingApi.js';
-
-import FilterSearchBar from '../../components/FilterSearchBar.jsx';
-import ConfirmDeleteModal from '../../components/ConfirmDeleteModal.jsx';
-import EntityCard from '../../components/EntityCard.jsx';
-
-import { Box, Typography, Grid } from '@mui/joy';
+    Typography, Grid, Card, Box, Divider, Button
+} from '@mui/joy';
 
 export default function CratingList() {
     const [list, setList] = useState([]);
-    const [filter, setFilter] = useState('all');
-    const [search, setSearch] = useState('');
-    const [open, setOpen] = useState(false);
-    const [target, setTarget] = useState(null);
-
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchList = async () => {
+        const fetch = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await getCratingList(token, {
-                    page: 0,
-                    size: 100,
-                    keyword: search
-                });
-                let rows = res.data.content || [];
-                if (filter !== 'all') rows = rows.filter((c) => c.crstate == filter);
-                setList(rows);
-            } catch (err) {
-                alert('❗ 기업평가 목록 조회 실패');
-                console.error(err);
+                const res = await getCratingList(token, { page: 1, size: 100 });
+                setList(res.data.content || []);
+            } catch {
+                alert('기업평가 목록 조회 실패');
             }
         };
-        fetchList();
-    }, [filter, search]);
-
-    // const handleDelete = async () => {
-    //     try {
-    //         const token = localStorage.getItem('token');
-    //         const res = await deleteCrating(token, target);
-    //         if (res.data) {
-    //             setList((prev) => prev.filter((c) => c.crno !== target));
-    //             setOpen(false);
-    //             setTarget(null);
-    //         }
-    //     } catch (err) {
-    //         alert('❗ 삭제 실패');
-    //         console.error(err);
-    //     }
-    // };
+        fetch();
+    }, []);
 
     return (
-        <Box sx={{ px: 3, py: 3, bgcolor: '#ffffff' }}>
-            <Typography level="h3" sx={{ mb: 3, color: '#364fc7', fontWeight: 'bold' }}>
-                🏢 기업 평가 목록
+        <Box sx={{ px: 3, py: 3, bgcolor: '#fff' }}>
+            <Typography level="h3" sx={{ mb: 3, fontWeight: 'bold', color: '#12b886' }}>
+                📝 기업 평가 목록
             </Typography>
 
-            {/* ✅ 필터 + 검색바 */}
-            <FilterSearchBar
-                filter={filter}
-                setFilter={setFilter}
-                search={search}
-                setSearch={setSearch}
-                type="rating"
-            />
-
-            {/* ✅ 리스트 카드 */}
             <Grid container spacing={2}>
                 {list.map((cr) => (
-                    <EntityCard
-                        key={cr.crno}
-                        title={`평가번호: ${cr.crno}`}
-                        items={[
-                            { label: '기업번호', value: cr.cno },
-                            { label: '개발자번호', value: cr.dno },
-                            { label: '점수', value: cr.crscore }
-                        ]}
-                        status={{ code: cr.crstate, type: 'rating' }}
-                        onDetail={() => navigate(`/admin/crating/${cr.crno}`)}
-                        onDelete={() => {
-                            setTarget(cr.crno);
-                            setOpen(true);
-                        }}
-                    />
+                    <Grid key={cr.crno} xs={12} sm={6} md={4}>
+                        <Card variant="outlined" sx={{ bgcolor: '#f8f9fa', p: 2 }}>
+                            <Typography level="title-md" sx={{ fontWeight: 'bold', color: '#12b886' }}>
+                                📋 평가번호: {cr.crno}
+                            </Typography>
+                            <Divider sx={{ my: 1 }} />
+                            <Box sx={{ fontSize: 14 }}>
+                                <p><strong>개발자번호:</strong> {cr.dno}</p>
+                                <p><strong>점수:</strong> {cr.crscore}</p>
+                                <p><strong>상태:</strong> {cr.crstate}</p>
+                            </Box>
+                            <Button
+                                onClick={() => navigate(`/admin/crating/${cr.crno}`)}
+                                variant="outlined"
+                                sx={{
+                                    mt: 2,
+                                    borderColor: '#12b886',
+                                    color: '#12b886',
+                                    fontWeight: 'bold',
+                                    '&:hover': { bgcolor: '#12b886', color: '#fff' }
+                                }}
+                            >
+                                상세보기
+                            </Button>
+                        </Card>
+                    </Grid>
                 ))}
             </Grid>
-
-            {/* ✅ 삭제 확인 모달 */}
-            <ConfirmDeleteModal
-                open={open}
-                setOpen={setOpen}
-                onConfirm={handleDelete}
-            />
         </Box>
     );
 }

@@ -25,12 +25,12 @@ public class ProjectController {
     /// <b>회사</b>가 프로젝트를 등록
     // {"pname" : "테스트 [백엔드]", "pintro" : "테스트 소개", "ptype" : 1, "pcomment" : "테스트 상세 설명", "pcount" : 4, "pstart" : "2025-04-21T13:00:00", "pend" : "2025-05-20T13:00:00", "recruit_pstart" : "2025-06-15T13:00:00", "recruit_pend" : "2025-12-12T13:00:00", "ppay" : 2700}
     @PostMapping("")
-    public ResponseEntity<Boolean> writeProject(@RequestHeader("Authorization") String token, @ModelAttribute() ProjectDto projectDto) {
+    public ResponseEntity<Integer> writeProject(@RequestHeader("Authorization") String token, @ModelAttribute() ProjectDto projectDto) {
         System.out.println("ProjectController.writeProject");
         System.out.println("token = " + token + "\nprojectDto = " + projectDto);
-        boolean result = projectService.writeProject(token, projectDto);
-        if(!result) { return ResponseEntity.status(404).body(false); }
-        return ResponseEntity.status(201).body(true);
+        int pno = projectService.writeProject(token, projectDto);
+        if( pno < 0 ) { return ResponseEntity.status(404).body( 0 ); }
+        return ResponseEntity.status(201).body( pno );
     }
     
     /// | 프로젝트 전체조회 | <br/>
@@ -62,13 +62,14 @@ public class ProjectController {
     @GetMapping("/paging")
     public ResponseEntity<List<ProjectDto>> findPagingProject(
             @RequestParam(name = "ptype", defaultValue = "0") int ptype,
+            @RequestParam(name = "rstatus", defaultValue = "0") int recruitment_status,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "5") int size
     ) {
         System.out.println("ProjectController.findPagingProject");
-        System.out.println("ptype = " + ptype + ", page = " + page + ", size = " + size);
-        Pageable pageable = PageRequest.of(page, size);
-        List<ProjectDto> result = projectService.findPagingProject(ptype, pageable);
+        System.out.println("ptype = " + ptype + " ,recruitment_status = " + recruitment_status + ", page = " + page + ", size = " + size);
+
+        List<ProjectDto> result = projectService.findPagingProject(ptype, recruitment_status, page, size);
         if(result == null || result.isEmpty()) { return ResponseEntity.status(404).body(null); }
         return ResponseEntity.status(200).body(result);
     }

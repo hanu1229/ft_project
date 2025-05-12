@@ -1,16 +1,16 @@
 -- 개발자 테이블 샘플 데이터 10개
 INSERT INTO developer( did, dpwd, dname, dphone, daddress, demail, dprofile, dlevel, dcurrentexp, dtotalexp, create_at, update_at )
 VALUES
-( 'ppo3703', '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a', '박희만', '010-9275-6333', '인천시 미추홀구 도화동', 'pp4992@naver.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 2, 100, 200, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
-( 'magnoria', '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a', '한상범', '010-4837-3844', '인천시 부평구 청천동', 'magnoria@gmail.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 5, 250, 500, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
-( 'riwonsys', '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a', '김리원', '010-2482-4492', '인천시 부평구 부개1동', 'riwonsys@gmail.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 3, 50, 300, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
-( 'hanu1229', '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a', '한웅재', '010-4640-7877', '인천시 연수구 연수1동', 'hanu1229@gmail.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 2, 0, 200, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
-( 'sunghyun98', '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a', '이성현', '010-8823-3345', '서울특별시 강남구 삼성동', 'sunghyun98@gmail.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 3, 150, 300, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
-( 'choihyejin', '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a', '최혜진', '010-2323-8888', '경기도 수원시 팔달구', 'choihyejin@naver.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 4, 200, 400, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
-( 'jiminpark', '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a', '박지민', '010-9344-5566', '대전광역시 유성구 궁동', 'jimin.park@daum.net', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 1, 50, 100, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
-( 'taehwan', '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a', '김태환', '010-6743-2211', '광주광역시 서구 쌍촌동', 'taehwan@kakao.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 2, 90, 180, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
-( 'leesunwoo', '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a', '이선우', '010-3939-2929', '부산광역시 해운대구 우동', 'sunwoo.lee@gmail.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 3, 130, 260, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
-( 'qwe123', '$2a$10$FlfJ4fQwY9pr5YX.Sw7nBuKB9TXl71m4Bh0Eig.A2ZYlZBmOACk/a', '테스트', '010-7777-8888', '울산광역시 남구 무거동', 'jangminho@outlook.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 5, 300, 600, '2024-04-01 10:00:00', '2024-04-01 10:00:00' );
+( 'ppo3703', '$2a$10$/$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '박희만', '010-9275-6333', '인천시 미추홀구 도화동', 'pp4992@naver.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 2, 100, 200, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
+( 'magnoria', '$2a$10$/$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '한상범', '010-4837-3844', '인천시 부평구 청천동', 'magnoria@gmail.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 5, 250, 500, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
+( 'riwonsys', '$2a$10$/$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '김리원', '010-2482-4492', '인천시 부평구 부개1동', 'riwonsys@gmail.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 3, 50, 300, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
+( 'hanu1229', '$2a$10$/$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '한웅재', '010-4640-7877', '인천시 연수구 연수1동', 'hanu1229@gmail.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 2, 0, 200, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
+( 'sunghyun98', '$2a$10$/$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '이성현', '010-8823-3345', '서울특별시 강남구 삼성동', 'sunghyun98@gmail.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 3, 150, 300, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
+( 'choihyejin', '$2a$10$/$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '최혜진', '010-2323-8888', '경기도 수원시 팔달구', 'choihyejin@naver.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 4, 200, 400, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
+( 'jiminpark', '$2a$10$/$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '박지민', '010-9344-5566', '대전광역시 유성구 궁동', 'jimin.park@daum.net', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 1, 50, 100, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
+( 'taehwan', '$2a$10$/$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '김태환', '010-6743-2211', '광주광역시 서구 쌍촌동', 'taehwan@kakao.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 2, 90, 180, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
+( 'leesunwoo', '$2a$10$/$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '이선우', '010-3939-2929', '부산광역시 해운대구 우동', 'sunwoo.lee@gmail.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 3, 130, 260, '2024-04-01 10:00:00', '2024-04-01 10:00:00' ),
+( 'qwe123', '$2a$10$/$2a$10$/xRuQzly4zqJAnM4JPi1nO2zLERzEagGXhHdlNIwM6jT9kFwKc3Nm', '테스트', '010-7777-8888', '울산광역시 남구 무거동', 'jangminho@outlook.com', 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/default.jpg', 5, 300, 600, '2024-04-01 10:00:00', '2024-04-01 10:00:00' );
 
 -- 기업 테이블 샘플 데이터 10개
 insert into company( cid, cpwd, cname, cphone, cadress, cemail, cbusiness, cprofile ,create_at , update_at)
@@ -66,7 +66,9 @@ VALUES
 ('[아주 대학교] 홈페이지 리뉴얼 모집 공고 [백엔드]', 'Spring Boot를 이용한 아주 홈페이지 제작', 1, '아주 대학교의 공식 홈페이지를 전면 리뉴얼합니다.\n기존의 시스템은 폐기하고, 새로운 시스템을 처음부터 구축할 예정입니다.\n이에 따라 Spring Boot와 MySQL을 능숙하게 다룰 수 있는 숙련된 개발자를 찾고 있습니다.', 2, '2025-06-10', '2025-12-15', '2025-04-20', '2025-05-19', 2000, 10, '2025-04-10', '2025-04-10'),
 ('[아주 대학교] 홈페이지 리뉴얼 모집 공고 [프론트엔드]', 'Spring Boot를 이용한 아주 홈페이지 제작', 2, '아주 대학교의 공식 홈페이지를 전면 리뉴얼합니다.\n기존에 있던 홈페이지는 폐기하고, 새로운 홈페이지를 구축할 예정입니다.\n이에 따라 React를 능숙하게 다룰 수 있는 숙련된 개발자를 찾고 있습니다.', 2, '2025-06-10', '2025-12-15', '2025-04-20', '2025-05-19', 2000, 10, '2025-04-10', '2025-04-10'),
 ('[수원 대학교] 홈페이지 리뉴얼 모집 공고 [백엔드]', 'Spring Boot를 이용한 수원 홈페이지 제작', 1, '수원 대학교의 공식 홈페이지를 전면 리뉴얼합니다.\n기존의 시스템은 폐기하고, 새로운 시스템을 처음부터 구축할 예정입니다.\n이에 따라 Spring Boot와 MySQL을 능숙하게 다룰 수 있는 숙련된 개발자를 찾고 있습니다.', 2, '2025-06-10', '2025-12-15', '2025-04-20', '2025-05-19', 2000, 10, '2025-04-10', '2025-04-10'),
-('[수원 대학교] 홈페이지 리뉴얼 모집 공고 [프론트엔드]', 'Spring Boot를 이용한 수원 홈페이지 제작', 2, '수원 대학교의 공식 홈페이지를 전면 리뉴얼합니다.\n기존에 있던 홈페이지는 폐기하고, 새로운 홈페이지를 구축할 예정입니다.\n이에 따라 React를 능숙하게 다룰 수 있는 숙련된 개발자를 찾고 있습니다.', 2, '2025-06-10', '2025-12-15', '2025-04-20', '2025-05-19', 2000, 10, '2025-04-10', '2025-04-10');
+('[수원 대학교] 홈페이지 리뉴얼 모집 공고 [프론트엔드]', 'Spring Boot를 이용한 수원 홈페이지 제작', 2, '수원 대학교의 공식 홈페이지를 전면 리뉴얼합니다.\n기존에 있던 홈페이지는 폐기하고, 새로운 홈페이지를 구축할 예정입니다.\n이에 따라 React를 능숙하게 다룰 수 있는 숙련된 개발자를 찾고 있습니다.', 2, '2025-06-10', '2025-12-15', '2025-04-20', '2025-05-19', 2000, 10, '2025-04-10', '2025-04-10'),
+('[국민 대학교] 홈페이지 리뉴얼 모집 공고 [백엔드]', 'Spring Boot를 이용한 국민대 홈페이지 제작', 1, '국민 대학교의 공식 홈페이지를 전면 리뉴얼합니다.\n기존의 시스템은 폐기하고, 새로운 시스템을 처음부터 구축할 예정입니다.\n이에 따라 Spring Boot와 MySQL을 능숙하게 다룰 수 있는 숙련된 개발자를 찾고 있습니다.', 2, '2025-07-10', '2026-01-15', '2025-05-20', '2025-06-19', 2000, 1, '2025-05-10', '2025-05-10'),
+('[국민 대학교] 홈페이지 리뉴얼 모집 공고 [프론트엔드]', 'Spring Boot를 이용한 국민대 홈페이지 제작', 2, '국민 대학교의 공식 홈페이지를 전면 리뉴얼합니다.\n기존에 있던 홈페이지는 폐기하고, 새로운 홈페이지를 구축할 예정입니다.\n이에 따라 React를 능숙하게 다룰 수 있는 숙련된 개발자를 찾고 있습니다.', 2, '2025-07-10', '2026-01-15', '2025-05-20', '2025-06-19', 2000, 1, '2025-05-10', '2025-05-10');
 
 INSERT INTO project_image(pno, iname)
 VALUE
@@ -138,6 +140,57 @@ VALUE
 -- 수원대
 (39, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%88%98%EC%9B%90%EB%8C%80%ED%95%99%EA%B5%90.png'),
 (40, 'https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/project_image/%EC%88%98%EC%9B%90%EB%8C%80%ED%95%99%EA%B5%90.png');
+-- 국민대
+(41, '국민대학교.png'),
+(41, '국민대학교_홈페이지.png'),
+(42, '국민대학교.png'),
+(42, '국민대학교_홈페이지.png');
+
+-- 샘플 ProjectTechStack 데이터 (백엔드/프론트엔드 구분)
+INSERT INTO projecttechstack(pno, tsno) VALUES
+-- pno 1~42
+(1, 1), (1, 2), (1, 3), (1, 10), (1, 11),
+(2, 6), (2, 7), (2, 8), (2, 9), (2, 5),
+(3, 1), (3, 2), (3, 4), (3, 12), (3, 10),
+(4, 6), (4, 7), (4, 8), (4, 9), (4, 5),
+(5, 2), (5, 3), (5, 11), (5, 10), (5, 4),
+(6, 7), (6, 8), (6, 9), (6, 6), (6, 5),
+(7, 1), (7, 3), (7, 4), (7, 10), (7, 12),
+(8, 5), (8, 6), (8, 7), (8, 8), (8, 9),
+(9, 2), (9, 3), (9, 10), (9, 11), (9, 12),
+(10, 5), (10, 6), (10, 7), (10, 9), (10, 8),
+(11, 1), (11, 2), (11, 4), (11, 11), (11, 12),
+(12, 6), (12, 7), (12, 8), (12, 9), (12, 5),
+(13, 3), (13, 4), (13, 10), (13, 11), (13, 12),
+(14, 5), (14, 6), (14, 7), (14, 8), (14, 9),
+(15, 1), (15, 2), (15, 3), (15, 10), (15, 12),
+(16, 6), (16, 7), (16, 8), (16, 9), (16, 5),
+(17, 1), (17, 3), (17, 4), (17, 10), (17, 11),
+(18, 5), (18, 6), (18, 7), (18, 8), (18, 9),
+(19, 2), (19, 3), (19, 4), (19, 11), (19, 12),
+(20, 6), (20, 7), (20, 8), (20, 9), (20, 5),
+(21, 1), (21, 2), (21, 3), (21, 10), (21, 11),
+(22, 5), (22, 6), (22, 7), (22, 8), (22, 9),
+(23, 2), (23, 3), (23, 4), (23, 10), (23, 12),
+(24, 6), (24, 7), (24, 8), (24, 9), (24, 5),
+(25, 1), (25, 3), (25, 4), (25, 10), (25, 11),
+(26, 5), (26, 6), (26, 7), (26, 8), (26, 9),
+(27, 2), (27, 3), (27, 10), (27, 11), (27, 12),
+(28, 6), (28, 7), (28, 8), (28, 9), (28, 5),
+(29, 1), (29, 2), (29, 3), (29, 10), (29, 12),
+(30, 5), (30, 6), (30, 7), (30, 9), (30, 8),
+(31, 1), (31, 3), (31, 4), (31, 10), (31, 12),
+(32, 6), (32, 7), (32, 8), (32, 9), (32, 5),
+(33, 2), (33, 3), (33, 10), (33, 11), (33, 12),
+(34, 5), (34, 6), (34, 7), (34, 8), (34, 9),
+(35, 1), (35, 3), (35, 4), (35, 10), (35, 11),
+(36, 5), (36, 6), (36, 7), (36, 8), (36, 9),
+(37, 2), (37, 3), (37, 10), (37, 11), (37, 12),
+(38, 5), (38, 6), (38, 7), (38, 9), (38, 8),
+(39, 1), (39, 3), (39, 4), (39, 10), (39, 11),
+(40, 5), (40, 6), (40, 7), (40, 8), (40, 9),
+(41, 2), (41, 3), (41, 10), (41, 11), (41, 12),
+(42, 5), (42, 6), (42, 7), (42, 8), (42, 9);
 
 INSERT INTO project_join(pjtype, pno, dno, create_at, update_at)
 VALUES
