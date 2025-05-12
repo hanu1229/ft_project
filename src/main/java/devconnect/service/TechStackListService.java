@@ -39,7 +39,7 @@ public class TechStackListService {
         // 1. 기존 경험치 차감
         int removeExp = 0;
         List<TechStackListEntity> oldStacks = techStackListRepository.findByDeveloperEntity_Dno(logInDno);
-        for (TechStackListEntity tsl : oldStacks) {
+        for ( TechStackListEntity tsl : oldStacks ) {
             removeExp += tsl.getTechStackEntity().getTsexp();
         }
 
@@ -49,7 +49,7 @@ public class TechStackListService {
         // 2. 새로운 스택 등록 및 경험치 합산
         int addExp = 0;
         List<TechStackListEntity> newStacks = new ArrayList<>();
-        for (Integer tsno : dto.getTechStackList()) {
+        for( Integer tsno : dto.getTechStackList() ) {
             TechStackEntity stack = techStackRepository.findById(tsno).orElse(null);
             if (stack == null) continue;
 
