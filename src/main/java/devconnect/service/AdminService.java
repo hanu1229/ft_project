@@ -659,7 +659,7 @@ public class AdminService {
             if (dto.getFiles() != null && !dto.getFiles().isEmpty()) {
                 for (MultipartFile file : dto.getFiles()) {
                     if (file != null && !file.isEmpty()) {
-                        String fileName = fileUtil.fileUploadProjectImage(file);
+                        String fileName = fileUtil.fileUpload(file);
                         ProjectImageEntity image = ProjectImageEntity.builder()
                                 .iname("/upload/project_image/" + fileName)
                                 .projectEntity(project)
