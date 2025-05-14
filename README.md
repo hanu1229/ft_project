@@ -41,7 +41,7 @@
 
 💡 한상범 : 회원(기업)기능 , 작업일정 관리
 
-💡 한웅제 : 프로젝트 기능 , 프로젝트 신청 기능 , GIT 관리 , AWS 배포
+💡 한웅재 : 프로젝트 기능 , 프로젝트 신청 기능 , GIT 관리 , AWS 배포
 
 💡 이민진 : 기업평가 기능 , 개발자 평가 기능 , PPT(캔바) 관리
 
@@ -65,7 +65,7 @@
 - **DataBase** : <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> 
 - **server** : Apache Tomcat
 - **기획서 작성** : <a href="https://docs.google.com/spreadsheets/d/1Haqee1AKGxATcJow_SI67jj3wwnm8xayMNDKzFov3vU/edit?gid=0#gid=0">
-- **일정 관리** : Jira
+- **일정 관리** : Excel
 
 
 
