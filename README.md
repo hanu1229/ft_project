@@ -9,13 +9,13 @@
 
 
 ## 👨‍🏫 프로젝트 소개
-"재활용 미션 랭킹을 통한 환경 보호 챌린지 프로그램"을 주제로 한 동적 웹페이지입니다. 재활용 미션에 함께 참여하여 지역별 커뮤니티를 활성화하고 환경 보호 챌린지를 독려하기 위해 포인트 랭킹을 보여주는 플랫폼을 제작해보았습니다.
+"개발자와 기업의 프로젝트를 중개하는 중개플랫폼입니다. 기업에서 프로젝트를 올릴시 각 프리랜서 개발자들이 지원을하여 자유로운 연결을 만들고자 했습니다.
 
 
 
 
 ## ⏱ 개발기간
-- 2025.02.03(월) ~ 2025.02.20(목)
+- 2025.04.14 ~ 2024.05.13
 - 기획서 / REST API 명세서 작성
 - 발표평가
 
@@ -30,8 +30,8 @@
      <td align="center"><a href="https://github.com/PHM-dung2"><img src="" width="100px;"  alt=""/><br /><sub><b>박희만  </b></sub></a><br /></td>
       <td align="center"><a href="https://github.com/magnoria"><img src="" width="100px;" alt="" /><br /><sub><b> 한상범 </b></sub></a><br /></td>
       <td align="center"><img src="" width="100px;" alt=""/><br /><sub><b> 한웅제 </b></sub></a><br /></td>
-      <td align="center"><img src="" width="100px;" alt=""/><br /><sub><b> 한웅제 </b></sub></a><br /></td>
-      <td align="center"><img src="" width="100px;" alt=""/><br /><sub><b> 한웅제 </b></sub></a><br /></td>
+      <td align="center"><img src="" width="100px;" alt=""/><br /><sub><b> 이민진 </b></sub></a><br /></td>
+      <td align="center"><img src="" width="100px;" alt=""/><br /><sub><b> 김리원 </b></sub></a><br /></td>
      <tr/>
   </tbody>
 </table>
@@ -41,7 +41,11 @@
 
 💡 한상범 : 회원(기업)기능 , 작업일정 관리
 
-💡  : GIT 담당, 챌린지 참여자 포인트 배포, 사용자 계정 관리 서비스 개발
+💡 한웅제 : 
+
+💡 이민진 :
+
+💡 김리원 : 
 
 
 
