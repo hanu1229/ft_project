@@ -3,7 +3,7 @@
 
 # 🎥 프로젝트 시연영상
 
-[프로젝트 시연영상 링크](https://youtu.be/wbu8Rfeoq30)
+[프로젝트 시연영상 링크] 변경필요
 <br/>
 [프로젝트 PPT]https://www.canva.com/design/DAGm7UhNL1Q/J-85BA3XQeJ8cKC9Ggf1mw/edit?utm_content=DAGm7UhNL1Q&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
@@ -28,8 +28,10 @@
   <tbody>
     <tr>
      <td align="center"><a href="https://github.com/PHM-dung2"><img src="" width="100px;"  alt=""/><br /><sub><b>박희만  </b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/Ryuyena0305"><img src="" width="100px;" alt="" /><br /><sub><b> 류예나 </b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/ithodol"><img src="" width="100px;" alt=""/><br /><sub><b> 전은서 </b></sub></a><br /></td>
+      <td align="center"><a href="https://github.com/magnoria"><img src="" width="100px;" alt="" /><br /><sub><b> 한상범 </b></sub></a><br /></td>
+      <td align="center"><img src="" width="100px;" alt=""/><br /><sub><b> 한웅제 </b></sub></a><br /></td>
+      <td align="center"><img src="" width="100px;" alt=""/><br /><sub><b> 한웅제 </b></sub></a><br /></td>
+      <td align="center"><img src="" width="100px;" alt=""/><br /><sub><b> 한웅제 </b></sub></a><br /></td>
      <tr/>
   </tbody>
 </table>
@@ -37,9 +39,9 @@
 
 💡 박희만 : 조장, 공통 JSP/인터페이스 배포, 챌린지 게시판 개발
 
-💡 류예나 : 캔바, 관리자 계정 관리 서비스 개발, 챌린지 게시판 지역별 출력
+💡 한상범 : 회원(기업)기능 , 작업일정 관리
 
-💡 전은서 : GIT 담당, 챌린지 참여자 포인트 배포, 사용자 계정 관리 서비스 개발
+💡  : GIT 담당, 챌린지 참여자 포인트 배포, 사용자 계정 관리 서비스 개발
 
 
 
@@ -65,25 +67,29 @@
 
 
 ## 📌 주요 기능
-- **챌린지 등록**
-  - 챌린지 제목, 내용, 인원수, 시작날짜, 종료날짜 입력 후 kakao API로 구현된 지도에서 장소를 검색 후 마커를 선택하여 위도 경도를 입력한다.
-  - Json으로 DB에 입력한다.
+- **개발자와 회사가 서로를 평가**
+  - 평가 및 점수를 추가함으로써 프로젝트 선택 및 판단 가능
+  
+
+    
+- **프로젝트 검색, 탐색, 매칭 추천**
+  - 프로젝트 검색(백엔드, 프론트)
+  - 프로젝트 탐색 
+  - 기술스택을 매칭
 
 
     
-- **챌린지 지도 검색**
-  - kakao API로 구현된 지도에서 클러스터로 지역별로 등록된 챌린지가 표현된다.
-  - 클러스터를 누르면 지역이 확대되어 마커로 보여준다.
-  - 마커를 클릭하면 해당 챌린지 게시물로 이동한다.
-
-
-    
-- **유저 랭킹 조회**
-  - 포인트가 높은 상위 10명의 유저를 표시한다.
-  - TOP3의 유저들은 닉네임 옆에 등수별로 이미지를 보여준다.
+- **react 관리자 페이지에서 프로젝트 상태 확인**
+  - 모니터링 및 조정.
+  - 
+  -
+ 
+- **회사와 개발자 각 로그인 기능 및 개발자 레벨과 랭킹 시각화**
+  - 개발자 레벨과 랭킹을 통해 성장 동기부여
+  - 기업의 고용시 직관적인 평가 수치 제공
     
 
 
  
 ## ✒️ API
-- **API 명세서** : [API명세서 링크](https://docs.google.com/spreadsheets/d/10N5DFd7VoDViOcDsw-X1zcQP-eSt3jQMj933DkEu8SQ/edit?gid=1012366780#gid=1012366780)
+- **API 명세서** : 여기 회의후 확인
