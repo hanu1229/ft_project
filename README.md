@@ -1,12 +1,10 @@
-# Plogging Challenge for Recycling Waste Community
-첫번쨰 정규 프로젝트로 사용한 서버 코드입니다. 
-JSP를 활용하여 "재활용 챌린지"동적 웹페이지의 프로토타입을 구현하였습니다.
+# 프로젝트 기반 프리랜서 개발자 중개 플랫폼 
 
 # 🎥 프로젝트 시연영상
 
 [프로젝트 시연영상 링크](https://youtu.be/wbu8Rfeoq30)
 <br/>
-[프로젝트 PPT](https://www.canva.com/design/DAGiwG5xEyU/Hs25472iQbouYia4wTbRLA/view?utm_content=DAGiwG5xEyU&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h914369aa91)
+[프로젝트 PPT]https://www.canva.com/design/DAGm7UhNL1Q/J-85BA3XQeJ8cKC9Ggf1mw/edit?utm_content=DAGm7UhNL1Q&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 
 ## 👨‍🏫 프로젝트 소개
