@@ -19,7 +19,8 @@
 - 기획서 / REST API 명세서 작성
 - 발표평가
 
-https://github.com/leeminjin0827
+
+
 
 ## 🙋‍♂️ 개발자 소개
 
