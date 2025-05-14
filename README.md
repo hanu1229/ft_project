@@ -19,8 +19,7 @@
 - 기획서 / REST API 명세서 작성
 - 발표평가
 
-
-
+https://github.com/leeminjin0827
 
 ## 🙋‍♂️ 개발자 소개
 
@@ -28,10 +27,10 @@
   <tbody>
     <tr>
      <td align="center"><a href="https://github.com/PHM-dung2"><img src="" width="100px;"  alt=""/><br /><sub><b>박희만  </b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/magnoria"><img src="" width="100px;" alt="" /><br /><sub><b> 한상범 </b></sub></a><br /></td>
-      <td align="center"><img src="" width="100px;" alt=""/><br /><sub><b> 한웅제 </b></sub></a><br /></td>
-      <td align="center"><img src="" width="100px;" alt=""/><br /><sub><b> 이민진 </b></sub></a><br /></td>
-      <td align="center"><img src="" width="100px;" alt=""/><br /><sub><b> 김리원 </b></sub></a><br /></td>
+     <td align="center"><a href="https://github.com/magnoria"><img src="" width="100px;" alt="" /><br /><sub><b> 한상범 </b></sub></a><br /></td>
+     <td align="center"><a href="https://github.com/hanu1229"><img src="" width="100px;" alt=""/><br /><sub><b> 한웅제 </b></sub></a><br /></td>
+     <td align="center"><a href="https://github.com/leeminjin0827"><img src="" width="100px;" alt=""/><br /><sub><b> 이민진 </b></sub></a><br /></td>
+     <td align="center"><a href="https://github.com/riwon-sys"><img src="" width="100px;" alt=""/><br /><sub><b> 김리원 </b></sub></a><br /></td>
      <tr/>
   </tbody>
 </table>
@@ -64,7 +63,7 @@
 ## ⚙️ 기술 스택
 - **DataBase** : <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> 
 - **server** : Apache Tomcat
-- **기획서 작성** : Google Sheets
+- **기획서 작성** : <a href="https://docs.google.com/spreadsheets/d/1Haqee1AKGxATcJow_SI67jj3wwnm8xayMNDKzFov3vU/edit?gid=0#gid=0">
 - **일정 관리** : Jira
 
 
@@ -84,9 +83,9 @@
 
     
 - **react 관리자 페이지에서 프로젝트 상태 확인**
-  - 모니터링 및 조정.
-  - 
-  -
+  - 프로젝트 운영 흐름 관리
+  - 관리자 전용 통합 제어 시스템
+  - 데이터 기반 의사결정 지원
  
 - **회사와 개발자 각 로그인 기능 및 개발자 레벨과 랭킹 시각화**
   - 개발자 레벨과 랭킹을 통해 성장 동기부여
