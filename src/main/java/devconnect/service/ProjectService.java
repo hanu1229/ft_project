@@ -129,7 +129,7 @@ public class ProjectService {
     /// | 프로젝트 전체조회 - 페이징 | <br/>
     /// ● 모든 프로젝트를 조회
     // http://localhost:8080/api/project/paging?ptype=0&page=0&size=0
-    public List<ProjectDto> findPagingProject(int ptype, int recruitment_status, int page, int size) {
+    public List<ProjectDto> findPagingProject(int ptype, int recruitment_status, String keyword, int page, int size) {
         System.out.println("ProjectService.findPagingProject");
         Page<ProjectEntity> projectEntityPageList;
         List<ProjectEntity> projectEntityList;
@@ -146,19 +146,19 @@ public class ProjectService {
         if(recruitment_status == 0) {
             System.out.println(">> 모집기간 : 전체, " + typeMsg);
             projectEntityPageList = (ptype == 0) ?
-                    projectRepository.findAll(pageable) : projectRepository.findByPtype(ptype, pageable);
+                    projectRepository.findAll(keyword, pageable) : projectRepository.findByPtype(keyword, ptype, pageable);
         } else if(recruitment_status == 1) {
             System.out.println(">> 모집기간 : 모집 전, " + typeMsg);
             projectEntityPageList = (ptype == 0) ?
-                    projectRepository.findByBefore(today, pageable) : projectRepository.findByBefore(ptype, today, pageable);
+                    projectRepository.findByBefore(keyword, today, pageable) : projectRepository.findByBefore(keyword, ptype, today, pageable);
         } else if(recruitment_status == 2) {
             System.out.println(">> 모집기간 : 모집 중, " + typeMsg);
             projectEntityPageList = (ptype == 0) ?
-                    projectRepository.findByIng(today, pageable) : projectRepository.findByIng(ptype, today, pageable);
+                    projectRepository.findByIng(keyword, today, pageable) : projectRepository.findByIng(keyword, ptype, today, pageable);
         } else if(recruitment_status == 3) {
             System.out.println(">> 모집기간 : 모집 후, " + typeMsg);
             projectEntityPageList = (ptype == 0) ?
-                    projectRepository.findByAfter(today, pageable) : projectRepository.findByAfter(ptype, today, pageable);
+                    projectRepository.findByAfter(keyword, today, pageable) : projectRepository.findByAfter(keyword, ptype, today, pageable);
         } else {
             projectEntityPageList = null;
         }
