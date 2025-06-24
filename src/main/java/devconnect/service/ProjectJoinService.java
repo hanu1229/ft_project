@@ -68,11 +68,22 @@ public class ProjectJoinService {
         if(developerEntity == null) { return false; }
         ProjectEntity projectEntity = projectRepository.findById(pno).orElse(null);
         if(projectEntity == null) { return false; }
-        ProjectJoinEntity projectJoinEntity = new ProjectJoinEntity();
-        projectJoinEntity.setProjectEntity(projectEntity);
-        projectJoinEntity.setDeveloperEntity(developerEntity);
-        ProjectJoinEntity joinEntity = projectJoinRepository.save(projectJoinEntity);
-        return joinEntity.getPjno() > 0;
+        List<ProjectJoinEntity> checkEntity = projectJoinRepository.findByDno(developerEntity.getDno());
+        boolean checkPno = false;
+        for(int i = 0; i < checkEntity.size(); i++) {
+            ProjectJoinEntity pje = checkEntity.get(i);
+            if(pje.getProjectEntity().getPno() == pno) {
+                checkPno = true;
+                break;
+            }
+        }
+        if(checkPno == false) {
+            ProjectJoinEntity projectJoinEntity = new ProjectJoinEntity();
+            projectJoinEntity.setProjectEntity(projectEntity);
+            projectJoinEntity.setDeveloperEntity(developerEntity);
+            ProjectJoinEntity joinEntity = projectJoinRepository.save(projectJoinEntity);
+        }
+        return !checkPno;
     }
 
     /// | 프로젝트 신청 개별 조회 | <br/>
