@@ -1,136 +1,100 @@
 // =======================================================================================
-// ProjectDetail.jsx | rw 25-05-02 최종 리팩토링
-// [설명]
-// - 관리자 전용 프로젝트 상세 페이지 (상세 조회 + 수정 가능)
-// - Joy UI 기반 / ChatGPT 스타일 흰 배경 + 절제된 포인트 색상
-// - API: getProjectDetail(pno), updateProject(token, form)
+// ProjectDetail.jsx | rw 25-05-11 ProjectJoin 스타일 통합 리팩토링 (자율거래 기반)
 // =======================================================================================
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getProjectDetail, updateProject } from '../../api/projectApi.js';
-import { Typography, Box, Input, Button, Divider } from '@mui/joy';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getProjectDetail, updateProject, deleteProject } from '../../api/projectApi';
+import {
+    Typography, Box, Input, Button, Divider,
+    Modal, ModalDialog, ModalClose
+} from '@mui/joy';
 
 export default function ProjectDetail() {
-    const { pno } = useParams();                          // ✅ URL에서 프로젝트 번호 추출
-    const [project, setProject] = useState(null);         // ✅ 원본 프로젝트 데이터
-    const [form, setForm] = useState({});                 // ✅ 입력 폼 상태값
-    const token = localStorage.getItem('token');          // ✅ 인증 토큰
+    const { pno } = useParams();
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
+    const [form, setForm] = useState(null);
+    const [open, setOpen] = useState(false);
 
-    // =======================================================================================
-    // ✅ 프로젝트 상세 데이터 조회 (최초 마운트 시 실행)
-    // =======================================================================================
+    // ✅ 상세 조회
     useEffect(() => {
-        const fetchDetail = async () => {
+        const fetch = async () => {
             try {
-                const res = await getProjectDetail(pno);
-                setProject(res.data);       // 원본 저장
-                setForm(res.data);          // 수정폼 초기화
-            } catch (err) {
-                alert('❗ 프로젝트 상세 조회 실패');
-                console.error(err);
+                const res = await getProjectDetail(token, pno);
+                setForm(res.data);
+            } catch {
+                alert('프로젝트 상세 조회 실패');
             }
         };
-        fetchDetail();
-    }, [pno]);
+        fetch();
+    }, [pno, token]);
 
-    // =======================================================================================
-    // ✅ 입력 필드 변경 처리
-    // =======================================================================================
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
-    };
-
-    // =======================================================================================
-    // ✅ 수정 요청 처리
-    // =======================================================================================
+    // ✅ 수정 요청 (FormData 기반)
     const handleUpdate = async () => {
         try {
-            const res = await updateProject(token, form);
-            if (res.data) {
-                alert('✅ 수정 완료');
-            } else {
-                alert('❗ 서버 응답 없음');
-            }
-        } catch (err) {
-            alert('❗ 수정 중 오류 발생');
-            console.error(err);
+            const formData = new FormData();
+            Object.entries(form).forEach(([key, value]) => {
+                if (value !== null && value !== undefined) {
+                    formData.append(key, value);
+                }
+            });
+
+            const res = await updateProject(token, formData);
+            if (res.data) alert('수정 완료');
+        } catch {
+            alert('수정 실패');
         }
     };
 
-    // =======================================================================================
-    // ✅ 로딩 중 처리
-    // =======================================================================================
-    if (!project) return <Typography level="body-md">로딩 중...</Typography>;
+    // ✅ 삭제 요청
+    const handleDelete = async () => {
+        try {
+            const res = await deleteProject(token, pno);
+            if (res.data) {
+                alert('삭제 완료');
+                navigate('/admin/project');
+            }
+        } catch {
+            alert('삭제 실패');
+        } finally {
+            setOpen(false);
+        }
+    };
+
+    if (!form) return <Typography>로딩 중...</Typography>;
 
     return (
-        <div>
-            {/* ✅ 페이지 제목 */}
-            <Typography
-                level="h3"
-                sx={{ mb: 2, color: '#087f5b', fontWeight: 'bold' }}
-            >
+        <Box sx={{ px: 3, py: 3, bgcolor: '#fff' }}>
+            <Typography level="h3" sx={{ mb: 2, fontWeight: 'bold', color: '#12b886' }}>
                 📁 프로젝트 상세
             </Typography>
+            <Divider sx={{ mb: 3 }} />
 
-            <Divider sx={{ mb: 3, borderColor: '#ced4da' }} />
+            <Box sx={{ maxWidth: 500, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Input name="pname" value={form.pname || ''} onChange={e => setForm({ ...form, pname: e.target.value })} placeholder="프로젝트명" />
+                <Input name="pintro" value={form.pintro || ''} onChange={e => setForm({ ...form, pintro: e.target.value })} placeholder="한줄소개" />
+                <Input name="pcomment" value={form.pcomment || ''} onChange={e => setForm({ ...form, pcomment: e.target.value })} placeholder="설명" />
+                <Input name="ppay" type="number" value={form.ppay || ''} onChange={e => setForm({ ...form, ppay: e.target.value })} placeholder="페이 (만원)" />
 
-            {/* ✅ 수정 입력 폼 */}
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
-                    maxWidth: 500,
-                    p: 3,
-                    bgcolor: '#ffffff',
-                    borderRadius: 'lg',
-                    border: '1px solid #dee2e6',
-                    boxShadow: 'sm',
-                }}
-            >
-                <Input
-                    name="pname"
-                    value={form.pname || ''}
-                    onChange={handleChange}
-                    placeholder="프로젝트명"
-                />
-                <Input
-                    name="pintro"
-                    value={form.pintro || ''}
-                    onChange={handleChange}
-                    placeholder="간단 소개"
-                />
-                <Input
-                    name="pcomment"
-                    value={form.pcomment || ''}
-                    onChange={handleChange}
-                    placeholder="상세 설명"
-                />
-                <Input
-                    name="pcount"
-                    type="number"
-                    value={form.pcount || ''}
-                    onChange={handleChange}
-                    placeholder="모집 인원"
-                />
-
-                {/* ✅ 수정 버튼 */}
-                <Button
-                    onClick={handleUpdate}
-                    color="primary"
-                    variant="solid"
-                    sx={{
-                        mt: 2,
-                        fontWeight: 'bold',
-                        bgcolor: '#12b886',
-                        '&:hover': { bgcolor: '#0ca678' }
-                    }}
-                >
-                    수정하기
-                </Button>
+                <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+                    <Button onClick={handleUpdate} variant="outlined" sx={{ borderColor: '#12b886', color: '#12b886' }}>
+                        수정
+                    </Button>
+                    <Button color="danger" onClick={() => setOpen(true)}>직권 삭제</Button>
+                </Box>
             </Box>
-        </div>
+
+            <Modal open={open} onClose={() => setOpen(false)}>
+                <ModalDialog variant="outlined">
+                    <ModalClose />
+                    <Typography level="h4">정말 삭제하시겠습니까?</Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                        <Button variant="plain" onClick={() => setOpen(false)}>취소</Button>
+                        <Button color="danger" onClick={handleDelete}>삭제</Button>
+                    </Box>
+                </ModalDialog>
+            </Modal>
+        </Box>
     );
 }
